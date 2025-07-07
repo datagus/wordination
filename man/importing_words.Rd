@@ -4,7 +4,7 @@
 \alias{importing_words}
 \title{Import the text files}
 \usage{
-importing_words(folder_path, remove_papers = c())
+importing_words(folder_path, remove_papers = c(), no_outliers = FALSE)
 }
 \arguments{
 \item{folder_path}{The folder path or directory where your text files are}
