@@ -15,5 +15,6 @@ importing_words(folder_path, remove_papers = c(), no_outliers = FALSE)
 A list of our elements: article_length, articles_dfs, papers_titles, npapers
 }
 \description{
-Import the text files
+This function retrieves all the text files from an specified path and creates a list of
+dataframes with two columns, being one column the all the words and the second column the frequency
 }
