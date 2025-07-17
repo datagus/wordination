@@ -1,6 +1,11 @@
 #------Importing files and words----
 #' Import the text files
 #'
+#' This function retrieves all the text files from an specified path and creates a list of
+#' dataframes with two columns, being one column the all the words and the second column the frequency
+#'
+#'
+#'
 #' @param folder_path The folder path or directory where your text files are
 #' @param remove_papers A vector containg the names of files you don't want to include
 #'
@@ -21,6 +26,8 @@ importing_words <- function(folder_path,remove_papers=c(), no_outliers = FALSE){
   remove_papers <- file.path(folder_path, remove_papers)
 
   condicional <- TRUE
+
+  pb <- txtProgressBar(min = 0, max = 100, style = 3)  # create progress bar
 
   while (condicional == TRUE){
 
@@ -47,18 +54,29 @@ importing_words <- function(folder_path,remove_papers=c(), no_outliers = FALSE){
         wn <- nrow(articles[[i]]) # wn stands for words number in the article
         article_length <- c(article_length, wn) #vector with the length of each paper
         names(articles)[i] <- basename(papers_titles[i])
-        print(i)
+        #print(i)
+        progress <- i
+        setTxtProgressBar(pb, progress)
       })
     }
 
+    close(pb)
+
+
     if (length(boxplot.stats(article_length)$out) > 0){
       to_remove <- boxplot.stats(article_length)$out
+
+      if(no_outliers == TRUE){print(paste0("Removing ", length(to_remove), " outliers"))}
+
       remove_papers <- append(remove_papers,papers_titles[article_length %in% to_remove])
       condicional <- no_outliers
     } else{
       condicional <- FALSE
     }
   }
+
+  if(no_outliers == TRUE){print(paste0("A total of ", length(remove_papers), " outliers were removed"))}
+
 
   papers_titles2 <- basename(papers_titles)
 

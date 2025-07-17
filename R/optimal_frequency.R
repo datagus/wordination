@@ -1,5 +1,16 @@
 #-----Getting the optimal frequency----
 
+#' Optimal frequency
+#'
+#' Returns the frequency of words that appear across of all articles or files given
+#' a desired abundance percentage. For example, to estimate the 20% most abundant words
+#'
+#' @param word_df two dimensional matrix representing the abundance table
+#' @param top_words the porcentage given in integer in a range from 1 to 100
+#'
+#' @returns freq as the integer value of frequency and word_number as the respective number of resulting words
+#' @export
+
 optimal_frequency <- function(word_df, top_words){
   top_words <- top_words/100
   rows_number <- nrow(word_df)
@@ -27,3 +38,5 @@ optimal_frequency <- function(word_df, top_words){
               words_number = rows_number
   ))
 }
+#' @examples to be added
+
