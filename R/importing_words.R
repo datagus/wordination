@@ -10,6 +10,9 @@
 #' @param remove_outliers Boolean. TRUE if you want that the function iterates until excluding all the
 #' files that have extreme values regarding the number words. FALSE if you want to keep the outliers
 #' and remove them yourself.
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
+#' @importFrom grDevices boxplot.stats
 #'
 #' @return A list of our elements: article_length, articles_dfs, papers_titles, npapers.
 #'

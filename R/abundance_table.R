@@ -9,6 +9,8 @@
 #' @param papers_titles Name of the original text files (path excluded). They will be used to build the header of the abundance table columns
 #' @param npapers Total number of dataframes
 #' @param articles_length Vector contained the length (number of words/rows) of each dataframe
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
 #'
 #' @returns A list with two objects:
 #'

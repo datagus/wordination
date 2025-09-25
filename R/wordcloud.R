@@ -24,6 +24,8 @@
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
 #' @importFrom graphics text
+#' @importFrom graphics par
+#'
 #' @returns A wordcloud, a dataframe with the clusters and abundance statistics, and a list with the specific cluster word subsets
 #' @export
 wordcloud <- function(x, k, model, wordnumber=5,colores = colores,cex=0.8,pvalue=0.05,abmean=0.01, xmin = 0, xmax = 0, ymin=0, ymax=0, xspace=0, yspace=0){
@@ -42,12 +44,12 @@ wordcloud <- function(x, k, model, wordnumber=5,colores = colores,cex=0.8,pvalue
   #running the clustering
   modelclust<-agnes(abundancet,method="ward")
   cutmodel <-cutree(modelclust,k=k)
-  temp5<-labdsv::indval(abundancet,cutmodel,numitr=1000)
+  temp5<-indval(abundancet,cutmodel,numitr=1000)
 
   nk <- k
 
   achsen<-model$cproj[,c(1:2)]
-  cluster_dca<-cbind(round(temp5$indval,d=2),temp5$pval,names(temp5$pval),achsen)
+  cluster_dca<-cbind(round(temp5$indval,digits=2),temp5$pval,names(temp5$pval),achsen)
   cluster_dcap<-cluster_dca[cluster_dca[nk+1]<pvalue,] #p-value less than ...
   final_cluster<-cluster_dcap[which(apply(cluster_dcap[,c(1:nk)],1,mean)>abmean),] #abmean means abudance indicators mean
 

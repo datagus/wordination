@@ -49,8 +49,6 @@ ellipsis_plot(
 \item{labelx}{Vector indicating the coordinates of the labels along the x axis.}
 
 \item{labely}{Vector indicating the coordinates of the labels along the y axis.}
-
-\item{colbox}{The color of the label box or rectangle}
 }
 \value{
 An ellipsis plot

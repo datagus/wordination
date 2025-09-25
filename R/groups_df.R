@@ -41,7 +41,7 @@ groups_df <- function(x,k, model, wordnumber=5,colores = colores,pvalue=0.05,abm
   nk <- k
 
   achsen<-model$cproj[,c(1:2)]
-  cluster_dca<-cbind(round(temp5$indval,d=2),temp5$pval,names(temp5$pval),achsen)
+  cluster_dca<-cbind(round(temp5$indval,digits=2),temp5$pval,names(temp5$pval),achsen)
   cluster_dcap<-cluster_dca[cluster_dca[nk+1]<pvalue,] #p-value less than ...
   final_cluster<-cluster_dcap[which(apply(cluster_dcap[,c(1:nk)],1,mean)>abmean),] #abmean means abudance indicators mean
 

@@ -15,17 +15,21 @@
 #' @param coverage This parameter indicates how big the ellipsis are. Statistically, coverage means how much of the total words in each cluster should be considered.
 #' @param group_labels the labels you want to put
 #' @param with_labels booloean. If you want the labels printed in rectangle boxes,but this require manual adjustment.
-#' @param colbox The color of the label box or rectangle
 #' @param colbox_text The color of the text inside the label box.
 #' @param labelx Vector indicating the coordinates of the labels along the x axis.
 #' @param labely Vector indicating the coordinates of the labels along the y axis.
-
 #' @importFrom grDevices rgb
 #' @importFrom plotrix draw.ellipse
 #' @importFrom graphics strwidth
 #' @importFrom graphics strheight
 #' @importFrom graphics rect
 #' @importFrom graphics text
+#' @importFrom graphics par
+#' @importFrom graphics points
+#' @importFrom stats cov
+#' @importFrom stats qchisq
+#' @importFrom stats sd
+#' @importFrom grDevices col2rgb
 #'
 #' @returns An ellipsis plot
 #' @export

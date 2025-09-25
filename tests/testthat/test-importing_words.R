@@ -11,7 +11,7 @@ test_that("importing_words() correctly imports text files and processes them", {
 
   # Check that result is a list of expected elements
   expect_type(result, "list")
-  expect_named(result, c("article_length", "articles_dfs", "papers_titles", "npapers"))
+  expect_named(result, c("article_length", "articles_dfs", "papers_titles", "npapers", "papers_removed"))
 
   # Check lengths
   expect_type(result$article_length, "integer")

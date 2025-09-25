@@ -16,6 +16,7 @@
 #' @param showCounts logical. FALSE (default) and TRUE if the users want the counts of cluster printed directly in the barplot
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
+#' @importFrom graphics barplot
 #'
 #' @returns A plot containing all the barplots for each clustering arrangement
 #' @export
@@ -31,7 +32,7 @@ clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores =
   }
 
   if (maxclusters > length(colores)) {
-    stop("Number of clusters (", number_of_clusters,
+    stop("Number of clusters (", maxclusters,
          ") exceeds length of color vector (", length(colores), "). ",
          "Please provide at least as many colors as clusters.")
   }
