@@ -3,35 +3,42 @@
 
 #' Running the Detrended Correspondence Analysis of the words abundance table
 #'
-#' @param word_df a matrix representing the abundance table
-#' @param drop_words a vector of words that the user may want to remove from the abundance table
-#' @param freq the minimum word's frequency across all articles
-#' @param sumrows integer value indicating the overall frequency value of the word in order to be removed from the matrix
+#' @param x The abundance table. This table is not scaled nor normalized yet. It is recommended to have the optimal incidence already.
+#' @param drop_words Vector containing the words to be dropped.
+#' @param incidence The incidence threshold. Default set to 0.
 #' @param logscaling logical. TRUE(default) for logarithmic scale of the abundance table
 #' @importFrom vegan decorana
-#' @returns model, moritz and abundancet
+#'
+#' @returns The resulting model from the Detrented Correspondance Analysis (DCA)
+#'
 #' @export
-running_dca <- function(word_df, drop_words = c(), freq,sumrows=0, logscaling=TRUE){
+running_dca <- function(x, drop_words=c(), incidence=0, logscaling=TRUE){
 
-  word_df <- word_df[!rownames(word_df) %in% drop_words, 1:ncol(word_df), drop = FALSE]
+  #ensure object is a dataframe
+  stopifnot(is.data.frame(x))
 
-  ## Correcting the frequencies of words by the total words in each article
-  word_df <- sweep(word_df, 2, articles_length, "/")
-  word_df <- word_df*1000
-
-  moritz<- word_df[apply(ifelse(word_df>0,1,0),1,sum)>freq,]
-  abundance <- moritz
-  abundancet <- t(abundance)
-  abundancet <- abundancet[rowSums(abundancet)>0,]
-  if(logscaling==TRUE){
-    abundancet<- log(abundancet+1)
+  # ensure all columns are numeric
+  if (!all(vapply(x, is.numeric, logical(1)))) {
+    stop("All columns of `x` must be numeric (counts).")
   }
-  #eliminating rows or articles with empty values
-  abundancet <- abundancet[rowSums(abundancet) > sumrows, ]
+  if (nrow(x) == 0L || ncol(x) == 0L) stop("`x` has zero rows or columns.")
+
+  #dropping_words
+  x <- x[!rownames(x) %in% drop_words, 1:ncol(x), drop = FALSE]
+
+  #subselecting the abundance table based on the incidence threshold indicated
+  abundance <- x[rowSums(x > 0, na.rm = TRUE)>incidence,]
+
+  #log scaling
+  if(isTRUE(logscaling)){
+    abundance<- log(abundance+1)
+  }
+
+  #transpossing the abundance table
+  abundancet <- t(abundance)
+
   model<-vegan::decorana(abundancet,iweigh=0, ira=0)
-  return(list(model = model,
-              moritz = moritz,
-              abundancet = abundancet))
+  return(model)
 }
 
 #' @examples
