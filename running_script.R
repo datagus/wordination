@@ -16,18 +16,9 @@ devtools::document()
 ?ellipsis_plot
 
 
-#forestry paths
-### Example folder paths ###
-folder_path ="/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/forestry_txt"
-folder_path ="/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/forestry_txt2"
-folder_path ="/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/lisa_txt1"
-folder_path ="/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/lisa_txt2"
-folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/sufficiency_txt"
-folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/antonia_text"
-folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/antonia2"
-folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/elli_txt"
-folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/sergey_txt"
-folder_path = "/Users/jorgegustavorodriguezaboytes/Statstutorial/word_analysis/data/tl"
+### Example folder path ###
+folder_path = "/Users/jorgegustavorodriguezaboytes/data-science/unstructured/data/antonia2" #this is from MacOS
+
 
 ### importing_words()
 to_remove <- NULL #you put there the file names you want to remove, including the .txt extension. Do no put the full path
