@@ -4,21 +4,19 @@
 \alias{running_dca}
 \title{Running the Detrended Correspondence Analysis of the words abundance table}
 \usage{
-running_dca(word_df, drop_words = c(), freq, sumrows = 0, logscaling = TRUE)
+running_dca(x, drop_words = c(), incidence = 0, logscaling = TRUE)
 }
 \arguments{
-\item{word_df}{a matrix representing the abundance table}
+\item{x}{The abundance table. This table is not scaled nor normalized yet. It is recommended to have the optimal incidence already.}
 
-\item{drop_words}{a vector of words that the user may want to remove from the abundance table}
+\item{drop_words}{Vector containing the words to be dropped.}
 
-\item{freq}{the minimum word's frequency across all articles}
-
-\item{sumrows}{integer value indicating the overall frequency value of the word in order to be removed from the matrix}
+\item{incidence}{The incidence threshold. Default set to 0.}
 
 \item{logscaling}{logical. TRUE(default) for logarithmic scale of the abundance table}
 }
 \value{
-model, moritz and abundancet
+The resulting model from the Detrented Correspondance Analysis (DCA)
 }
 \description{
 Running the Detrended Correspondence Analysis of the words abundance table
