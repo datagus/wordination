@@ -10,6 +10,7 @@ wordcloud(
   model,
   wordnumber = 5,
   colores = colores,
+  newcoords = list(),
   cex = 0.8,
   pvalue = 0.05,
   abmean = 0.01,
@@ -17,8 +18,7 @@ wordcloud(
   xmax = 0,
   ymin = 0,
   ymax = 0,
-  xspace = 0,
-  yspace = 0
+  font = 2
 )
 }
 \arguments{
@@ -32,6 +32,9 @@ Recommended to use the output from function optimal_incidence()}
 \item{wordnumber}{The number of words per cluster to be displayed in the wordcloud}
 
 \item{colores}{The vector of colors. The length of this vector should be at least the same as the k.}
+
+\item{newcoords}{A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
+list(word=list(x=x,y=y))}
 
 \item{cex}{The font size of the words}
 
@@ -47,9 +50,7 @@ Recommended to use the output from function optimal_incidence()}
 
 \item{ymax}{Numeric. To adjust the higher y-axis}
 
-\item{xspace}{Numeric. To adjust the coordinate of words along the x axis}
-
-\item{yspace}{Numeric. To adjust the coordinate of words along the y axis}
+\item{font}{Integer. The type of font you want to apply to the words. See ?par for more information.}
 }
 \value{
 A wordcloud, a dataframe with the clusters and abundance statistics, and a list with the specific cluster word subsets

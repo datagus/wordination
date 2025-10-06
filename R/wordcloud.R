@@ -11,6 +11,8 @@
 #' @param model The model produced by the Detrented Correspondance Analysis
 #' @param wordnumber The number of words per cluster to be displayed in the wordcloud
 #' @param colores The vector of colors. The length of this vector should be at least the same as the k.
+#' @param newcoords A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
+#' list(word=list(x=x,y=y))
 #' @param cex The font size of the words
 #' @param pvalue The probabilty that the abundance indicators are high
 #' @param abmean The mean of the abundance indicators per cluster
@@ -18,8 +20,7 @@
 #' @param xmax Numeric. To adjust the higher x-axis
 #' @param ymin Numeric. To adjust the lower y-axis
 #' @param ymax Numeric. To adjust the higher y-axis
-#' @param xspace Numeric. To adjust the coordinate of words along the x axis
-#' @param yspace Numeric. To adjust the coordinate of words along the y axis
+#' @param font Integer. The type of font you want to apply to the words. See ?par for more information.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
@@ -28,7 +29,7 @@
 #'
 #' @returns A wordcloud, a dataframe with the clusters and abundance statistics, and a list with the specific cluster word subsets
 #' @export
-wordcloud <- function(x, k, model, wordnumber=5,colores = colores,cex=0.8,pvalue=0.05,abmean=0.01, xmin = 0, xmax = 0, ymin=0, ymax=0, xspace=0, yspace=0){
+wordcloud <- function(x, k, model, wordnumber=5,colores = colores,newcoords=list(),cex=0.8,pvalue=0.05,abmean=0.01, xmin = 0, xmax = 0, ymin=0, ymax=0, font=2){
 
   ## Correcting the frequencies of words by the total words in each article
   pa <- (x > 0) * 1
@@ -56,7 +57,7 @@ wordcloud <- function(x, k, model, wordnumber=5,colores = colores,cex=0.8,pvalue
   par(xpd=T)
   par(mar=c(2,2,0.1,0.1))
   plot(final_cluster$DCA1,final_cluster$DCA2,xlim=c(min(final_cluster$DCA1)+xmin,max(final_cluster$DCA1)-xmax),ylim=c(min(final_cluster$DCA2)+ymin,max(final_cluster$DCA2)-ymax),xlab="DCA1",ylab="DCA2",type="n")
-  points(0, 0, pch = 16, col = "black", cex = 1.5)
+  points(0, 0, pch = 16, col = "black", cex = 0.8)
 
   subsets <- list()
 
@@ -73,15 +74,19 @@ wordcloud <- function(x, k, model, wordnumber=5,colores = colores,cex=0.8,pvalue
 
 
   for (i in 1:nk){
-    xadj <- 0
-    yadj <- 0
     for (j in 1:wordnumber){
-      text(subsets[[i]]$DCA1[c(j)]-xadj,subsets[[i]]$DCA2[c(j)], labels=rownames(subsets[[i]])[c(j)],col=colores[i],cex=cex, font=2)
-      xadj <- xadj + xspace
-      yadj <- yadj + yspace
+      word <- rownames(subsets[[i]])[c(j)]
+      if (word %in% names(newcoords)){
+        x <- newcoords[[word]]$x
+        y <- newcoords[[word]]$y
+        text(x,y, labels=word,col=colores[i],cex=cex, font=font)
+      }
+      else{
+        text(subsets[[i]]$DCA1[c(j)],subsets[[i]]$DCA2[c(j)], labels=word,col=colores[i],cex=cex, font=font)
+      }
     }
   }
-  return(list(final_cluster=final_cluster, subsets=subsets))
+  return(list(final_cluster=final_cluster, subsets=subsets,word=word))
 }
 
 #' @examples to be added
