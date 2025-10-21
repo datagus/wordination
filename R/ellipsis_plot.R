@@ -9,8 +9,11 @@
 #' @param colores The vector of colors. The length of this vector should be at least the same as the number of cluster. This vector has to be the same for the barplot, wordcloud and dendogram.
 #' @param withborder boolean. If you want that the ellipsis have a border
 #' @param showWords boolean. If you want only the elipsis to appear without the words printed, put FALSE (default).
+#' @param newcoords A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
+#' list(word=list(x=x,y=y))
 #' @param wordnumber The number of words to appear in each cluster
 #' @param cex The size of the words
+#' @param font Integer. The type of font you want to apply to the words. See ?par for more information.
 #' @param opacity How transparent you want to clusters to be. Range from 0.0 to 1.0, being 0.0 complete transparent.
 #' @param coverage This parameter indicates how big the ellipsis are. Statistically, coverage means how much of the total words in each cluster should be considered.
 #' @param group_labels the labels you want to put
@@ -33,7 +36,7 @@
 #'
 #' @returns An ellipsis plot
 #' @export
-ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE, showWords=FALSE, wordnumber=5, cex=1, opacity=0.8,  coverage = 0.95, with_labels=FALSE,group_labels=NULL,  colbox_text="black", labelx=c(), labely=c()){
+ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE, showWords=FALSE, newcoords=list(),wordnumber=5, cex=1, font=2, opacity=0.8,  coverage = 0.95, with_labels=FALSE,group_labels=NULL,  colbox_text="black", labelx=c(), labely=c()){
 
   colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
                "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
@@ -52,10 +55,16 @@ ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE
 
   if(isTRUE(showWords)){
     for (i in 1:length(subsets)){
-      xadj <- 0
-      yadj <- 0
       for (j in 1:wordnumber){
-        text(subsets[[i]]$DCA1[c(j)]-xadj,subsets[[i]]$DCA2[c(j)], labels=rownames(subsets[[i]])[c(j)],col=colores[i],cex=cex, font=2)
+        word <- rownames(subsets[[i]])[c(j)]
+        if (word %in% names(newcoords)){
+          x <- newcoords[[word]]$x
+          y <- newcoords[[word]]$y
+          text(x,y, labels=word,col=colores[i],cex=cex, font=font)
+        }
+        else{
+          text(subsets[[i]]$DCA1[c(j)],subsets[[i]]$DCA2[c(j)], labels=word,col=colores[i],cex=cex, font=font)
+        }
       }
     }
   }

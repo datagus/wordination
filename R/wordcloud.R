@@ -50,9 +50,10 @@ wordcloud <- function(x, k, model, wordnumber=5,colores = colores,newcoords=list
   nk <- k
 
   achsen<-model$cproj[,c(1:2)]
-  cluster_dca<-cbind(round(temp5$indval,digits=2),temp5$pval,names(temp5$pval),achsen)
+  cluster_dca<-cbind(round(temp5$indval,digits=3),temp5$pval,names(temp5$pval),achsen)
   cluster_dcap<-cluster_dca[cluster_dca[nk+1]<pvalue,] #p-value less than ...
   final_cluster<-cluster_dcap[which(apply(cluster_dcap[,c(1:nk)],1,mean)>abmean),] #abmean means abudance indicators mean
+  names(final_cluster)[names(final_cluster) == "temp5$pval"] <- "pvalue"
 
   par(xpd=T)
   par(mar=c(2,2,0.1,0.1))
@@ -67,7 +68,8 @@ wordcloud <- function(x, k, model, wordnumber=5,colores = colores,newcoords=list
   )
 
   for (i in 1:nk){
-    subsets[[i]] <- final_cluster[order(final_cluster[,i],decreasing=T)[c(1: wordnumber)],]
+    #subsets[[i]] <- final_cluster[order(final_cluster[,i],decreasing=T)[c(1: wordnumber)],]
+    subsets[[i]] <- final_cluster[order(-final_cluster[, i], final_cluster$pvalue)[1:wordnumber],]
     #text(subsets[[i]]$DCA1[c(1:wordnumber)],subsets[[i]]$DCA2[c(1:wordnumber)],labels=rownames(subsets[[i]])[c(1:wordnumber)],col=colores[i] ,cex=0.8)
     subsets[[i]]$cluster <- i
   }

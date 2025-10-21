@@ -10,8 +10,10 @@ ellipsis_plot(
   colores = colores,
   withborder = FALSE,
   showWords = FALSE,
+  newcoords = list(),
   wordnumber = 5,
   cex = 1,
+  font = 2,
   opacity = 0.8,
   coverage = 0.95,
   with_labels = FALSE,
@@ -32,9 +34,14 @@ ellipsis_plot(
 
 \item{showWords}{boolean. If you want only the elipsis to appear without the words printed, put FALSE (default).}
 
+\item{newcoords}{A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
+list(word=list(x=x,y=y))}
+
 \item{wordnumber}{The number of words to appear in each cluster}
 
 \item{cex}{The size of the words}
+
+\item{font}{Integer. The type of font you want to apply to the words. See ?par for more information.}
 
 \item{opacity}{How transparent you want to clusters to be. Range from 0.0 to 1.0, being 0.0 complete transparent.}
 
