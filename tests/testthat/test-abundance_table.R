@@ -1,4 +1,4 @@
-# Tests for abundance_table()
+# Tests for abundance_table().
 
 # Standard Input
 test_that("abundance_table handles standard input correctly", {

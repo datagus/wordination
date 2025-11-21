@@ -83,19 +83,30 @@ abundance_table <-function(articles, papers_titles, npapers, articles_length){
   print("Creating abundance_table")
   pb <- txtProgressBar(min = 0, max = 100, char = "=", style = 3)
 
-  for ( i in 1:(length(words_frequencies)-1) ){
-    if (i == 1){
-      df1 = words_frequencies[[i]]
-      df2 = words_frequencies[[i+1]]}else{df2 = words_frequencies[[i+1]]}
-    df1 <- merge(df1, df2, all=T,by="row.names",sort=F)
-    row.names(df1) <- df1[,1] #putting the words as the index (again)
-    df1 <- df1[,-1]#removing the first column "row.names"
-    progress <- (i+1)/end *100
-    setTxtProgressBar(pb, progress)
+  # Check how many valid papers remain
+  n_remaining <-length(words_frequencies)
+
+  if (n_remaining == 0){
+    stop("no valid dataframes remaining after filtering empty files.")
+  } else if (n_remaining == 1) {
+    df1 <- words_frequencies[[1]] # If only one paper, no merging needed. Just formatting.
+    setTxtProgressBar(pb, 100)
+  } else {
+    # Run loop merge loop only if we have 2 or more papers
+    for ( i in 1:(length(words_frequencies)-1) ){
+      if (i == 1){
+        df1 = words_frequencies[[i]]
+        df2 = words_frequencies[[i+1]]}else{df2 = words_frequencies[[i+1]]}
+      df1 <- merge(df1, df2, all=T,by="row.names",sort=F)
+      row.names(df1) <- df1[,1] #putting the words as the index (again)
+      df1 <- df1[,-1] #removing the first column "row.names"
+      progress <- (i+1)/end *100
+      setTxtProgressBar(pb, progress)
+    }
   }
   close(pb)
   abundance_raw <- df1
-  abundance_raw <- abundance_raw[order(row.names(abundance_raw)), ]
+  abundance_raw <- abundance_raw[order(row.names(abundance_raw)), , drop = FALSE] #Added drop = FALSE to prevent 1-column dataframe from becoming a vector
 
   # 6.- replacing NAs with 0 and renaming columns
   print("Refining abundance table")
