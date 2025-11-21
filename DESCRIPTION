@@ -2,18 +2,28 @@ Package: wordination
 Title: Produce word cloud based on abundance vegetation statistics
 Version: 0.0.0.9000
 Authors@R: 
-    person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    c(person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre")),
+      person("Wanja", "Tolksdorf", email = "wjt@gmx-topmail.de", role = c("aut")),
+      person("Jannik Jeremias", "Schneider", email = "jj.schneider@posteo.de", role = "aut"))
+Description: What the package does (one paragraph). TO DO
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    pbapply,
+    qpdf,
+    png
 Config/testthat/edition: 3
 Imports:
     cluster,
     dendextend,
     labdsv,
+    pdftools,
     plotrix,
+    tesseract,
+    tm,
+    udpipe,
+    utils,
     vegan
