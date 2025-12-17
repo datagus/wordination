@@ -6,11 +6,12 @@
 \usage{
 process_single_file(
   filepath,
-  model,
+  model_path,
   upos_tags,
   rewrite,
   dir_filtered,
-  min_word_count = 2000
+  min_word_count = 2000,
+  use_lemma = TRUE
 )
 }
 \description{

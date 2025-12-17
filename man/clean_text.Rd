@@ -2,11 +2,11 @@
 % Please edit documentation in R/filter_words_in_text_utils.R
 \name{clean_text}
 \alias{clean_text}
-\title{Clean Text}
+\title{Basic text cleaning}
 \usage{
-clean_text(txt)
+clean_text(text)
 }
 \description{
-Clean Text
+Basic text cleaning
 }
 \keyword{internal}

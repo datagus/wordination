@@ -2,11 +2,11 @@
 % Please edit documentation in R/filter_words_in_text_utils.R
 \name{print_processing_summary}
 \alias{print_processing_summary}
-\title{Print Processing Summary}
+\title{Print processing summary}
 \usage{
 print_processing_summary(results)
 }
 \description{
-Print Processing Summary
+Print processing summary
 }
 \keyword{internal}

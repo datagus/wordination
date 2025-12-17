@@ -8,35 +8,85 @@ filter_words_in_text(
   dir_in,
   pos_tag = c("NN", "NNP"),
   rewrite = FALSE,
-  min_word_count = 2000
+  min_word_count = 2000,
+  use_lemma = TRUE
 )
 }
 \arguments{
-\item{dir_in}{Character string. Working directory containing text files.}
+\item{dir_in}{Character string. Directory containing text files to process.}
 
-\item{pos_tag}{Character vector of POS tags to keep. Default is c("NN", "NNP") for nouns.}
+\item{pos_tag}{Character vector of Penn Treebank POS tags to keep.
+Default is \code{c("NN", "NNP")} for singular nouns and proper nouns.
+Use \code{show_pos_tags()} to see all available tags.}
 
-\item{rewrite}{Logical. If FALSE (default), creates "filtered" subfolder;
-if TRUE, overwrites files in the original directory.}
+\item{rewrite}{Logical. If \code{FALSE} (default), creates a "filtered"
+subfolder for output files. If \code{TRUE}, overwrites original files.}
 
-\item{min_word_count}{Integer. Minimum number of words required in input files (default 2000).}
+\item{min_word_count}{Integer. Minimum word count required to process a file.
+Files with fewer words are skipped. Default is 2000.}
+
+\item{use_lemma}{Logical. If \code{TRUE} (default), outputs lemmatized forms
+(e.g., "running" becomes "run"). If \code{FALSE}, keeps original word forms.}
 }
 \value{
-Invisibly returns a list of processing results for each file.
+Invisibly returns a list of results, one per file, each containing:
+\describe{
+\item{file}{Filename processed}
+\item{status}{"processed", "skipped", or "error"}
+\item{word_count}{Total words in input file}
+\item{filtered_word_count}{Words remaining after filtering}
+\item{pos_proportion}{Proportion of content words retained}
+\item{output_file}{Name of output file (if processed)}
+}
 }
 \description{
 Filters text files in a directory to keep only specified word types based on
-part-of-speech tagging. Processes all .txt files that meet the minimum word
-count requirement.
+part-of-speech tagging using UDPipe. Useful for preparing text corpora for
+analysis by extracting only nouns, verbs, or other word classes.
+}
+\details{
+This function uses UDPipe for natural language processing. On first run,
+it downloads the English language model (~16MB) which is cached for future use.
+
+The filtering workflow:
+\enumerate{
+\item Read each .txt file from the input directory
+\item Skip files below the minimum word count
+\item Annotate text with UDPipe (tokenization, POS tagging, lemmatization)
+\item Keep only words matching the specified POS tags
+\item Remove punctuation, numbers, and single-character tokens
+\item Save filtered words to output file
+}
 }
 \examples{
 \dontrun{
-# Filter only nouns from text files (default settings)
-filter_words_in_text("./documents")
+# Basic usage: extract nouns from all text files
+results <- filter_words_in_text("path/to/documents")
 
-# Filter with custom word count threshold
-filter_words_in_text("./documents",
-                    pos_tag = c("NN", "NNP"),
-                    min_word_count = 1000)
+# Extract only verbs with lower word threshold
+results <- filter_words_in_text(
+  dir_in = "path/to/documents",
+  pos_tag = c("VB", "VBD", "VBG", "VBN", "VBP", "VBZ"),
+  min_word_count = 1000
+)
+
+# Keep original word forms (no lemmatization)
+results <- filter_words_in_text(
+  dir_in = "path/to/documents",
+  use_lemma = FALSE
+)
+
+# Extract nouns and adjectives, overwrite original files
+results <- filter_words_in_text(
+  dir_in = "path/to/documents",
+  pos_tag = c("NN", "NNS", "JJ"),
+  rewrite = TRUE
+)
+
+# Check available POS tags
+show_pos_tags()
 }
+}
+\seealso{
+\code{\link{show_pos_tags}} for available POS tags
 }
