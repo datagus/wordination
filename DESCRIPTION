@@ -5,7 +5,7 @@ Authors@R:
     c(person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre")),
       person("Wanja", "Tolksdorf", email = "wjt@gmx-topmail.de", role = c("aut")),
       person("Jannik Jeremias", "Schneider", email = "jj.schneider@posteo.de", role = "aut"))
-Description: What the package does (one paragraph). TO DO
+Description:Tools for text mining and clustering analysis of document collections. Converts PDFs to text, filters words by part-of-speech tags, creates word abundance tables, and performs clustering analysis with visualization.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
