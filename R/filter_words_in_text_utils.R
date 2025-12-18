@@ -21,11 +21,40 @@ get_udpipe_model_path <- function() {
   dir.create(model_dir, recursive = TRUE, showWarnings = FALSE)
   model_files <- list.files(model_dir, pattern = "english.*\\.udpipe$", full.names = TRUE)
 
-  if (length(model_files) == 0) {
+  # Only use existing files that actually exist and have size > 0
+  valid_models <- model_files[file.exists(model_files) & file.size(model_files) > 0]
+
+  if (length(valid_models) == 0) {
     dl <- udpipe::udpipe_download_model("english", model_dir = model_dir)
+    if (is.na(dl$file_model) || !file.exists(dl$file_model)) {
+      stop("Failed to download UDPipe model")
+    }
     return(dl$file_model)
   }
-  model_files[1]
+  valid_models[1]
+}
+
+#' Load UDPipe model with retry on failure
+#' @keywords internal
+load_udpipe_model <- function(model_path) {
+  # Helper: load and validate model actually works
+  load_and_validate <- function(path) {
+    model <- udpipe::udpipe_load_model(path)
+    # Test that model works (catches "external pointer is not valid")
+    udpipe::udpipe_annotate(model, x = "test")
+    model
+  }
+
+  model <- tryCatch(load_and_validate(model_path), error = function(e) NULL)
+
+  # If loading/validation failed, re-download and try again
+  if (is.null(model)) {
+    model_dir <- dirname(model_path)
+    dl <- udpipe::udpipe_download_model("english", model_dir = model_dir, overwrite = TRUE)
+    model <- load_and_validate(dl$file_model)
+  }
+
+  model
 }
 
 #' Basic text cleaning
@@ -64,8 +93,8 @@ process_single_file <- function(filepath, model_path, upos_tags, rewrite, dir_fi
       ))
     }
 
-    # Load model fresh for each file
-    model <- udpipe::udpipe_load_model(model_path)
+    # Load model with retry logic for external pointer issues
+    model <- load_udpipe_model(model_path)
 
     # Annotate and filter by POS
     tokens_df <- as.data.frame(udpipe::udpipe_annotate(model, x = text))

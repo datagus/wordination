@@ -1,9 +1,8 @@
 # Tests for filter_words_in_text()
 
-# Basic test which don't require UDPipe
+# Basic tests which don't require UDPipe
 
 test_that("validates directory input", {
-
   expect_error(filter_words_in_text("fake_directory"), "does not exist")
 })
 
@@ -44,7 +43,7 @@ test_that("show_pos_tags returns valid data frame", {
   expect_true("NN" %in% tags$Tag)
 })
 
-# Proper integration tests, requires UDPipe
+# Integration test requiring UDPipe
 
 test_that("full pipeline processes files correctly", {
   skip_on_cran()
