@@ -4,10 +4,10 @@
 #'
 #' This function computes the incidence (frequency) of each word across all articles in an abundance table.
 #' The incidence of a word is defined as the number of articles where the word is present at least once (abundance > 0).
-#' The maximum possible incide for any word is equal to the total number of articles.
+#' The maximum possible incidence for any word is equal to the total number of articles.
 #'
 #' Knowing the words incidence helps to determine a threshold and...
-#' ...if the words with high incide contain meaning in the context of the research topic.
+#' ...if the words with high incidence contain meaning in the context of the research topic.
 #' Therefore, one can subselect the abundance table with only those words with the highest incidence.
 #' Keeping words with low incidence will disturb the ordination and clustering process.
 #'
@@ -22,7 +22,7 @@
 
 #' @export
 
-optimal_incidence <- function(x, most_common=100){
+optimal_incidence <- function(x, most_common=50){
 
   #this a control to stop the function if the criteria are not met
   stopifnot(is.data.frame(x),
@@ -46,7 +46,7 @@ optimal_incidence <- function(x, most_common=100){
 
   incidence_threshold = unname(cutoff_incidence)
 
-  # Getting the words indexes that are equal or greater than the cutoff.
+  # Getting the words indexes that greater than the cutoff.
   keep_idx <- which(inc > incidence_threshold)
 
   # Filter only (preserve original row order)
