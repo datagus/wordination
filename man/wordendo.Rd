@@ -4,7 +4,7 @@
 \alias{wordendo}
 \title{Generating clusters dendogram with colors}
 \usage{
-wordendo(x, k, colores = colores)
+wordendo(x, k, colores = c())
 }
 \arguments{
 \item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.

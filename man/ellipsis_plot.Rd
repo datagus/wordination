@@ -7,7 +7,7 @@
 ellipsis_plot(
   subsets,
   final_cluster,
-  colores = colores,
+  colores = c(),
   withborder = FALSE,
   showWords = FALSE,
   newcoords = list(),
@@ -20,7 +20,13 @@ ellipsis_plot(
   group_labels = NULL,
   colbox_text = "black",
   labelx = c(),
-  labely = c()
+  labely = c(),
+  adjx_max = 0,
+  adjx_min = 0,
+  adjy_max = 0,
+  adjy_min = 0,
+  size_text_label = 0.7,
+  width_label = 0.3
 )
 }
 \arguments{

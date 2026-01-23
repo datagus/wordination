@@ -36,12 +36,14 @@
 #'
 #' @returns An ellipsis plot
 #' @export
-ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE, showWords=FALSE, newcoords=list(),wordnumber=5, cex=1, font=2, opacity=0.8,  coverage = 0.95, with_labels=FALSE,group_labels=NULL,  colbox_text="black", labelx=c(), labely=c()){
+ellipsis_plot <- function(subsets,final_cluster,colores=c(),withborder=FALSE, showWords=FALSE,
+                          newcoords=list(),wordnumber=5, cex=1, font=2, opacity=0.8,  coverage = 0.95, with_labels=FALSE,group_labels=NULL,
+                          colbox_text="black", labelx=c(), labely=c(), adjx_max=0, adjx_min=0, adjy_max=0,adjy_min=0, size_text_label=0.7, width_label=0.3){
 
-  colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
-               "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
-               "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
-  )
+  #colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
+   #            "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
+  #             "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
+  #)
 
   cc <- do.call(rbind, subsets) #concatenating all the dataframes in the subsets list
   cc2 <- cc[,c((ncol(cc)-2):ncol(cc))] #getting the columns
@@ -49,9 +51,10 @@ ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE
   clusteros <- cc2$cluster
   row.names(coordinates)<-row.names(cc2)
 
-  par(xpd=T)
-  par(mar=c(2,2,0.5,0.5))
-  plot(final_cluster$DCA1,final_cluster$DCA2,xlim=c(min(final_cluster$DCA1)-1,max(final_cluster$DCA1)+1),ylim=c(min(final_cluster$DCA2)-1,max(final_cluster$DCA2)+1),xlab="DCA1",ylab="DCA2",type="n")
+  par(xpd=F)
+  #par(mar=c(2,2,0.5,0.5))
+  par(mar=c(4,4,0.5,0.5))
+  plot(final_cluster$DCA1,final_cluster$DCA2,xlim=c(min(final_cluster$DCA1)+adjx_min,max(final_cluster$DCA1)+adjx_max),ylim=c(min(final_cluster$DCA2)+adjy_min,max(final_cluster$DCA2)+adjy_max),xlab="DCA1",ylab="DCA2",type="n", axes=TRUE)
 
   if(isTRUE(showWords)){
     for (i in 1:length(subsets)){
@@ -106,7 +109,7 @@ ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE
       # Calculate label position and dimensions
       text_x <- labelx[i]
       text_y <- labely[i]
-      label_width <- strwidth(label) * 0.8
+      label_width <- strwidth(label) * width_label
       label_height <- strheight(label) * 1
 
 
@@ -114,7 +117,7 @@ ellipsis_plot <- function(subsets,final_cluster,colores=colores,withborder=FALSE
            col = color_with_alpha, lwd = 0.5)
 
       # Add the text label in the center of the rectangle
-      text(text_x, text_y, label, col = colbox_text, cex = 0.7, font = 3)
+      text(text_x, text_y, label, col = colbox_text, cex = size_text_label, font = 3)
     }
   }
 

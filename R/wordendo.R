@@ -23,7 +23,7 @@
 #' $clusters_length The length of each subdendogram or general branches
 #'
 #' @export
-wordendo <- function(x,k, colores=colores){
+wordendo <- function(x,k, colores=c()){
   ## Correcting the frequencies of words by the total words in each article
   pa <- (x > 0) * 1
   sites_length <- unname(colSums(pa, na.rm = TRUE))
@@ -50,10 +50,10 @@ wordendo <- function(x,k, colores=colores){
   cutmodel <-cutree(modelclust,k=nk)
 
 
-  colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
-               "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
-               "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
-  )
+  #colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
+  #             "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
+  #             "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
+  #)
 
   grupos <- data.frame(article= row.names(abundancet), Cluster = cutmodel)
   grupos$palabras <- NA
