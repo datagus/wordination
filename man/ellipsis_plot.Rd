@@ -62,6 +62,18 @@ list(word=list(x=x,y=y))}
 \item{labelx}{Vector indicating the coordinates of the labels along the x axis.}
 
 \item{labely}{Vector indicating the coordinates of the labels along the y axis.}
+
+\item{adjx_max}{Numeric. Adjustment to the upper x-axis limit.}
+
+\item{adjx_min}{Numeric. Adjustment to the lower x-axis limit.}
+
+\item{adjy_max}{Numeric. Adjustment to the upper y-axis limit.}
+
+\item{adjy_min}{Numeric. Adjustment to the lower y-axis limit.}
+
+\item{size_text_label}{Numeric. Font size for labels in boxes.}
+
+\item{width_label}{Numeric. Factor applied to text width when drawing label boxes.}
 }
 \value{
 An ellipsis plot

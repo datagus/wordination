@@ -21,6 +21,12 @@
 #' @param colbox_text The color of the text inside the label box.
 #' @param labelx Vector indicating the coordinates of the labels along the x axis.
 #' @param labely Vector indicating the coordinates of the labels along the y axis.
+#' @param adjx_max Numeric. Adjustment to the upper x-axis limit.
+#' @param adjx_min Numeric. Adjustment to the lower x-axis limit.
+#' @param adjy_max Numeric. Adjustment to the upper y-axis limit.
+#' @param adjy_min Numeric. Adjustment to the lower y-axis limit.
+#' @param size_text_label Numeric. Font size for labels in boxes.
+#' @param width_label Numeric. Factor applied to text width when drawing label boxes.
 #' @importFrom grDevices rgb
 #' @importFrom plotrix draw.ellipse
 #' @importFrom graphics strwidth
@@ -37,7 +43,7 @@
 #' @returns An ellipsis plot
 #' @export
 ellipsis_plot <- function(subsets,final_cluster,colores=c(),withborder=FALSE, showWords=FALSE,
-                          newcoords=list(),wordnumber=5, cex=1, font=2, opacity=0.8,  coverage = 0.95, with_labels=FALSE,group_labels=NULL,
+                          newcoords=list(),wordnumber=5, cex=1, font=2, opacity=0.8,  coverage = 0.95, with_labels=FALSE, group_labels=NULL,
                           colbox_text="black", labelx=c(), labely=c(), adjx_max=0, adjx_min=0, adjy_max=0,adjy_min=0, size_text_label=0.7, width_label=0.3){
 
   #colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
