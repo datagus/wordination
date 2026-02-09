@@ -7,9 +7,9 @@
 #'
 #' @param x The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
 #' Recommended to use the output from function optimal_incidence()
-#' @param maxclusters Number of maximum clusters to create. By the default is two. The user can indicate, for example,
-#' maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created. By default this is set to 21,
-#' if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.
+#' @param maxclusters Number of maximum clusters to create. The user can indicate, for example,
+#' maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created.
+#' By default this is set to 21, if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.
 #' @param printclusters logical. FALSE (default) and TRUE if the table showing the partitions and clusters is to be displayed
 #' @param colores A vector containing the colors to be used for the barplot. The lenght of this vector
 #' should be at least equal to the number of maxclusters.
