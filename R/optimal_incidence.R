@@ -1,4 +1,3 @@
-#-----Getting the incidence threshold----
 #' Determine the incidence threshold for word filtering
 #'
 #' This function computes the incidence (frequency) of each word across all articles in an abundance table.
