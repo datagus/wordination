@@ -84,6 +84,7 @@ result <- custom_abundance(
 result$new_abundance
 result$new_moritz
 
+\dontrun{
 # Example 2: user input
 abtab <- your_abundance_table
 result <- custom_abundance(
@@ -96,5 +97,5 @@ result <- custom_abundance(
 )
 words_df2 <- result$new_abundance
 moritz2 <- result$new_moritz
-
+}
 }

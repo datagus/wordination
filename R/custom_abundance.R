@@ -66,6 +66,7 @@
 #' result$new_abundance
 #' result$new_moritz
 #'
+#' \dontrun{
 #' # Example 2: user input
 #' abtab <- your_abundance_table
 #' result <- custom_abundance(
@@ -78,7 +79,7 @@
 #' )
 #' words_df2 <- result$new_abundance
 #' moritz2 <- result$new_moritz
-#'
+#' }
 custom_abundance <- function(x, drop_words=c(),incidence=0, site_correction = FALSE, multiplier=1, logscaling=FALSE){
 
   #this a control to stop the function if the criteria are not met

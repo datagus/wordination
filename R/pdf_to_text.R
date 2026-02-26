@@ -54,6 +54,7 @@
 #' @export
 #'
 #' @examples
+#' # Example 1: simple input
 #' # Create a temporary folder for PDFs
 #' temp_pdf_dir <- tempfile("pdfs")
 #' dir.create(temp_pdf_dir)
@@ -82,8 +83,8 @@
 #' unlink(temp_pdf_dir, recursive = TRUE)
 #' unlink(temp_output, recursive = TRUE)
 #'
-#'
 #' \dontrun{
+#' # Example 2: user input
 #' # Use your own directories
 #' dir_pdf <- "path/to/your/pdfs"
 #' dir_text <- "path/to/output"
