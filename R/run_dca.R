@@ -28,7 +28,7 @@
 #'   art4 = c(1, 1, 0, 0, 0)
 #' )
 #' rownames(x) <- c("word1", "word2", "word3", "word4", "word5")
-#' model <- runn_dca(x)
+#' model <- run_dca(x)
 #' summary(model)
 #'
 run_dca <- function(x, drop_words=c(), incidence=0, logscaling=TRUE){
