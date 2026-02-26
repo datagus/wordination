@@ -119,7 +119,7 @@ pdf_to_text <- function(dir_pdf, dir_text,
     return(list(
       text_folder = normalizePath(dir_text),
       num_converted = 0,
-      failed_files = character(0)
+      invalid_files = character(0)
     ))
   }
 
