@@ -1,4 +1,4 @@
-test_that("importing_words() correctly imports text files and processes them", {
+test_that("import_words() correctly imports text files and processes them", {
   # Setup temporary test files
   tmp <- tempdir()
   writeLines("apple banana apple mango pera mango", file.path(tmp, "file1.txt"))
@@ -7,7 +7,7 @@ test_that("importing_words() correctly imports text files and processes them", {
   writeLines("remove me please ", file.path(tmp, "remove_this.txt"))
 
   # Run function excluding one file
-  result <- importing_words(folder_path = tmp, remove_papers = "remove_this.txt")
+  result <- import_words(folder_path = tmp, remove_papers = "remove_this.txt")
 
   # Check that result is a list of expected elements
   expect_type(result, "list")
