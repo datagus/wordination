@@ -2,21 +2,44 @@
 % Please edit documentation in R/cluster_indicators.R
 \name{cluster_indicators}
 \alias{cluster_indicators}
-\title{Calculating the abundance indicators of words in the clusters}
+\title{Calculate word abundance indicators per cluster}
 \usage{
 cluster_indicators(x, k)
 }
 \arguments{
-\item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-Recommended to use the output from function optimal_incidence()}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric. The table should not be scaled or normalized beforehand.
+It is recommended to apply an ancidence threshold using \code{\link{optimal_incidence}}
+before passing the table to this function.}
 
-\item{k}{The number of clusters}
+\item{k}{Integer. The number of clusters.}
 }
 \value{
-Returns the same object as in the indval function. Interpretation: A higher indicator means that the cluster is very unique while a lower
-a lower indicator means that cluster is sparse or with high variance. If one cluster doesn't appear, it meas that it has indicator of value zero.
-If one of the cluster has zero, do not consider the respective cluster arrangement.
+A summary of an \code{indval} object from the \pkg{labdsv} package.
+See \code{\link{optimal_incidence}}, \code{\link{clusters_barplot}}
 }
 \description{
-It is basically an adaptation of the Dufrene-Legendre Indicator Species Analysis to textual abundance analysis.
+This file function computes indicator values for words across clusters using an
+adaptation of the Dufrene-Legendre Indicator Species Analysis (\code{\link[labdsv]{indval}})
+applied to textual abundance data. Clustering is performed internally using Ward's method via
+\code{link[cluster]{agnes}}.
+}
+\details{
+A higher indicator value means that the cluster is highly unique while a lower value indicates the cluster is sparse
+or has more variance. If a cluster does not appear in the output, its indicator value is zero. If any cluster has an
+indicator of zero, the respective cluster arrangement should not be considered.
+}
+\examples{
+x <- data.frame(
+  art1 = c(3, 0, 1, 2, 0),
+  art2 = c(0, 2, 1, 0, 1),
+  art3 = c(1, 1, 0, 1, 0),
+  art4 = c(2, 0, 1, 1, 1)
+)
+rownames(x) <- paste0("word", 1:5)
+cluster_indicators(x, k = 2)
+
+}
+\seealso{
+\code{\link{optimal_incidence}}, \code{\link{clusters_barplot}}
 }
