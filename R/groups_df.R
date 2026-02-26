@@ -1,5 +1,3 @@
-#---Clusters dataframe------
-
 #' Creating a dataframe of the different clusters, articles and words
 #'
 #' @param x The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
