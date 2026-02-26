@@ -2,7 +2,7 @@
 % Please edit documentation in R/wordcloud.R
 \name{wordcloud}
 \alias{wordcloud}
-\title{Producing word cloud.}
+\title{Plotting wordcloud on DCA axes}
 \usage{
 wordcloud(
   x,
@@ -22,39 +22,74 @@ wordcloud(
 )
 }
 \arguments{
-\item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-Recommended to use the output from function optimal_incidence()}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric. The table should not be scaled or normalized beforehand.
+It is recommended to apply an incidence threshold using
+\code{\link{optimal_incidence}} before passing the table to this function.}
 
-\item{k}{The number of clusters}
+\item{k}{Integer. The number of cluster}
 
-\item{model}{The model produced by the Detrented Correspondance Analysis}
+\item{model}{A \code{decorana} object produced by \code{\link{run_dca}}.}
 
-\item{wordnumber}{The number of words per cluster to be displayed in the wordcloud}
+\item{wordnumber}{Integer. Number of words per cluster to be displayed. Default is 5.}
 
-\item{colores}{The vector of colors. The length of this vector should be at least the same as the k.}
+\item{colores}{TCharacter vector. Colors for each cluster. Must have at least \code{k} elements.
+If \code{NULL} (default), a built-in palette is used.}
 
-\item{newcoords}{A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
-list(word=list(x=x,y=y))}
+\item{newcoords}{Names list. Words to manually reposition in the plot.
+Format: \code{list(word1 = list(x = 1.0, y = 0.5), word2 = list(x = -0.3, y = 1.2))}.
+Default is an empty list.}
 
-\item{cex}{The font size of the words}
+\item{cex}{Numeric. Font size of the words. Default is 0.8.}
 
-\item{pvalue}{The probabilty that the abundance indicators are high}
+\item{pvalue}{Numeric. Maximum p-value threshold for fitting words from the indicator analysis.
+Default is 0.05.}
 
-\item{abmean}{The mean of the abundance indicators per cluster}
+\item{abmean}{Numeric. Minimum mean abundance indicator for a word to be included. Default is 0.01.}
 
-\item{xmin}{Numeric. To adjust the lower x-axis}
+\item{xmin}{Numeric. Adjustment to the lower x-axis limit. Default is 0.}
 
-\item{xmax}{Numeric. To adjust the higher x-axis}
+\item{xmax}{Numeric. Adjustment to the upper x-axis limit. Default is 0.}
 
-\item{ymin}{Numeric. To adjust the lower y-axis}
+\item{ymin}{Numeric. Adjustment to the lower y-axis limit. Default is 0.}
 
-\item{ymax}{Numeric. To adjust the higher y-axis}
+\item{ymax}{Numeric. Adjustment to the upper y-axis limit. Default is 0.}
 
-\item{font}{Integer. The type of font you want to apply to the words. See ?par for more information.}
+\item{font}{Integer. Font type of the words. See \code{\link[graphics]{par}} for details.
+Default is 2 (bold).}
 }
 \value{
-A wordcloud, a dataframe with the clusters and abundance statistics, and a list with the specific cluster word subsets
+A list with three elements:
+\describe{
+\item{final_cluster}{Data frame with indicator values, p-values, and DCA
+coordinates for all words that passed the filtering criteria.}
+\item{subsets}{List of data frames, one per cluster, containing the top
+\code{wordnumber} words for that cluster.}
+\item{word}{The last word plotted (retained for internal use).}
+}
 }
 \description{
-This function provides a plot with the DCA coordinates of the most representative words in each cluster.
+This function plots the most representatice words of each cluster on the first two DCA axes.
+Words are colored by cluster memebership and positioned according to their DCA coordinates.
+Clustering is performed internally using Ward's method, and words are selected based on their
+indicator values and p-values from \code{\link[labdsv]{indval}}.
+}
+\examples{
+\donttest{
+x <- data.frame(
+  art1 = c(5, 4, 3, 0, 0, 0, 1),
+  art2 = c(4, 5, 4, 0, 1, 0, 1),
+  art3 = c(3, 3, 5, 1, 0, 0, 0),
+  art4 = c(0, 0, 1, 5, 4, 3, 1),
+  art5 = c(0, 1, 0, 4, 5, 4, 1),
+  art6 = c(1, 0, 0, 3, 3, 5, 0)
+)
+rownames(x) <- paste0("word", 1:7)
+model <- run_dca(x)
+wc <- wordcloud(x, k = 2, model = model, wordnumber = 3, pvalue = 1, abmean = 0)
+}
+
+}
+\seealso{
+\code{\link{run_dca}}, \code{\link{ellipsis_plot}}, \code{\link{wordendo}}
 }
