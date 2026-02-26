@@ -2,27 +2,89 @@
 % Please edit documentation in R/abundance_table.R
 \name{abundance_table}
 \alias{abundance_table}
-\title{Creating the word abundance table}
+\title{Create word abundance table}
 \usage{
 abundance_table(articles, papers_titles, npapers, articles_length)
 }
 \arguments{
-\item{articles}{List of dataframes where each dataframe contains two columns (words and Freq)}
+\item{articles}{List of dataframes each containing two columns (words and Freq).}
 
-\item{papers_titles}{Name of the original text files (path excluded). They will be used to build the header of the abundance table columns}
+\item{papers_titles}{Character vector. Names of the original text files (path excluded).}
 
-\item{npapers}{Total number of dataframes}
+\item{npapers}{Integer. Total number of dataframes.}
 
-\item{articles_length}{Vector contained the length (number of words/rows) of each dataframe}
+\item{articles_length}{Integer vector. Number of words/rows in each article dataframe.}
 }
 \value{
-A list with two objects:
-
-$abtab: The abundance table
-
-$moritz: A dataframe with all the words sorted by incidence (descending). It also contains the total abundance of all words across all articles
+A list with two elements:
+\item{abtab}{The abundance table with the count of each word per article.}
+\item{moritz}{A dataframe with all words sorted by decreasing incidence and their total abundance across all articles.}
 }
 \description{
-This function retrieves all the text files from an specified path and creates a list of
-dataframes.
+\code{abundance_table()} creates (1) an abundance table recording
+the count of each word per article and (2) a summary table recording
+the incidence and total abundance of each word across all articles.
+}
+\details{
+The function expects the output of \code{import_words()}, i.e. a list of dataframes
+with the words and word frequencies for each article and additional information
+about those dataframes.
+
+It creates an abundance table with one column per article and one row per
+word recording the count of each word per article.
+
+Additionally, it creates a table recording the incidence and total abundance of each word.
+The incidence of a word is defined as the number of articles where the word
+is present at least once (abundance > 0).  The total abundance of a word is defined as
+the total count of a word summed across all articles.
+}
+\examples{
+# Create two small example article data frames
+article1 <- data.frame(
+  words = c("climate", "change", "policy"),
+  Freq  = c(3, 2, 1),
+  stringsAsFactors = FALSE
+)
+
+article2 <- data.frame(
+  words = c("climate", "energy", "policy"),
+  Freq  = c(1, 4, 2),
+  stringsAsFactors = FALSE
+)
+
+articles <- list(article1 = article1, article2 = article2)
+
+# Create abundance table
+result <- abundance_table(
+  articles = articles,
+  papers_titles = c("article1.txt", "article2.txt"),
+  npapers = length(articles),
+  articles_length = sapply(articles, nrow)
+)
+
+# Abundance table
+result$abtab
+
+# Summary table
+result$moritz
+
+
+\dontrun{
+# Use your own frequency tables
+# Assume you already imported your articles using import_words()
+# and the results are stored in the variable "output"
+
+# Extract dataframes and additional information
+articles_dfs <- output$articles_dfs
+papers_titles <- output$papers_titles
+npapers <- output$npapers
+articles_length <- output$article_length
+
+# Create abundance table
+words <- abundance_table(articles_dfs, papers_titles, npapers, articles_length)
+
+# Extract abundance and summary table
+words_df <- words$abtab
+moritz <- words$moritz
+}
 }

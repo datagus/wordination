@@ -37,16 +37,16 @@ A list containing:
 \item{invalid_folder}{Path to the folder with files that were not converted}
 }
 \description{
-\code{pdf_to_text()} extracts text from PDF files in a directory and saves as text files.
-It attempts OCR for scanned PDFs with minimal text content.
+\code{pdf_to_text()} extracts text from PDF files in a folder and saves it in text files.
+It attempts Optical Character Recognition (OCR) for scanned PDFs with minimal text content.
 }
 \details{
-We suggest the following workflow for this function.
+The following workflow is suggested for this function.
 
 First, try the function with default values or adjustments to your needs.
 
-We strongly recommend keeping \code{check_valid = TRUE} in the first step because
-skipping the filtering out of invalid PDFs, can lead to increased runtime as
+It is strongly recommended to keep \code{check_valid = TRUE} in the first step because
+skipping the filtering out of invalid PDFs can lead to increased runtime as
 the function is trying to extract text from PDFs that cannot be extracted.
 Furthermore, if \code{check_valid = FALSE}, PDFs that cannot be extracted are not
 explicitly shown as invalid, but are skipped and result in an empty text file.
@@ -55,22 +55,23 @@ If \code{use_ocr = TRUE}, Optical Character Recognition (OCR) is attempted for
 scanned PDFs. Here, an unexpectedly low word count (lower than \code{ocr_threshold})
 of the output of the normal PDF extraction is used as an indicator that the
 PDF is scanned and needs to be extracted with OCR. Hence, \code{ocr_threshold}
-needs to be adjusted to your expected text length. Since OCR is the
+needs to be adjusted to the expected text length. Since OCR is the
 most computationally expensive and time-consuming step in this function, a
 higher threshold, i.e. attempting OCR more often, might increase the runtime.
 
 If \code{clean_text = TRUE} the following cleaning steps are performed:
-Remove punctuation, numbers, whitespace, English stopwords and change all
-words to lowercase.
+Remove punctuation, numbers, whitespace, English stopwords (e.g. "a", "and", "the")
+and change all words to lowercase.
 
-Second, check if files classified as invalid are actually invalid. If so, replace
+Second, check if files classified as invalid are actually invalid,
+i.e. they cannot be opened in a PDF editor. If so, replace
 them with valid versions if possible and apply the function again.
 
 Third, try extracting files incorrectly classified as invalid by applying the
-function again with \code{check_valid = FALSE}. Note that if \code{check_valid = FALSE},
-PDFs that cannot be extracted are not shown as invalid, but are skipped and
-result in an empty text file. You can also use single PDFs as input and set
-\code{quiet = FALSE} for more transparent error tracking.
+function to those files again with \code{check_valid = FALSE}. Note that if
+\code{check_valid = FALSE}, PDFs that cannot be extracted are not shown as invalid,
+but are skipped and result in an empty text file. Single PDFs can be used as
+input and \code{quiet = FALSE} can be used for more transparent error tracking.
 }
 \examples{
 # Create a temporary folder for PDFs
