@@ -2,30 +2,44 @@
 % Please edit documentation in R/optimal_incidence.R
 \name{optimal_incidence}
 \alias{optimal_incidence}
-\title{Subselecting the abundance table based on the percentage of words' incidence}
+\title{Determine the incidence threshold for word filtering}
 \usage{
 optimal_incidence(x, most_common = 50)
 }
 \arguments{
-\item{x}{two dimensional matrix representing the abundance table}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric.}
 
-\item{most_common}{the porcentage given in integer in a range from 1 to 100}
+\item{most_common}{Numeric. The percentage of most common words to consider,
+in a range from 1 to 100. Default is 50.}
 }
 \value{
-The incidence threshold and the resulting total number of words if you apply the incidence threshold
+A list with two elements:
+\describe{
+\item{incidence_threshold}{The incidence threshold value.}
+\item{words_remaining}{The number of words remaining after applying the threshold.}
+}
 }
 \description{
 This function computes the incidence (frequency) of each word across all articles in an abundance table.
-The incidence of a word is defined as the number of articles where the word is present at least once (abundance > 0).
+The incidence of a word is defined as the number of articles where the word is present at least once (abundance > 0),
+regardless of how many times it appears within a single article.
 The maximum possible incidence for any word is equal to the total number of articles.
 }
 \details{
-Knowing the words incidence helps to determine a threshold and...
-...if the words with high incidence contain meaning in the context of the research topic.
-Therefore, one can subselect the abundance table with only those words with the highest incidence.
-Keeping words with low incidence will disturb the ordination and clustering process.
+Words with low incidence tend to disturb the ordination and clustering process.
+This function helps identify an incidence threshold based on a desired percentage of the most common words.
+For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\\% most common words.
+}
+\examples{
+x <- data.frame(
+  art1 = c(3, 1, 1, 0, 0),
+  art2 = c(1, 2, 0, 0, 1),
+  art3 = c(2, 1, 1, 1, 0),
+  art4 = c(1, 1, 0, 0, 0),
+  art5 = c(1, 0, 0, 0, 0)
+)
+rownames(x) <- c("word1", "word2", "word3", "word4", "word5")
+optimal_incidence(x, most_common = 50)
 
-In this sense, this function takes as arguments, the abundance table the and...
-...the desired percentage of most common words (words with higher incidence)
-For example, if you want the 20\% most common words.
 }
