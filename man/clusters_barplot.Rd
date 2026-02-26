@@ -16,9 +16,9 @@ clusters_barplot(
 \item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
 Recommended to use the output from function optimal_incidence()}
 
-\item{maxclusters}{Number of maximum clusters to create. By the default is two. The user can indicate, for example,
-maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created. By default this is set to 21,
-if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.}
+\item{maxclusters}{Number of maximum clusters to create. The user can indicate, for example,
+maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created.
+By default this is set to 21, if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.}
 
 \item{printclusters}{logical. FALSE (default) and TRUE if the table showing the partitions and clusters is to be displayed}
 
