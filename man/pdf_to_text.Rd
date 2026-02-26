@@ -74,6 +74,7 @@ but are skipped and result in an empty text file. Single PDFs can be used as
 input and \code{quiet = FALSE} can be used for more transparent error tracking.
 }
 \examples{
+# Example 1: simple input
 # Create a temporary folder for PDFs
 temp_pdf_dir <- tempfile("pdfs")
 dir.create(temp_pdf_dir)
@@ -102,8 +103,8 @@ list.files(temp_output, pattern = "\\\\.txt$")
 unlink(temp_pdf_dir, recursive = TRUE)
 unlink(temp_output, recursive = TRUE)
 
-
 \dontrun{
+# Example 2: user input
 # Use your own directories
 dir_pdf <- "path/to/your/pdfs"
 dir_text <- "path/to/output"

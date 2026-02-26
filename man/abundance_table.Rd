@@ -21,7 +21,7 @@ A list with two elements:
 \item{moritz}{A dataframe with all words sorted by decreasing incidence and their total abundance across all articles.}
 }
 \description{
-\code{abundance_table()} creates (1) an abundance table recording
+Creates (1) an abundance table recording
 the count of each word per article and (2) a summary table recording
 the incidence and total abundance of each word across all articles.
 }
@@ -39,6 +39,7 @@ is present at least once (abundance > 0).  The total abundance of a word is defi
 the total count of a word summed across all articles.
 }
 \examples{
+# Example 1: simple input
 # Create two small example article data frames
 article1 <- data.frame(
   words = c("climate", "change", "policy"),
@@ -70,7 +71,7 @@ result$moritz
 
 
 \dontrun{
-# Use your own frequency tables
+# Example 2: user input
 # Assume you already imported your articles using import_words()
 # and the results are stored in the variable "output"
 

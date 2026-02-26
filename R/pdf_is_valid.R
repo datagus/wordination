@@ -29,7 +29,7 @@
 #' unlink(temp_fake_pdf)
 #'
 #' \dontrun{
-#' # Check your own PDF file (example not run)
+#' # Example 3: Check user input
 #' pdf_is_valid("path/to/your/file.pdf")
 #' }
 pdf_is_valid <- function(f) {
