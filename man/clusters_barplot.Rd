@@ -2,7 +2,7 @@
 % Please edit documentation in R/clusters_barplot.R
 \name{clusters_barplot}
 \alias{clusters_barplot}
-\title{Producing cluster barplots}
+\title{Visualize cluster size distribution}
 \usage{
 clusters_barplot(
   x,
@@ -13,24 +13,45 @@ clusters_barplot(
 )
 }
 \arguments{
-\item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-Recommended to use the output from function optimal_incidence()}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric. The table should not be scaled or normalized beforehand.
+It is recommended to apply an incidence threshold using \code{\link{optimal_incidence}}
+before passing the table to this function.}
 
-\item{maxclusters}{Number of maximum clusters to create. The user can indicate, for example,
-maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created.
-By default this is set to 21, if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.}
+\item{maxclusters}{Integer. Number of maximum clusters to evaluate. Arrangements from 2 up to this
+value are created. Default is 21. If greater than 21, a custom color vector must be provided.}
 
-\item{printclusters}{logical. FALSE (default) and TRUE if the table showing the partitions and clusters is to be displayed}
+\item{printclusters}{Logical. If \code{TRUE} (default), the cluster size for each arrangement is printed
+to the console. Default is \code{FALSE}.}
 
-\item{colores}{A vector containing the colors to be used for the barplot. The lenght of this vector
-should be at least equal to the number of maxclusters.}
+\item{colores}{Character vector. Colors for the barplot.The length must be at least equal to
+\code{maxclusters}. If \code{NULL} (default), a built-in palette of 21 colors is used.}
 
-\item{showCounts}{logical. FALSE (default) and TRUE if the users want the counts of cluster printed directly in the barplot}
+\item{showCounts}{Logical. If \code{TRUE}, cluster counts are displayed directly above each bar.
+Default is \code{FALSE}.}
 }
 \value{
-A plot containing all the barplots for each clustering arrangement
+A barplot showing the cluster size distributions for each arrangement.
 }
 \description{
-This function provides a barplot with different arrangement of clusters. Starting with minimum of  2 clusters arrangement,
-the users can opt for several arrangements.
+This function produces a grouped barplot showing the number of articles in each cluster across
+different cluster arrangements. Starting from 2 clusters up to \code{maxclusters}, each arrangement
+is displayed side by side, making it easier to evaluate which number of clusters best partitions the data.
+Clustering is performed internally using Ward's method via \code{\link[cluster]{agnes}}.
+}
+\examples{
+\donttest{
+x <- data.frame(
+  art1 = c(3, 0, 1, 2, 0, 1),
+  art2 = c(0, 2, 1, 0, 3, 1),
+  art3 = c(1, 1, 0, 2, 1, 0),
+  art4 = c(2, 0, 1, 1, 0, 2),
+  art5 = c(0, 1, 2, 0, 1, 1),
+  art6 = c(1, 0, 0, 1, 2, 1)
+)
+rownames(x) <- paste0("word", 1:6)
+clusters_barplot(x, maxclusters = 4)
+clusters_barplot(x, maxclusters = 4, showCounts = TRUE)
+}
+
 }
