@@ -9,7 +9,7 @@ wordcloud(
   k,
   model,
   wordnumber = 5,
-  colores = colores,
+  colores = NULL,
   newcoords = list(),
   cex = 0.8,
   pvalue = 0.05,
