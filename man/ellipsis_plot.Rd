@@ -2,7 +2,7 @@
 % Please edit documentation in R/ellipsis_plot.R
 \name{ellipsis_plot}
 \alias{ellipsis_plot}
-\title{Creating an ellipsis plot}
+\title{Plot ellipses around word clusters}
 \usage{
 ellipsis_plot(
   subsets,
@@ -30,54 +30,79 @@ ellipsis_plot(
 )
 }
 \arguments{
-\item{subsets}{Object retrieved from the wordcloud() function}
+\item{subsets}{List of data frames. The \code{$subsets} output from \code{\link{wordcloud}}, containing
+the top words per cluster with DCA coordinates.}
 
-\item{final_cluster}{the Object retrived from the wordcloud()function}
+\item{final_cluster}{Data frame. the \code{$final_cluster} output from \code{\link{wordcloud}}, containing
+all filtered words with DCA coordinates.}
 
-\item{colores}{The vector of colors. The length of this vector should be at least the same as the number of cluster. This vector has to be the same for the barplot, wordcloud and dendogram.}
+\item{colores}{Character vector. Colors for each cluster. Must have have at least as many elements as the
+number of clusters.}
 
-\item{withborder}{boolean. If you want that the ellipsis have a border}
+\item{withborder}{Logical. If \code{TRUE}, ellipses are drawn with a solid border in the cluster color.
+Default is \code{FALSE}.}
 
-\item{showWords}{boolean. If you want only the elipsis to appear without the words printed, put FALSE (default).}
+\item{showWords}{Logical. If \code{TRUE}, words are printed inside the ellipse. Default is \code{FALSE}.}
 
-\item{newcoords}{A list of of the words you want to reposition in the word cloud. You have to give a list in the following format:
-list(word=list(x=x,y=y))}
+\item{newcoords}{Named list. Words to manually reposition in the plot.
+Format: \code{list(word1 = list(x = 1.0, y = 0.5))}. Default is an empty list.}
 
-\item{wordnumber}{The number of words to appear in each cluster}
+\item{wordnumber}{Integer. Number of words to be displayed per cluster. Default is 5.}
 
-\item{cex}{The size of the words}
+\item{cex}{Numeric. Font size of the words. Default is 1.}
 
-\item{font}{Integer. The type of font you want to apply to the words. See ?par for more information.}
+\item{font}{Integer. Font type for the displayed words. See \code{\link[graphics]{par}} for details.
+Default is 2 (bold).}
 
-\item{opacity}{How transparent you want to clusters to be. Range from 0.0 to 1.0, being 0.0 complete transparent.}
+\item{opacity}{Numeric. Transparency of the ellipses, from 0.0 (fully transparent) to 1.0 (fully opaque).
+Default is 0.8.}
 
-\item{coverage}{This parameter indicates how big the ellipsis are. Statistically, coverage means how much of the total words in each cluster should be considered.}
+\item{coverage}{Numeric. Controls how large the ellipses are. A higher value means the ellipse
+covers a greater proportion of the words in each cluster. Default is 0.95.}
 
-\item{with_labels}{booloean. If you want the labels printed in rectangle boxes,but this require manual adjustment.}
+\item{with_labels}{Logical. If \code{TRUE}, cluster labels are displayed in colored boxes. Requires manual
+position adjustment via \code{labelx} and \code{labely}. Default is \code{FALSE}.}
 
-\item{group_labels}{the labels you want to put}
+\item{group_labels}{Character vector. Labels for each cluster. Used only if \code{with_labels = TRUE}.}
 
-\item{colbox_text}{The color of the text inside the label box.}
+\item{colbox_text}{Character. Color of the text inside label boxes. Default is \code{"black"}.}
 
-\item{labelx}{Vector indicating the coordinates of the labels along the x axis.}
+\item{labelx}{Numeric vector.  X-coordinates for the label positions.}
 
-\item{labely}{Vector indicating the coordinates of the labels along the y axis.}
+\item{labely}{Numeric vector.  Y-coordinates for the label positions.}
 
-\item{adjx_max}{Numeric. Adjustment to the upper x-axis limit.}
+\item{adjx_max}{Numeric. Adjustment to the upper x-axis limit. Default is 0.}
 
-\item{adjx_min}{Numeric. Adjustment to the lower x-axis limit.}
+\item{adjx_min}{Numeric. Adjustment to the lower x-axis limit. Default is 0.}
 
-\item{adjy_max}{Numeric. Adjustment to the upper y-axis limit.}
+\item{adjy_max}{Numeric. Adjustment to the upper y-axis limit. Default is 0.}
 
-\item{adjy_min}{Numeric. Adjustment to the lower y-axis limit.}
+\item{adjy_min}{Numeric. Adjustment to the lower y-axis limit. Default is 0.}
 
-\item{size_text_label}{Numeric. Font size for labels in boxes.}
+\item{size_text_label}{Numeric. Font size for labels in boxes. Default is 0.7.}
 
-\item{width_label}{Numeric. Factor applied to text width when drawing label boxes.}
+\item{width_label}{Numeric. Factor applied to text width when drawing label boxes. Default is 0.3.}
 }
 \value{
-An ellipsis plot
+A list with five elements:
+\describe{
+\item{cc}{Data frame. All cluster subsets combined row-wise.}
+\item{cc2}{Data frame. The DCA coordinatesand cluster assignments.}
+\item{coordinates}{Data frame. The DCA1 and DCA2 coordinates for each word.}
+\item{clusteros}{Integer vector. Cluster assignment for each word.}
+\item{cluster_points}{Data frame. Coordinates of the last cluster processed.}
+}
 }
 \description{
-This function returs the same word cloud but with the ellipsis around them, showing the sizes and overalps between clusters.
+This function overlays ellipses on the DCA word cloud to visualize cluster sizes and overlaps.
+Each ellipse is drawn around the words belonging to a cluster based on their covariance structure.
+The ellipse orientation and size are derived from the eigenvalues of the covariance matrix of
+the DCA coordinates.
+}
+\examples{
+# To be added
+
+}
+\seealso{
+\code{\link{wordcloud}}, \code{\link{wordendo}}
 }
