@@ -33,6 +33,7 @@
 #'
 #' @examples
 #' to be added
+#'
 
 wordendo <- function(x, k, colores = c()) {
   # Convert to relative frequencies per article (per 1000 words)
