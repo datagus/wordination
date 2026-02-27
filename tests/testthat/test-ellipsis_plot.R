@@ -67,7 +67,7 @@ test_that("ellipsis_plot returns expected structure on real wordcloud() output",
   rownames(x) <- paste0("word", 1:5)
 
   # ---- obtain DCA model ----
-  dca_model <- running_dca(x, logscaling = TRUE)
+  dca_model <- run_dca(x, logscaling = TRUE)
 
   # ---- run wordcloud (relaxed filtering) ----
   pdf(NULL)  # suppress plotting
