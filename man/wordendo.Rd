@@ -2,27 +2,39 @@
 % Please edit documentation in R/wordendo.R
 \name{wordendo}
 \alias{wordendo}
-\title{Generating clusters dendogram with colors}
+\title{Generate a colored cluster dendrogram}
 \usage{
 wordendo(x, k, colores = c())
 }
 \arguments{
-\item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-Recommended to use the output from function optimal_incidence()}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric. The table should not be scaled or normalized beforehand.
+It is recommended to apply an incidence threshold using \code{\link{optimal_incidence}}
+before passing the table to this function.}
 
-\item{k}{The number of clusters}
+\item{k}{Integer. The number of clusters.}
 
-\item{colores}{The vector of colors. The length of this vector should be at least the same as the k.}
+\item{colores}{Character vector. Colors for each cluster. Must have at least \code{k} elements.}
 }
 \value{
-A dendogram and list with different objects:
-
-$dend The dendogram as a whole object
-$subdend The different subdendograms or general branches
-$clusters The different clusters
-$site_names A list of vectors containing the names of the articles in each subdend or cluster
-$clusters_length The length of each subdendogram or general branches
+A list with five elements:
+\describe{
+\item{dend}{The full colored dendrogram object.}
+\item{sub_dend}{List of subdendrogram object.}
+\item{clusters}{List of dendrogram branches, one per cluster}
+\item{site_names}{List of character vectors with the article names in each cluster.}
+\item{clusters_length} {Integer vector with the number of articles in each cluster.}
+}
 }
 \description{
-This dendogram allows you inspect the clusters and how they were formed. It is useful to identify anomalies in the clustering.
+This function produces a dendrogram of the hierarchical clustering, with branches colored by
+cluster membership. It is useful for inspecting how clusters were formed and identifying potential
+anomalies in the clustering. Clustering is performed internally using Ward's method via
+\code{\link[cluster]{agnes}}.
+}
+\examples{
+to be added
+}
+\seealso{
+\code{\link{wordcloud}}, \code{\link{ellipsis_plot}}, \code{\link{clusters_barplot}}
 }
