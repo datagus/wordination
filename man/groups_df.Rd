@@ -2,41 +2,59 @@
 % Please edit documentation in R/groups_df.R
 \name{groups_df}
 \alias{groups_df}
-\title{Creating a dataframe of the different clusters, articles and words}
+\title{Create a summary data frame of clusters, articles, and top words.}
 \usage{
 groups_df(
   x,
   k,
   model,
   wordnumber = 5,
-  colores = colores,
+  colores = NULL,
   pvalue = 0.05,
   abmean = 0.01
 )
 }
 \arguments{
-\item{x}{The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-Recommended to use the output from function optimal_incidence()}
+\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+All columns must be numeric. The table should not be scaled or normalized beforehand.
+It is recommended to apply an incidence threshold using \code{\link{optimal_incidence}}
+before passing the table to this function.}
 
-\item{k}{The number of clusters}
+\item{k}{Integer. The number of clusters.}
 
-\item{model}{The model produced by the Detrented Correspondance Analysis}
+\item{model}{A \code{decorana} object produced by \code{link{run_dca}}.}
 
-\item{wordnumber}{The number of words per cluster to be displayed in the wordcloud}
+\item{wordnumber}{Integer. Number of top indicator words to list per cluster. Default is 5.}
 
-\item{colores}{The vector of colors. The length of this vector should be at least the same as the k.}
+\item{colores}{Character vector. Colors for each cluster. Must have at least
+\code{k} elements. If \code{NULL} (default), a built-in palette is used.}
 
-\item{pvalue}{The probabilty that the abundance indicators are high}
+\item{pvalue}{Numeric. Maximum p-value threshold for filtering words from the indicator
+analysis. Default is 0.05.}
 
-\item{abmean}{The mean of the abundance indicators per cluster}
+\item{abmean}{Numeric. Minimum mean abundance indictor for a word to be included.
+Default is 0.01.}
 }
 \value{
-A dataframe with three columns:
-
-$article: the title of the article
-$cluster_number: the number of the cluster
-$words: the respective words in the cluster
+A data frame with three columns:
+\describe{
+\item{article}{Character. The article filename.}
+\item{cluster_number}{Integer. The cluster assignment.}
+\item{words}{Character. The top indicator words for the cluster,
+comma-separated.}
+}
 }
 \description{
-Creating a dataframe of the different clusters, articles and words
+This function creates a dataframe mapping each article to its cluster and the top
+indicator words for that cluster. It is useful for inspecting which articles belong
+to which cluster and what words characterize each cluster. Clustering is performed
+internally using Ward's method via \code{\link[cluster]{agnes}}, and words are selected
+based on their indicator values from \code{\link[labdsv]{indval}}.
+}
+\examples{
+#to be added
+
+}
+\seealso{
+\code{\link{wordcloud}}, \code{\link{cluster_indicators}}
 }
