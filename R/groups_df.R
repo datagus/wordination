@@ -71,7 +71,7 @@ groups_df <- function(x, k, model, wordnumber = 5,colores = NULL,
 
   # Select top words per cluster, sorted by indicator value
   subsets <- list()
-  for (i in 1:n){
+  for (i in 1:k){
     subsets[[i]] <- final_cluster[order(final_cluster[, i], decreasing = TRUE)[1:wordnumber], ]
     subsets[[i]]$cluster <- i
   }
