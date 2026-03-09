@@ -63,11 +63,27 @@
 #' @export
 #'
 #' @examples
-#' # To be added
+#' \donttest{
+#' data(example_abundance)
+#' model <- run_dca(example_abundance)
+#' wc <- wordcloud(example_abundance, k = 4, model = model,
+#'                 wordnumber = 3, pvalue = 1, abmean = 0)
+#' ellipsis_plot(
+#'   subsets = wc$subsets,
+#'   final_cluster = wc$final_cluster
+#' )
+#' }
 #'
-ellipsis_plot <- function(subsets, final_cluster, colores = c(), withborder = FALSE, showWords = FALSE,
+ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = FALSE, showWords = FALSE,
                           newcoords = list(), wordnumber = 5, cex = 1, font = 2, opacity = 0.8,  coverage = 0.95, with_labels = FALSE, group_labels = NULL,
                           colbox_text = "black", labelx = c(), labely = c(), adjx_max = 0, adjx_min = 0, adjy_max = 0,adjy_min = 0, size_text_label = 0.7, width_label = 0.3){
+
+  # Default palette
+  if (is.null(colores)){
+    colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
+                 "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
+                 "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C")
+  }
 
   # Combine all cluster subsets into one data frame
   cc <- do.call(rbind, subsets)
