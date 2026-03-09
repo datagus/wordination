@@ -32,10 +32,21 @@
 #' @export
 #'
 #' @examples
-#' to be added
+#' \donttest{
+#' data(example_abundance)
+#' wordendo(example_abundance, k = 4)
+#' }
 #'
 
-wordendo <- function(x, k, colores = c()) {
+wordendo <- function(x, k, colores = NULL {
+
+  # Default palette
+  if (is.null(colores)){
+    colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
+                 "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
+                 "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C")
+  }
+
   # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
   sites_length <- unname(colSums(pa, na.rm = TRUE))
