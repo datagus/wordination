@@ -4,7 +4,7 @@
 \alias{wordendo}
 \title{Generate a colored cluster dendrogram}
 \usage{
-wordendo(x, k, colores = c())
+wordendo(x, k, colores = NULL)
 }
 \arguments{
 \item{x}{Data frame. The abundance table with words as rows and articles as columns.
@@ -23,7 +23,7 @@ A list with five elements:
 \item{sub_dend}{List of subdendrogram object.}
 \item{clusters}{List of dendrogram branches, one per cluster}
 \item{site_names}{List of character vectors with the article names in each cluster.}
-\item{clusters_length} {Integer vector with the number of articles in each cluster.}
+\item{clusters_length}{Integer vector with the number of articles in each cluster.}
 }
 }
 \description{
@@ -33,7 +33,11 @@ anomalies in the clustering. Clustering is performed internally using Ward's met
 \code{\link[cluster]{agnes}}.
 }
 \examples{
-to be added
+\donttest{
+data(example_abundance)
+wordendo(example_abundance, k = 3)
+}
+
 }
 \seealso{
 \code{\link{wordcloud}}, \code{\link{ellipsis_plot}}, \code{\link{clusters_barplot}}

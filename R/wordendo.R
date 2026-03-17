@@ -24,7 +24,7 @@
 #'  \item{sub_dend}{List of subdendrogram object.}
 #'  \item{clusters}{List of dendrogram branches, one per cluster}
 #'  \item{site_names}{List of character vectors with the article names in each cluster.}
-#'  \item{clusters_length} {Integer vector with the number of articles in each cluster.}
+#'  \item{clusters_length}{Integer vector with the number of articles in each cluster.}
 #'  }
 #'
 #' @seealso \code{\link{wordcloud}}, \code{\link{ellipsis_plot}}, \code{\link{clusters_barplot}}
@@ -34,11 +34,11 @@
 #' @examples
 #' \donttest{
 #' data(example_abundance)
-#' wordendo(example_abundance, k = 4)
+#' wordendo(example_abundance, k = 3)
 #' }
 #'
 
-wordendo <- function(x, k, colores = NULL {
+wordendo <- function(x, k, colores = NULL) {
 
   # Default palette
   if (is.null(colores)){
@@ -78,10 +78,13 @@ wordendo <- function(x, k, colores = NULL {
   for(i in 1:length(sub_dend)) {
     clusters[[i]] <- sub_dend[[i]]
     site_names[[i]] <- labels(clusters[[i]])
-    clusters_length <- c(clusters_length,length(site_names[[i]]))
+    clusters_length <- c(clusters_length, length(site_names[[i]]))
     member_count[[i]] <- length(site_names[[i]])
-    for(j in 1:2){
-      member_count[[i]][[j]] <- length(labels(clusters[[i]][[j]]))
+    # Store top-level branch sizes when the subdendrogram is not a leaf
+    if (is.list(clusters[[i]]) && length(clusters[[i]]) >= 2) {
+      for(j in 1:2){
+        member_count[[i]][[j]] <- length(labels(clusters[[i]][[j]]))
+      }
     }
   }
 

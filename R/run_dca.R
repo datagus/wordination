@@ -21,14 +21,8 @@
 #' @export
 #'
 #' @examples
-#' x <- data.frame(
-#'   art1 = c(3, 1, 1, 0, 0),
-#'   art2 = c(1, 2, 0, 0, 1),
-#'   art3 = c(2, 1, 1, 1, 0),
-#'   art4 = c(1, 1, 0, 0, 0)
-#' )
-#' rownames(x) <- c("word1", "word2", "word3", "word4", "word5")
-#' model <- run_dca(x)
+#' data(example_abundance)
+#' model <- run_dca(example_abundance)
 #' summary(model)
 #'
 run_dca <- function(x, drop_words=c(), incidence=0, logscaling=TRUE){

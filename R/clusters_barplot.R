@@ -27,17 +27,8 @@
 #'
 #' @examples
 #' \donttest{
-#' x <- data.frame(
-#'   art1 = c(3, 0, 1, 2, 0, 1),
-#'   art2 = c(0, 2, 1, 0, 3, 1),
-#'   art3 = c(1, 1, 0, 2, 1, 0),
-#'   art4 = c(2, 0, 1, 1, 0, 2),
-#'   art5 = c(0, 1, 2, 0, 1, 1),
-#'   art6 = c(1, 0, 0, 1, 2, 1)
-#' )
-#' rownames(x) <- paste0("word", 1:6)
-#' clusters_barplot(x, maxclusters = 4)
-#' clusters_barplot(x, maxclusters = 4, showCounts = TRUE)
+#' data(example_abundance)
+#' clusters_barplot(example_abundance, maxclusters = 4)
 #' }
 #'
 clusters_barplot <- function(x, maxclusters = 21, printclusters = FALSE, colores = NULL, showCounts = FALSE){

@@ -36,7 +36,12 @@
 #' @export
 #'
 #' @examples
-#' #to be added
+#' \donttest{
+#' data(example_abundance)
+#' model <- run_dca(example_abundance)
+#' groups_df(example_abundance, k = 4, model = model,
+#'           pvalue = 1, abmean = 0)
+#' }
 #'
 groups_df <- function(x, k, model, wordnumber = 5,colores = NULL,
                       pvalue = 0.05, abmean = 0.01) {

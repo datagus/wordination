@@ -66,7 +66,7 @@
 #' \donttest{
 #' data(example_abundance)
 #' model <- run_dca(example_abundance)
-#' wc <- wordcloud(example_abundance, k = 4, model = model,
+#' wc <- wordcloud(example_abundance, k = 3, model = model,
 #'                 wordnumber = 3, pvalue = 1, abmean = 0)
 #' ellipsis_plot(
 #'   subsets = wc$subsets,
@@ -75,7 +75,7 @@
 #' }
 #'
 ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = FALSE, showWords = FALSE,
-                          newcoords = list(), wordnumber = 5, cex = 1, font = 2, opacity = 0.8,  coverage = 0.95, with_labels = FALSE, group_labels = NULL,
+                          newcoords = list(), wordnumber = 5, cex = 0.8, font = 2, opacity = 0.8,  coverage = 0.95, with_labels = FALSE, group_labels = NULL,
                           colbox_text = "black", labelx = c(), labely = c(), adjx_max = 0, adjx_min = 0, adjy_max = 0,adjy_min = 0, size_text_label = 0.7, width_label = 0.3){
 
   # Default palette
@@ -92,12 +92,14 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
   clusteros <- cc2$cluster
   row.names(coordinates)<-row.names(cc2)
 
-  par(xpd=F)
-  par(mar=c(4,4,0.5,0.5))
+  par(xpd = TRUE)
+  par(mar=c(2, 2, 0.1, 0.1))
+  padding_x <- diff(range(final_cluster$DCA1)) * 0.15
+  padding_y <- diff(range(final_cluster$DCA2)) * 0.15
   plot(final_cluster$DCA1, final_cluster$DCA2,
        xlim = c(min(final_cluster$DCA1) + adjx_min, max(final_cluster$DCA1) + adjx_max),
        ylim = c(min(final_cluster$DCA2) + adjy_min, max(final_cluster$DCA2) + adjy_max),
-       xlab = "DCA1", ylab = "DCA2", type = "n", axes = TRUE)
+       xlab = "DCA1", ylab = "DCA2", type = "n")
 
   # Optionally plot words inside ellipses
   if (isTRUE(showWords)) {

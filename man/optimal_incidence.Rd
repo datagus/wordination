@@ -32,14 +32,7 @@ This function helps identify an incidence threshold based on a desired percentag
 For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\\% most common words.
 }
 \examples{
-x <- data.frame(
-  art1 = c(3, 1, 1, 0, 0),
-  art2 = c(1, 2, 0, 0, 1),
-  art3 = c(2, 1, 1, 1, 0),
-  art4 = c(1, 1, 0, 0, 0),
-  art5 = c(1, 0, 0, 0, 0)
-)
-rownames(x) <- c("word1", "word2", "word3", "word4", "word5")
-optimal_incidence(x, most_common = 50)
+data(example_abundance)
+optimal_incidence(example_abundance, most_common = 50)
 
 }

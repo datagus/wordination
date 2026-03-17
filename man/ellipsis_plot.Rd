@@ -7,12 +7,12 @@
 ellipsis_plot(
   subsets,
   final_cluster,
-  colores = c(),
+  colores = NULL,
   withborder = FALSE,
   showWords = FALSE,
   newcoords = list(),
   wordnumber = 5,
-  cex = 1,
+  cex = 0.8,
   font = 2,
   opacity = 0.8,
   coverage = 0.95,
@@ -100,7 +100,16 @@ The ellipse orientation and size are derived from the eigenvalues of the covaria
 the DCA coordinates.
 }
 \examples{
-# To be added
+\donttest{
+data(example_abundance)
+model <- run_dca(example_abundance)
+wc <- wordcloud(example_abundance, k = 3, model = model,
+                wordnumber = 3, pvalue = 1, abmean = 0)
+ellipsis_plot(
+  subsets = wc$subsets,
+  final_cluster = wc$final_cluster
+)
+}
 
 }
 \seealso{

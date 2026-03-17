@@ -46,40 +46,17 @@
 #'   and total abundance, sorted by decreasing incidence.}
 #'
 #' @export
-#'
 #' @examples
-#' # Example 1: simple input
-#' abtab <- data.frame(
-#'   article1 = c(3, 2, 1, 5),
-#'   article2 = c(1, 4, 2, 0),
-#'   row.names = c("climate", "change", "policy", "irrelevant"),
-#'   stringsAsFactors = FALSE
-#' )
+#' data(example_abundance)
 #' result <- custom_abundance(
-#'   x = abtab,
-#'   drop_words = c("irrelevant"),
-#'   incidence = 0,
-#'   site_correction = FALSE,
-#'   multiplier = 1,
+#'   example_abundance,
+#'   drop_words = c("policy"),
+#'   incidence = 5,
 #'   logscaling = TRUE
 #' )
-#' result$new_abundance
+#' head(result$new_abundance)
 #' result$new_moritz
 #'
-#' \dontrun{
-#' # Example 2: user input
-#' abtab <- your_abundance_table
-#' result <- custom_abundance(
-#'   x = abtab,
-#'   drop_words = c(),
-#'   incidence = 2,
-#'   site_correction = FALSE,
-#'   multiplier = 1,
-#'   logscaling = TRUE
-#' )
-#' words_df2 <- result$new_abundance
-#' moritz2 <- result$new_moritz
-#' }
 custom_abundance <- function(x, drop_words=c(),incidence=0, site_correction = FALSE, multiplier=1, logscaling=FALSE){
 
   #this a control to stop the function if the criteria are not met

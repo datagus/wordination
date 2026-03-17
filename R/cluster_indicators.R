@@ -27,14 +27,8 @@
 #' @export
 #'
 #' @examples
-#' x <- data.frame(
-#'   art1 = c(3, 0, 1, 2, 0),
-#'   art2 = c(0, 2, 1, 0, 1),
-#'   art3 = c(1, 1, 0, 1, 0),
-#'   art4 = c(2, 0, 1, 1, 1)
-#' )
-#' rownames(x) <- paste0("word", 1:5)
-#' cluster_indicators(x, k = 2)
+#' data(example_abundance)
+#' cluster_indicators(example_abundance, k = 4)
 #'
 cluster_indicators <- function(x,k){
 

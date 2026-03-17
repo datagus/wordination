@@ -52,7 +52,12 @@ internally using Ward's method via \code{\link[cluster]{agnes}}, and words are s
 based on their indicator values from \code{\link[labdsv]{indval}}.
 }
 \examples{
-#to be added
+\donttest{
+data(example_abundance)
+model <- run_dca(example_abundance)
+groups_df(example_abundance, k = 4, model = model,
+          pvalue = 1, abmean = 0)
+}
 
 }
 \seealso{

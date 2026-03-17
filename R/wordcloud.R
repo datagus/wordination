@@ -48,17 +48,10 @@
 #'
 #' @examples
 #' \donttest{
-#' x <- data.frame(
-#'   art1 = c(5, 4, 3, 0, 0, 0, 1),
-#'   art2 = c(4, 5, 4, 0, 1, 0, 1),
-#'   art3 = c(3, 3, 5, 1, 0, 0, 0),
-#'   art4 = c(0, 0, 1, 5, 4, 3, 1),
-#'   art5 = c(0, 1, 0, 4, 5, 4, 1),
-#'   art6 = c(1, 0, 0, 3, 3, 5, 0)
-#' )
-#' rownames(x) <- paste0("word", 1:7)
-#' model <- run_dca(x)
-#' wc <- wordcloud(x, k = 2, model = model, wordnumber = 3, pvalue = 1, abmean = 0)
+#' data(example_abundance)
+#' model <- run_dca(example_abundance)
+#' wc <- wordcloud(example_abundance, k = 3, model = model,
+#'                 wordnumber = 3, pvalue = 1, abmean = 0)
 #' }
 #'
 wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL, newcoords = list(), cex = 0.8,
