@@ -1,3 +1,5 @@
+# Script to easily see the example and to make adjustments in "example_abundance.R"
+
 devtools::load_all()
 
 data(example_abundance)
