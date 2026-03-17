@@ -1,3 +1,6 @@
+# Script to quickly verify example implementation
+# to be deleted later
+
 devtools::document()
 devtools::install()
 
