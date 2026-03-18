@@ -28,7 +28,7 @@
 #'
 #' @examples
 #' data(example_abundance)
-#' cluster_indicators(example_abundance, k = 4)
+#' cluster_indicators(example_abundance, k = 3)
 #'
 cluster_indicators <- function(x,k){
 
