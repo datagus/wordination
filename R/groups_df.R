@@ -39,7 +39,7 @@
 #' \donttest{
 #' data(example_abundance)
 #' model <- run_dca(example_abundance)
-#' groups_df(example_abundance, k = 4, model = model,
+#' groups_df(example_abundance, k = 3, model = model,
 #'           pvalue = 1, abmean = 0)
 #' }
 #'
