@@ -12,7 +12,7 @@
 #' @param k Integer. The number of cluster
 #' @param model A \code{decorana} object produced by \code{\link{run_dca}}.
 #' @param wordnumber Integer. Number of words per cluster to be displayed. Default is 5.
-#' @param colores TCharacter vector. Colors for each cluster. Must have at least \code{k} elements.
+#' @param colores Character vector. Colors for each cluster. Must have at least \code{k} elements.
 #'  If \code{NULL} (default), a built-in palette is used.
 #' @param newcoords Names list. Words to manually reposition in the plot.
 #'  Format: \code{list(word1 = list(x = 1.0, y = 0.5), word2 = list(x = -0.3, y = 1.2))}.
