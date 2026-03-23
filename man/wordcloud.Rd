@@ -33,7 +33,7 @@ It is recommended to apply an incidence threshold using
 
 \item{wordnumber}{Integer. Number of words per cluster to be displayed. Default is 5.}
 
-\item{colores}{TCharacter vector. Colors for each cluster. Must have at least \code{k} elements.
+\item{colores}{Character vector. Colors for each cluster. Must have at least \code{k} elements.
 If \code{NULL} (default), a built-in palette is used.}
 
 \item{newcoords}{Names list. Words to manually reposition in the plot.

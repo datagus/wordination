@@ -18,8 +18,8 @@ custom_abundance(
 
 \item{drop_words}{Character vector. Words to remove from the table.}
 
-\item{incidence}{Integer. The incidence threshold, i.e. minimum number of articles in which a word must
-occur (abundance > 0) to be retained.}
+\item{incidence}{Integer. The incidence threshold, i.e. words occurring in less than
+or equal to this number of articles are removed; only words with higher incidence are retained.}
 
 \item{site_correction}{Logical. If \code{TRUE}, convert counts to relative
 abundances per article (default: \code{FALSE}).}
@@ -60,10 +60,9 @@ is highly recommended because words with low incidence tend to
 disturb the ordination and clustering process. An appropriate threshold can be
 determined using \code{optimal_incidence()}.
 
-For running Detrended Correspondence Analysis, the abundance table
-needs to have \code{site_correction = FALSE} and \code{logscaling = TRUE}.
-For running the clustering and species indicator analysis the abundance table
-needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}.
+For running the Detrended Correspondence Analysis, clustering and species indicator analysis the abundance table
+needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}. For
+the Detrended Correspondence Analysis, logscaling will by default be applied in the \code{run_dca()} function itself.
 }
 \examples{
 data(example_abundance)

@@ -25,15 +25,14 @@
 #' disturb the ordination and clustering process. An appropriate threshold can be
 #' determined using \code{optimal_incidence()}.
 #'
-#' For running Detrended Correspondence Analysis, the abundance table
-#' needs to have \code{site_correction = FALSE} and \code{logscaling = TRUE}.
-#' For running the clustering and species indicator analysis the abundance table
-#' needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}.
+#' For running the Detrended Correspondence Analysis, clustering and species indicator analysis the abundance table
+#' needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}. For
+#' the Detrended Correspondence Analysis, logscaling will by default be applied in the `run_dca()` function itself.
 #'
 #' @param x Data frame. The raw abundance table (rows = words, columns = articles).
 #' @param drop_words Character vector. Words to remove from the table.
-#' @param incidence Integer. The incidence threshold, i.e. minimum number of articles in which a word must
-#'   occur (abundance > 0) to be retained.
+#' @param incidence Integer. The incidence threshold, i.e. words occurring in less than
+#' or equal to this number of articles are removed; only words with higher incidence are retained.
 #' @param site_correction Logical. If \code{TRUE}, convert counts to relative
 #'   abundances per article (default: \code{FALSE}).
 #' @param multiplier Numeric. Scaling factor applied to relative abundances (default: 1).
