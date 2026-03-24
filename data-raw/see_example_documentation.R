@@ -8,7 +8,7 @@ devtools::document()
 devtools::install()
 
 # after re-starting R session, load library
-library('wordination')
+library(wordination)
 
 # now, "Run examples" should work
 
@@ -38,7 +38,6 @@ library('wordination')
 ?custom_abundance
 
 ?run_dca
-# Error in summary.decorana(model): 'summary' is defunct: use 'scores' for scores, 'weights' for weights
 
 ?groups_df
 
@@ -47,5 +46,3 @@ library('wordination')
 # no option given in function to surpress it
 
 ?ellipsis_plot
-# ellipses are plotted in a separate graph
-# below ellipses the $cc & $cc2 table are outputed
