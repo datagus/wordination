@@ -31,7 +31,7 @@ indicator of zero, the respective cluster arrangement should not be considered.
 }
 \examples{
 data(example_abundance)
-cluster_indicators(example_abundance, k = 4)
+cluster_indicators(example_abundance, k = 3)
 
 }
 \seealso{
