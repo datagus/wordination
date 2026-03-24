@@ -30,7 +30,7 @@ It is recommended to determine the incidence threshold beforehand using \code{\l
 \examples{
 data(example_abundance)
 model <- run_dca(example_abundance)
-summary(model)
+model
 
 }
 \seealso{

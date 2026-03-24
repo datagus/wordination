@@ -23,7 +23,7 @@
 #' @examples
 #' data(example_abundance)
 #' model <- run_dca(example_abundance)
-#' summary(model)
+#' model
 #'
 run_dca <- function(x, drop_words=c(), incidence=0, logscaling=TRUE){
 
