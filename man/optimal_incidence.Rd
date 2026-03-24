@@ -29,7 +29,7 @@ The maximum possible incidence for any word is equal to the total number of arti
 \details{
 Words with low incidence tend to disturb the ordination and clustering process.
 This function helps identify an incidence threshold based on a desired percentage of the most common words.
-For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\\% most common words.
+For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\% most common words.
 }
 \examples{
 data(example_abundance)

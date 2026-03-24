@@ -7,7 +7,7 @@
 #'
 #' Words with low incidence tend to disturb the ordination and clustering process.
 #' This function helps identify an incidence threshold based on a desired percentage of the most common words.
-#' For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\% most common words.
+#' For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20% most common words.
 #'
 #' @param x Data frame. The abundance table with words as rows and articles as columns.
 #'  All columns must be numeric.
