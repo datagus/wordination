@@ -16,7 +16,7 @@ model <- run_dca(x, logscaling = TRUE)
 
 # wordcloud (relaxed filters)
 wc <- wordcloud(x, k = 3, model = model, wordnumber = 5,
-                pvalue = 1, abmean = 0)
+                pvalue = 1, abmean = 0, show_origin = FALSE)
 
 # ellipsis_plot
 ellipsis_plot(

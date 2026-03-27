@@ -27,6 +27,7 @@
 #' @param ymax Numeric. Adjustment to the upper y-axis limit. Default is 0.
 #' @param font Integer. Font type of the words. See \code{\link[graphics]{par}} for details.
 #'  Default is 2 (bold).
+#' @param show_origin Logical. If \code{TRUE} (default), a dot is plotted at the origin (0, 0).
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
@@ -54,8 +55,9 @@
 #'                 wordnumber = 3, pvalue = 1, abmean = 0)
 #' }
 #'
-wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL, newcoords = list(), cex = 0.8,
-                      pvalue = 0.05, abmean = 0.01, xmin = 0, xmax = 0, ymin = 0, ymax = 0, font = 2){
+wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL,
+                      newcoords = list(), cex = 0.8, pvalue = 0.05, abmean = 0.01,
+                      xmin = 0, xmax = 0, ymin = 0, ymax = 0, font = 2, show_origin = TRUE){
 
   # Default palette
   if (is.null(colores)){
@@ -95,7 +97,7 @@ wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL, newcoords = l
        xlim = c(min(final_cluster$DCA1) + xmin, max(final_cluster$DCA1) - xmax),
        ylim = c(min(final_cluster$DCA2) + ymin, max(final_cluster$DCA2) - ymax),
        xlab = "DCA1", ylab = "DCA2", type = "n")
-  points(0, 0, pch = 16, col = "black", cex = 0.8)
+  if (isTRUE(show_origin)) points(0, 0, pch = 16, col = "black", cex = 0.8)
 
   # Select top words per cluster, sorted by indicator value then p-value
   subsets <- list()

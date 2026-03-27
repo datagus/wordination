@@ -18,7 +18,8 @@ wordcloud(
   xmax = 0,
   ymin = 0,
   ymax = 0,
-  font = 2
+  font = 2,
+  show_origin = TRUE
 )
 }
 \arguments{
@@ -57,6 +58,8 @@ Default is 0.05.}
 
 \item{font}{Integer. Font type of the words. See \code{\link[graphics]{par}} for details.
 Default is 2 (bold).}
+
+\item{show_origin}{Logical. If \code{TRUE} (default), a dot is plotted at the origin (0, 0).}
 }
 \value{
 A list with three elements:
