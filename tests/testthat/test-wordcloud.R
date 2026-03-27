@@ -10,7 +10,7 @@ test_that("wordcloud returns expected structure", {
   rownames(x) <- paste0("word", 1:5)
 
   # obtain DCA model from your function
-  dca_model <- running_dca(x, logscaling = TRUE)
+  dca_model <- run_dca(x, logscaling = TRUE)
 
   # suppress plotting during tests
   pdf(NULL)
