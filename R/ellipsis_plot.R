@@ -58,7 +58,7 @@
 #'    \item{cluster_points}{Data frame. Coordinates of the last cluster processed.}
 #'  }
 #'
-#' @seealso \code{\link{wordcloud}}, \code{\link{wordendo}}
+#' @seealso \code{\link{wordcloud}}, \code{\link{wordendro}}
 #'
 #' @export
 #'

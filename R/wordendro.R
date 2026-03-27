@@ -34,11 +34,11 @@
 #' @examples
 #' \donttest{
 #' data(example_abundance)
-#' wordendo(example_abundance, k = 3)
+#' wordendro(example_abundance, k = 3)
 #' }
 #'
 
-wordendo <- function(x, k, colores = NULL) {
+wordendro <- function(x, k, colores = NULL) {
 
   # Default palette
   if (is.null(colores)){

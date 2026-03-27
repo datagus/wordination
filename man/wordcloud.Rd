@@ -84,5 +84,5 @@ wc <- wordcloud(example_abundance, k = 3, model = model,
 
 }
 \seealso{
-\code{\link{run_dca}}, \code{\link{ellipsis_plot}}, \code{\link{wordendo}}
+\code{\link{run_dca}}, \code{\link{ellipsis_plot}}, \code{\link{wordendro}}
 }

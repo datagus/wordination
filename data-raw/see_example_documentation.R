@@ -23,8 +23,7 @@ library(wordination)
 ##################
 # Using our Toy example:
 
-?wordendo
-# should'nt it be called denRo --> wordendRo?
+?wordendro
 # Figure is super big?
 
 ?clusters_barplot

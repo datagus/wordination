@@ -1,4 +1,4 @@
-test_that("wordendo returns expected dendrogram structure", {
+test_that("wordendro returns expected dendrogram structure", {
 
   # slightly larger abundance table
   x <- data.frame(
@@ -16,7 +16,7 @@ test_that("wordendo returns expected dendrogram structure", {
   # suppress plotting during tests
   pdf(NULL)
 
-  res <- wordendo(
+  res <- wordendro(
     x = x,
     k = k,
     colores = colores

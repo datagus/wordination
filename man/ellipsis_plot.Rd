@@ -116,5 +116,5 @@ ellipsis_plot(
 
 }
 \seealso{
-\code{\link{wordcloud}}, \code{\link{wordendo}}
+\code{\link{wordcloud}}, \code{\link{wordendro}}
 }

@@ -42,7 +42,7 @@
 #'  \item{word}{The last word plotted (retained for internal use).}
 #' }
 #'
-#' @seealso \code{\link{run_dca}}, \code{\link{ellipsis_plot}}, \code{\link{wordendo}}
+#' @seealso \code{\link{run_dca}}, \code{\link{ellipsis_plot}}, \code{\link{wordendro}}
 #'
 #' @export
 #'
