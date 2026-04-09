@@ -122,17 +122,26 @@ clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores =
   #...the number of partitions or clustering arrangements.
   #The matrix tree_m is transposed in order to build the barplots
 
+
   bp <- barplot(t(tree_m),
-          beside = TRUE, # not stapled
-          horiz = FALSE, # displayed in vertical
-          col = colores[1:k], #the colors ofr each bar
-          legend.text = paste("Cluster", 1:k), #legend text
-          args.legend = list(x = "topright", bty = "n", title = "Clusters"),
-          ylab = "Number of papers",
-          xlab = "Number of clusters",
-          names.arg = paste(2:k),
-          main = "Distribution of clusters",
-          space = c(0, 0))
+                beside = TRUE,
+                horiz = FALSE,
+                col = colores[1:k],
+                legend.text = paste("Cluster", 1:k),
+                args.legend = list(
+                  x = "topright",
+                  bty = "n",
+                  title = "Clusters",
+                  cex = 0.7,        # Makes text smaller (default is 1)
+                  pt.cex = 0.8,     # Makes legend symbols smaller
+                  y.intersp = 0.8,  # Reduces vertical spacing between items
+                  x.intersp = 0.5   # Reduces horizontal spacing
+                ),
+                ylab = "Number of papers",
+                xlab = "Number of clusters",
+                names.arg = paste(2:k),
+                main = "Distribution of clusters",
+                space = c(0, 0))
 
   if(showCounts){
     for (i in seq_len(nrow(bp))) {     # clusters
