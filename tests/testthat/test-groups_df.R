@@ -14,7 +14,7 @@ make_test_data <- function() {
 
 test_that("groups_df returns a dataframe with correct structure", {
   x <- make_test_data()
-  model <- running_dca(x)
+  model <- run_dca(x)
 
   result <- groups_df(x, k = 2, model = model)
 
@@ -24,7 +24,7 @@ test_that("groups_df returns a dataframe with correct structure", {
 
 test_that("groups_df returns one row per article", {
   x <- make_test_data()
-  model <- running_dca(x)
+  model <- run_dca(x)
 
   result <- groups_df(x, k = 2, model = model)
 
@@ -33,7 +33,7 @@ test_that("groups_df returns one row per article", {
 
 test_that("groups_df assigns valid cluster numbers", {
   x <- make_test_data()
-  model <- running_dca(x)
+  model <- run_dca(x)
   k <- 3
 
   result <- groups_df(x, k = k, model = model)
@@ -44,7 +44,7 @@ test_that("groups_df assigns valid cluster numbers", {
 
 test_that("groups_df works with different k values", {
   x <- make_test_data()
-  model <- running_dca(x)
+  model <- run_dca(x)
 
   expect_no_error(groups_df(x, k = 2, model = model))
   expect_no_error(groups_df(x, k = 3, model = model))

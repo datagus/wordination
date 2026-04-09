@@ -1,30 +1,40 @@
-#----cluster barplot ------
-
-#' Producing cluster barplots
+#' Visualize cluster size distribution
 #'
-#' This function provides a barplot with different arrangement of clusters. Starting with minimum of  2 clusters arrangement,
-#' the users can opt for several arrangements.
+#' This function produces a grouped barplot showing the number of articles in each cluster across
+#' different cluster arrangements. Starting from 2 clusters up to \code{maxclusters}, each arrangement
+#' is displayed side by side, making it easier to evaluate which number of clusters best partitions the data.
+#' Clustering is performed internally using Ward's method via \code{\link[cluster]{agnes}}.
 #'
-#' @param x The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-#' Recommended to use the output from function optimal_incidence()
-#' @param maxclusters Number of maximum clusters to create. The user can indicate, for example,
-#' maxclusters=10. In this case, independent clustering arrangements of two clusters up to ten clusters will be created.
-#' By default this is set to 21, if the maxclusters is > 21, then the user has to provide a color vector that matches this number of clusters.
-#' @param printclusters logical. FALSE (default) and TRUE if the table showing the partitions and clusters is to be displayed
-#' @param colores A vector containing the colors to be used for the barplot. The lenght of this vector
-#' should be at least equal to the number of maxclusters.
-#' @param showCounts logical. FALSE (default) and TRUE if the users want the counts of cluster printed directly in the barplot
+#' @param x Data frame. The abundance table with words as rows and articles as columns.
+#'  All columns must be numeric. The table should not be scaled or normalized beforehand.
+#'  It is recommended to apply an incidence threshold using \code{\link{optimal_incidence}}
+#'  before passing the table to this function.
+#' @param maxclusters Integer. Number of maximum clusters to evaluate. Arrangements from 2 up to this
+#'  value are created. Default is 21. If greater than 21, a custom color vector must be provided.
+#' @param printclusters Logical. If \code{TRUE} (default), the cluster size for each arrangement is printed
+#'  to the console. Default is \code{FALSE}.
+#' @param colores Character vector. Colors for the barplot.The length must be at least equal to
+#' \code{maxclusters}. If \code{NULL} (default), a built-in palette of 21 colors is used.
+#' @param showCounts Logical. If \code{TRUE}, cluster counts are displayed directly above each bar.
+#'  Default is \code{FALSE}.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom graphics barplot
 #'
-#' @returns A plot containing all the barplots for each clustering arrangement
+#' @returns A barplot showing the cluster size distributions for each arrangement.
+#'
 #' @export
-clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores = NULL, showCounts=FALSE){
+#'
+#' @examples
+#' \donttest{
+#' data(example_abundance)
+#' clusters_barplot(example_abundance, maxclusters = 4)
+#' }
+#'
+clusters_barplot <- function(x, maxclusters = 21, printclusters = FALSE, colores = NULL, showCounts = FALSE){
 
   # default colors if none provided
   if (is.null(colores)) {
-
     colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
                  "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
                  "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
@@ -37,92 +47,56 @@ clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores =
          "Please provide at least as many colors as clusters.")
   }
 
-  ## Correcting the frequencies of words by the total words in each article
+  # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
   sites_length <- unname(colSums(pa, na.rm = TRUE))
   abundance <- sweep(x, 2, sites_length, "/")
-  abundance <- abundance*1000
+  abundance <- abundance * 1000
 
-  #transpossing and scaling the abundance table
+  # Log-transform and transpose (articles as rows)
   abundancet <- log(t(abundance)+1)
-  #abundancet <- t(x)
 
   set.seed(123)
-  #running the clustering
-  modelclust<-agnes(abundancet,method="ward")
+  modelclust<-agnes(abundancet, method = "ward")
 
-  #cutmodel_values will store the the different clustering arrangements. For examples, if maxclusters=5,
-  #cutmodel_values[1] will be NULL
-  #cutmodel_values[2] will contain the arrangements of two clusters,
-  #cutmodel_values[3] will contain the arrangements of three clusters,
-  #cutmodel_values[10] will contain the arrangements of ten clusters.
+  # Cut the tree at each level from 2 to maxclusters.
+  # cutmodel_values[[k]] stores the number of articles in each cluster
+  # for the arrangement with k clusters. Index 1 is always NULL since
+  # the minimum arrangement is 2 clusters.
   cutmodel_values <- list()
 
-  #in this loop, the initial cluster tree is going to be cut according to the specified number of clusters
-  for (k in c(2:maxclusters)){
-
-    #k is the clustering arrangement
-    #starting the cut tree with two clusters, then in the second iteration, it will be three
+    for (k in c(2:maxclusters)){
     cutmodel <- cutree(modelclust, k = k)
-
-    #storing the clusters and the count of articles in it.
-    #table(cutmodel) produces a table with the first row with the clusters (1, 2, ...)...
-    #...and the second row with the respective number of elements in the cluster
     elements_incluster <- table(cutmodel)
 
-    # check if any cluster has fewer than 1 element
     if (any(elements_incluster < 1)) {
       message("Maximum number of clusters reached")
       break
     }
 
-    #Suppossing that number_of_clusters is 3.
-    #For the first iteration(k=2), the gus list will have the number of elements of cluster 1 and 2
-    #These numbers will be saved in cutmodel_values[[i]]
-    #For the second iteration(nk=3), the cutmodel_values will have the number of elements of clusters 1, 2 and 3
     cutmodel_values[[k]] <- as.numeric(elements_incluster)
 
-    #if the user wants to get the number of elements in each cluster for each iteration
     if (printclusters){
       print(elements_incluster)
     }
 
-    # final k is the last successful cluster count
     k <- length(cutmodel_values)
-    paste0("The maximum number of clusters reached is ", k)
-    #k will eventually take the value of maxclusters
   }
 
-
-  #---creating a matrix (tree_m)
-  #with ows as the clustering arrangments and columns as the clusters.
-  #When k=5, the matrix will have 5 rows (one empty that will be deleted after)...
-  #... and 5 columns (cluster 1, cluster 2, ..., cluster 5)
-  #The matrix is not populated yet.
+  # Build matrix: rows = cluster arrangements (2, 3, ..., k),
+  # columns = cluster IDs (1, 2, ..., k).
+  # Each row stores the article counts per cluster for that arrangement.
+  # First row is empty (no 1-cluster arrangement) and removed after.
   num_rows <- k
   num_columns <- k
-  tree_m<- matrix(NA, nrow = num_rows, ncol = num_columns)
-
-  #The matrix will be populated with the following loop. Starting at the i=2, which is the minimum of the clustering arrangements:
-  # the cells located in the second row and the first two columns of the matrix will be populated,
-  # because 1:length(partition_values[[i]]), which in this case would be 1:2.
-  # For the next iteration, where i = 3, the cells located in the third row and first three columns...
-  #...be populated because 1:length(partition_values[[i]]), which in this case would be 1:3. And so on...
+  tree_m <- matrix(NA, nrow = num_rows, ncol = num_columns)
 
   for (i in 2:num_rows) {
-    # Fill the matrix row by row
     tree_m[i, 1:length(cutmodel_values[[i]])] <- cutmodel_values[[i]]
   }
-  #first row is deleted
-  tree_m <- tree_m[-1,]
+  tree_m <- tree_m[-1,] # removing empty first row
 
-
-
-  #Since we deleted the first row in tree_m, nk is the number of rows, which tecnically would be...
-  #...the number of partitions or clustering arrangements.
-  #The matrix tree_m is transposed in order to build the barplots
-
-
+  # Transpose tree_m so barplot groups bars by arrangement
   bp <- barplot(t(tree_m),
                 beside = TRUE,
                 horiz = FALSE,
@@ -143,6 +117,7 @@ clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores =
                 main = "Distribution of clusters",
                 space = c(0, 0))
 
+  # Overlay article counts above each bar
   if(showCounts){
     for (i in seq_len(nrow(bp))) {     # clusters
       for (j in seq_len(ncol(bp))) {   # number of clusters
@@ -156,6 +131,3 @@ clusters_barplot <- function(x, maxclusters=21, printclusters = FALSE, colores =
 
   return(bp)
 }
-#'
-#' @examples to be added
-

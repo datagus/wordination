@@ -1,16 +1,16 @@
 #' Convert PDF files to text files
 #'
 #' @description
-#' `pdf_to_text()` extracts text from PDF files in a directory and saves as text files.
-#' It attempts OCR for scanned PDFs with minimal text content.
+#' `pdf_to_text()` extracts text from PDF files in a folder and saves it in text files.
+#' It attempts Optical Character Recognition (OCR) for scanned PDFs with minimal text content.
 #'
 #' @details
-#' We suggest the following workflow for this function.
+#' The following workflow is suggested for this function.
 #'
 #' First, try the function with default values or adjustments to your needs.
 #'
-#' We strongly recommend keeping `check_valid = TRUE` in the first step because
-#' skipping the filtering out of invalid PDFs, can lead to increased runtime as
+#' It is strongly recommended to keep `check_valid = TRUE` in the first step because
+#' skipping the filtering out of invalid PDFs can lead to increased runtime as
 #' the function is trying to extract text from PDFs that cannot be extracted.
 #' Furthermore, if `check_valid = FALSE`, PDFs that cannot be extracted are not
 #' explicitly shown as invalid, but are skipped and result in an empty text file.
@@ -19,22 +19,23 @@
 #' scanned PDFs. Here, an unexpectedly low word count (lower than `ocr_threshold`)
 #' of the output of the normal PDF extraction is used as an indicator that the
 #' PDF is scanned and needs to be extracted with OCR. Hence, `ocr_threshold`
-#' needs to be adjusted to your expected text length. Since OCR is the
+#' needs to be adjusted to the expected text length. Since OCR is the
 #' most computationally expensive and time-consuming step in this function, a
 #' higher threshold, i.e. attempting OCR more often, might increase the runtime.
 #'
 #' If `clean_text = TRUE` the following cleaning steps are performed:
-#' Remove punctuation, numbers, whitespace, English stopwords and change all
-#' words to lowercase.
+#' Remove punctuation, numbers, whitespace, English stopwords (e.g. "a", "and", "the")
+#' and change all words to lowercase.
 #'
-#' Second, check if files classified as invalid are actually invalid. If so, replace
+#' Second, check if files classified as invalid are actually invalid,
+#' i.e. they cannot be opened in a PDF editor. If so, replace
 #' them with valid versions if possible and apply the function again.
 #'
 #' Third, try extracting files incorrectly classified as invalid by applying the
-#' function again with `check_valid = FALSE`. Note that if `check_valid = FALSE`,
-#' PDFs that cannot be extracted are not shown as invalid, but are skipped and
-#' result in an empty text file. You can also use single PDFs as input and set
-#' `quiet = FALSE` for more transparent error tracking.
+#' function to those files again with `check_valid = FALSE`. Note that if
+#' `check_valid = FALSE`, PDFs that cannot be extracted are not shown as invalid,
+#' but are skipped and result in an empty text file. Single PDFs can be used as
+#' input and `quiet = FALSE` can be used for more transparent error tracking.
 #'
 #' @param dir_pdf Character string. Path to PDF file or folder containing PDF files.
 #' @param dir_text Character string. Path to folder for saving text files.
@@ -53,6 +54,7 @@
 #' @export
 #'
 #' @examples
+#' # Example 1: simple input
 #' # Create a temporary folder for PDFs
 #' temp_pdf_dir <- tempfile("pdfs")
 #' dir.create(temp_pdf_dir)
@@ -81,8 +83,8 @@
 #' unlink(temp_pdf_dir, recursive = TRUE)
 #' unlink(temp_output, recursive = TRUE)
 #'
-#'
 #' \dontrun{
+#' # Example 2: user input
 #' # Use your own directories
 #' dir_pdf <- "path/to/your/pdfs"
 #' dir_text <- "path/to/output"
@@ -118,7 +120,7 @@ pdf_to_text <- function(dir_pdf, dir_text,
     return(list(
       text_folder = normalizePath(dir_text),
       num_converted = 0,
-      failed_files = character(0)
+      invalid_files = character(0)
     ))
   }
 

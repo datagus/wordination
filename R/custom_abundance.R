@@ -1,26 +1,61 @@
-#---Refinig Abundance Table---
-
-#' Customizing abundance table
+#' Customize word abundance table
 #'
-#' This function allows the user to customize the abundance table by:
-#'  -removing words
-#'  -subselecting the abundance table base on the incidence threshold
-#'  -converting the abundances to relative abundances
-#'  -scaling the abundance table by applying a logarithm
+#' @description
+#' Allows to customize an abundance table by (1) removing words, (2) applying an
+#' incidence threshold, (3) converting abundances to relative abundances,
+#' (4) re-scaling relative abundances, (5) log-scaling abundances.
 #'
-#' @param x the abundance table in its raw form
-#' @param incidence The incidence threshold
-#' @param drop_words Vector containing the words to be dropped.
-#' @param site_correction logical. FALSE (default) and TRUE if you want that the relative abundances are calculated by dividing each abundance the total number of words present in each article.
-#' @param multiplier integer. The scale in which the correct abundances are to be shown. By default, the abundance is shown by 1000 species in each site.
-#' @param logscaling logical. TRUE(default) for logarithmic scale of the abundance table
+#' @details
+#' The function provides several options for customizing an abundance table
+#' (created by the function `abundance_table()`):
 #'
-#' @returns An abundance table. For running the Detrented Correspondance Analysis, the abundance table
-#' needs to have site_correction=FALSE and logscaling=TRUE. For running the clustering, species indicators the abundance table needs have
-#' site_correction=FALSE and logscaling=FALSE
+#' \enumerate{
+#'   \item Remove user-defined words, e.g. irrelevant words that have not yet
+#'   been filtered out by cleaning steps before.
+#'   \item Sub-select the abundance table keeping only words with a sufficiently high incidence.
+#'   \item Convert absolute word abundances to relative word abundances compared
+#'   to the total length of the article (site correction). Relative abundances are calculated by
+#'   dividing each abundance by the total number of words present in each article.
+#'   \item Re-scale relative abundances using a multiplier (e.g., per 1,000 words).
+#'   \item Log-scaling the abundances (\code{log(x + 1)}).
+#' }
 #'
+#' Filtering by incidence (= number of articles in which a word occurs at least once)
+#' is highly recommended because words with low incidence tend to
+#' disturb the ordination and clustering process. An appropriate threshold can be
+#' determined using \code{optimal_incidence()}.
+#'
+#' For running the Detrended Correspondence Analysis, clustering and species indicator analysis the abundance table
+#' needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}. For
+#' the Detrended Correspondence Analysis, logscaling will by default be applied in the `run_dca()` function itself.
+#'
+#' @param x Data frame. The raw abundance table (rows = words, columns = articles).
+#' @param drop_words Character vector. Words to remove from the table.
+#' @param incidence Integer. The incidence threshold, i.e. words occurring in less than
+#' or equal to this number of articles are removed; only words with higher incidence are retained.
+#' @param site_correction Logical. If \code{TRUE}, convert counts to relative
+#'   abundances per article (default: \code{FALSE}).
+#' @param multiplier Numeric. Scaling factor applied to relative abundances (default: 1).
+#' @param logscaling Logical. If \code{TRUE}, apply log-transformation
+#'   (\code{log(x + 1)}) to the abundance table (default: \code{FALSE}).
+#'
+#' @returns A named list with:
+#'   \item{new_abundance}{The customized abundance table.}
+#'   \item{new_moritz}{A summary table containing words, incidence,
+#'   and total abundance, sorted by decreasing incidence.}
 #'
 #' @export
+#' @examples
+#' data(example_abundance)
+#' result <- custom_abundance(
+#'   example_abundance,
+#'   drop_words = c("policy"),
+#'   incidence = 5,
+#'   logscaling = TRUE
+#' )
+#' head(result$new_abundance)
+#' result$new_moritz
+#'
 custom_abundance <- function(x, drop_words=c(),incidence=0, site_correction = FALSE, multiplier=1, logscaling=FALSE){
 
   #this a control to stop the function if the criteria are not met
@@ -68,4 +103,3 @@ custom_abundance <- function(x, drop_words=c(),incidence=0, site_correction = FA
 
   return(list(new_abundance = abundance, new_moritz = new_moritz))
 }
-#' @examples to be added

@@ -1,76 +1,93 @@
-#---Clusters dataframe------
-
-#' Creating a dataframe of the different clusters, articles and words
+#' Create a summary data frame of clusters, articles, and top words.
 #'
-#' @param x The abundance table. This table is not scaled nor normalized yet, but it has the optimal words incidence.
-#' Recommended to use the output from function optimal_incidence()
-#' @param k The number of clusters
-#' @param model The model produced by the Detrented Correspondance Analysis
-#' @param wordnumber The number of words per cluster to be displayed in the wordcloud
-#' @param colores The vector of colors. The length of this vector should be at least the same as the k.
-#' @param pvalue The probabilty that the abundance indicators are high
-#' @param abmean The mean of the abundance indicators per cluster
+#' This function creates a dataframe mapping each article to its cluster and the top
+#' indicator words for that cluster. It is useful for inspecting which articles belong
+#' to which cluster and what words characterize each cluster. Clustering is performed
+#' internally using Ward's method via \code{\link[cluster]{agnes}}, and words are selected
+#' based on their indicator values from \code{\link[labdsv]{indval}}.
+#'
+#' @param x Data frame. The abundance table with words as rows and articles as columns.
+#'  All columns must be numeric. The table should not be scaled or normalized beforehand.
+#'  It is recommended to apply an incidence threshold using \code{\link{optimal_incidence}}
+#'  before passing the table to this function.
+#' @param k Integer. The number of clusters.
+#' @param model A \code{decorana} object produced by \code{link{run_dca}}.
+#' @param wordnumber Integer. Number of top indicator words to list per cluster. Default is 5.
+#' @param colores Character vector. Colors for each cluster. Must have at least
+#'  \code{k} elements. If \code{NULL} (default), a built-in palette is used.
+#' @param pvalue Numeric. Maximum p-value threshold for filtering words from the indicator
+#'  analysis. Default is 0.05.
+#' @param abmean Numeric. Minimum mean abundance indictor for a word to be included.
+#'  Default is 0.01.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
 #'
-#' @returns A dataframe with three columns:
+#' @returns A data frame with three columns:
+#' \describe{
+#'   \item{article}{Character. The article filename.}
+#'   \item{cluster_number}{Integer. The cluster assignment.}
+#'   \item{words}{Character. The top indicator words for the cluster,
+#'     comma-separated.}
+#' }
 #'
-#'  $article: the title of the article
-#'  $cluster_number: the number of the cluster
-#'  $words: the respective words in the cluster
+#' @seealso \code{\link{wordcloud}}, \code{\link{cluster_indicators}}
+#'
 #' @export
-groups_df <- function(x,k, model, wordnumber=5,colores = colores,pvalue=0.05,abmean=0.01){
+#'
+#' @examples
+#' \donttest{
+#' data(example_abundance)
+#' model <- run_dca(example_abundance)
+#' groups_df(example_abundance, k = 3, model = model,
+#'           pvalue = 1, abmean = 0)
+#' }
+#'
+groups_df <- function(x, k, model, wordnumber = 5,colores = NULL,
+                      pvalue = 0.05, abmean = 0.01) {
 
-  ## Correcting the frequencies of words by the total words in each article
+  # Default palette
+  if (is.null(colores)) {
+    colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
+                 "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
+                 "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C")
+  }
+
+  # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
   sites_length <- unname(colSums(pa, na.rm = TRUE))
   abundance <- sweep(x, 2, sites_length, "/")
-  abundance <- abundance*1000
+  abundance <- abundance * 1000
 
-  #transpossing and scaling the abundance table
+  # Log-transform and transpose (articles as rows)
   abundancet <- log(t(abundance)+1)
-  #abundancet <- t(x)
 
   set.seed(123)
-  #running the clustering
-  modelclust<-agnes(abundancet,method="ward")
-  cutmodel <-cutree(modelclust,k=k)
-  temp5<-labdsv::indval(abundancet,cutmodel,numitr=1000)
+  modelclust <- agnes(abundancet, method = "ward")
+  cutmodel <- cutree(modelclust, k = k)
+  temp5 <- labdsv::indval(abundancet, cutmodel, numitr = 1000)
 
-  nk <- k
+  # Combine indicator values with DCA coordinates, then filter
+  achsen <- model$cproj[, 1:2]
+  cluster_dca <- cbind(round(temp5$indval, digits = 2),temp5$pval,
+                       names(temp5$pval), achsen)
+  cluster_dcap <- cluster_dca[cluster_dca[k + 1] < pvalue, ]
+  final_cluster <- cluster_dcap[which(apply(cluster_dcap[, 1:k], 1, mean) > abmean), ]
 
-  achsen<-model$cproj[,c(1:2)]
-  cluster_dca<-cbind(round(temp5$indval,digits=2),temp5$pval,names(temp5$pval),achsen)
-  cluster_dcap<-cluster_dca[cluster_dca[nk+1]<pvalue,] #p-value less than ...
-  final_cluster<-cluster_dcap[which(apply(cluster_dcap[,c(1:nk)],1,mean)>abmean),] #abmean means abudance indicators mean
-
+  # Select top words per cluster, sorted by indicator value
   subsets <- list()
-
-  colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
-               "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
-               "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C"
-  )
-
-  for (i in 1:nk){
-    subsets[[i]] <- final_cluster[order(final_cluster[,i],decreasing=T)[c(1: wordnumber)],]
-    #text(subsets[[i]]$DCA1[c(1:wordnumber)],subsets[[i]]$DCA2[c(1:wordnumber)],labels=rownames(subsets[[i]])[c(1:wordnumber)],col=colores[i] ,cex=0.8)
+  for (i in 1:k){
+    subsets[[i]] <- final_cluster[order(final_cluster[, i], decreasing = TRUE)[1:wordnumber], ]
     subsets[[i]]$cluster <- i
   }
 
-
+  # Build output: map each article to its cluster and top words
   grupos <- data.frame(article= row.names(abundancet), cluster_number = cutmodel)
   grupos$words <- NA
   for (i in 1:nrow(grupos)) {
     cluster_id <- grupos$cluster_number[i]
-    # Get the elements (names) for this specific cluster
     palabras_for_cluster <- row.names(subsets[[cluster_id]])
-    # Concatenate the elements into a single string, or store as a list
-    grupos$words[i] <- paste(palabras_for_cluster, collapse = ", ") # or `I(list(palabras_for_cluster))` if you want a list
-    #grupos$colores[i] <- colores[cluster_id]
+    grupos$words[i] <- paste(palabras_for_cluster, collapse = ", ")
   }
   return(grupos)
 }
-
-#' @examples to be added
-

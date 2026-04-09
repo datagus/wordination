@@ -1,4 +1,4 @@
-test_that("running_dca returns a decorana model on valid input", {
+test_that("run_dca returns a decorana model on valid input", {
 
   # toy abundance table: words = rows, articles = columns
   x <- data.frame(
@@ -8,7 +8,7 @@ test_that("running_dca returns a decorana model on valid input", {
   )
   rownames(x) <- c("word1", "word2", "word3")
 
-  res <- running_dca(
+  res <- run_dca(
     x,
     drop_words = "word3",
     incidence  = 0,
@@ -23,7 +23,7 @@ test_that("running_dca returns a decorana model on valid input", {
   expect_equal(nrow(res$rproj), ncol(x) - 0)  # number of articles
 })
 
-test_that("running_dca works with logscaling = FALSE", {
+test_that("run_dca works with logscaling = FALSE", {
 
   skip_if_not_installed("vegan")
 
@@ -33,7 +33,7 @@ test_that("running_dca works with logscaling = FALSE", {
   )
   rownames(x) <- c("word1", "word2", "word3")
 
-  res <- running_dca(
+  res <- run_dca(
     x,
     logscaling = FALSE
   )
@@ -42,7 +42,7 @@ test_that("running_dca works with logscaling = FALSE", {
   expect_true(!is.null(res$rproj))
 })
 
-test_that("running_dca respects drop_words and incidence filtering", {
+test_that("run_dca respects drop_words and incidence filtering", {
 
   skip_if_not_installed("vegan")
 
@@ -61,7 +61,7 @@ test_that("running_dca respects drop_words and incidence filtering", {
   # word4 = 0
   # word5 = 3
 
-  res <- running_dca(
+  res <- run_dca(
     x,
     drop_words = c("word2"),
     incidence  = 1,
@@ -75,7 +75,7 @@ test_that("running_dca respects drop_words and incidence filtering", {
   expect_equal(nrow(res$cproj), 3)
 })
 
-test_that("running_dca errors on non-numeric columns", {
+test_that("run_dca errors on non-numeric columns", {
 
   x_bad <- data.frame(
     art1 = c(1, 0),
@@ -84,27 +84,27 @@ test_that("running_dca errors on non-numeric columns", {
   rownames(x_bad) <- c("word1", "word2")
 
   expect_error(
-    running_dca(x_bad),
+    run_dca(x_bad),
     "must be numeric"
   )
 })
 
-test_that("running_dca errors on empty data frame", {
+test_that("run_dca errors on empty data frame", {
 
   x_empty <- data.frame()
 
   expect_error(
-    running_dca(x_empty),
+    run_dca(x_empty),
     "zero rows or columns"
   )
 })
 
-test_that("running_dca errors when x is not a data.frame", {
+test_that("run_dca errors when x is not a data.frame", {
 
   x_mat <- matrix(c(1, 0, 1, 1), nrow = 2)
 
   expect_error(
-    running_dca(x_mat),
+    run_dca(x_mat),
   )
 })
 
