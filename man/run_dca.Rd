@@ -25,7 +25,7 @@ See \code{\link[vegan]{decorana}} for details.
 This function runs a Detrended Correspondence Analysis (DCA) on the abundance table
 using \code{\link[vegan]{decorana}}. Before running the DCA, the abundance table can
 be filtered by dropping specific words and applying an incidence threshold.
-It is recommended to determine the incidence threshold beforehand using \code{\link{optimal_indidence}}.
+It is recommended to determine the incidence threshold beforehand using \code{\link{optimal_incidence}}.
 Since the data needs to be logscaled for the DCA, logscaling will by default be applied. If the data is already logscaled, set \code{logscaling = FALSE}.
 }
 \examples{
