@@ -105,6 +105,11 @@ wordendro <- function(x, k, colores = NULL) {
 
   dend <- color_branches(dend, k = k, col = colores_dend, groupLabels = labeles)
   plot(dend, main = paste0("Dendrogram with ", k , " Clusters"))
+  sub_dend <- get_subdendrograms(dend, k = k)
+  sub_dend <- sub_dend[order(labeles)]
+  clusters <- clusters[order(labeles)]
+  site_names <- site_names[order(labeles)]
+  clusters_length <- clusters_length[order(labeles)]
 
   return(list(dend = dend, sub_dend = sub_dend, clusters = clusters,
               site_names = site_names, clusters_length = clusters_length))
