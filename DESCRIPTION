@@ -1,6 +1,6 @@
 Package: wordination
 Title: Produce word cloud based on abundance vegetation statistics
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     c(person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre")),
       person("Wanja", "Tolksdorf", email = "wjt@gmx-topmail.de", role = c("aut")),
