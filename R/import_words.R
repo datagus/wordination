@@ -8,6 +8,7 @@
 #' @param folder_path Character string. The directory path containing the text files to import.
 #' @param remove_papers Character vector. Filenames (without path) to exclude from importing.
 #'  Default is an empty vector.
+#' @param words_to_ignore Character string. The directory path containing a text files with words that you don't want to import.n
 #' @param remove_outliers Logical. If \code{TRUE}, files with extreme word counts
 #'  (detected via \code{link[grDevices]{boxplot.stats}}) are iteratively removed.
 #'  If \code{FALSE} (default), all files are kept.
@@ -41,11 +42,13 @@
 #' result <- import_words("path/to/text_files", remove_outliers = TRUE)
 #' result$papers_removed
 #' }
-import_words <- function(folder_path, remove_papers = c(), remove_outliers = FALSE) {
+import_words <- function(folder_path, remove_papers = c(), words_to_ignore=nullfile(), remove_outliers = FALSE) {
 
   # Get all .txt files with full paths
   all_titles <- list.files(folder_path, pattern = "\\.txt$",
                            all.files = FALSE, full.names = TRUE)
+
+  generic_words <- scan(words_to_ignore, what = "character", sep = " ", quiet=TRUE)
 
   papers_titles <- as.character(all_titles)
   remove_papers <- file.path(folder_path, remove_papers)
@@ -54,6 +57,7 @@ import_words <- function(folder_path, remove_papers = c(), remove_outliers = FAL
   print("Importing files")
   pb <- txtProgressBar(min = 0, max = 100, char = "=", style = 3)
 
+  outliers_length <- 0
   while (condicional == TRUE) {
     papers_titles <- papers_titles[!papers_titles %in% remove_papers]
     npapers <- length(papers_titles)
@@ -74,6 +78,7 @@ import_words <- function(folder_path, remove_papers = c(), remove_outliers = FAL
         doc <- gsub('\n', " ", doc)                    # remove newlines
         doc <- trimws(doc)
         words <- strsplit(doc, " ")
+        words <- lapply(words, function(x) x[!x %in% generic_words]) #ignoring the words
 
         articles[[i]] <- data.frame(table(words))
         article_length <- c(article_length, nrow(articles[[i]]))
@@ -89,11 +94,12 @@ import_words <- function(folder_path, remove_papers = c(), remove_outliers = FAL
       if (length(boxplot.stats(article_length)$out) > 0) {
         print("Removing outliers")
         to_remove <- boxplot.stats(article_length)$out
+        outliers_length <- outliers_length + length(to_remove)
         remove_papers <- append(remove_papers, papers_titles[article_length %in% to_remove])
         condicional <- remove_outliers
       } else {
         condicional <- FALSE
-        print(paste0("A total of ", length(remove_papers), " outliers were removed"))
+        print(paste0("A total of ", outliers_length, " outliers were removed"))
         remove_papers2 <- basename(remove_papers)
       }
     } else {

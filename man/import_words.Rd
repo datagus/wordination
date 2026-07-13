@@ -4,13 +4,20 @@
 \alias{import_words}
 \title{Import text files as word-frequency dataframes}
 \usage{
-import_words(folder_path, remove_papers = c(), remove_outliers = FALSE)
+import_words(
+  folder_path,
+  remove_papers = c(),
+  words_to_ignore = nullfile(),
+  remove_outliers = FALSE
+)
 }
 \arguments{
 \item{folder_path}{Character string. The directory path containing the text files to import.}
 
 \item{remove_papers}{Character vector. Filenames (without path) to exclude from importing.
 Default is an empty vector.}
+
+\item{words_to_ignore}{Character string. The directory path containing a text files with words that you don't want to import.n}
 
 \item{remove_outliers}{Logical. If \code{TRUE}, files with extreme word counts
 (detected via \code{link[grDevices]{boxplot.stats}}) are iteratively removed.
