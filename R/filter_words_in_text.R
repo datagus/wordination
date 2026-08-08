@@ -47,7 +47,40 @@
 #' @export
 #'
 #' @examples
+#' # Disclaimer: Some examples rely on example data provided with this package.
+#' # All example PDFs and text files were authored by the creators of this package.
+#'
+#' # Example 1: Extract nouns from the example text files
+#' txt_dir <- system.file(
+#'   "extdata", "txt",
+#'   package = "wordination"
+#' )
+#'
+#' # Work on a temporary copy because filter_words_in_text()
+#' # creates a "filtered" subdirectory inside the input directory.
+#' temp_txt_dir <- tempfile("txt")
+#' dir.create(temp_txt_dir)
+#'
+#' file.copy(
+#'   list.files(txt_dir, pattern = "\\.txt$", full.names = TRUE),
+#'   temp_txt_dir
+#' )
+#'
+#' results <- filter_words_in_text(temp_txt_dir, min_word_count = 1000)
+#'
+#' print(results)
+#'
+#' # Check the generated filtered files
+#' list.files(
+#'   file.path(temp_txt_dir, "filtered"),
+#'   pattern = "\\.txt$"
+#' )
+#'
+#' # Clean up
+#' unlink(temp_txt_dir, recursive = TRUE)
+#'
 #' \dontrun{
+#' # Example 2: Extract clean text from user-provided text files
 #' # Basic usage: extract nouns from all text files
 #' results <- filter_words_in_text("path/to/documents")
 #'

@@ -74,7 +74,10 @@ but are skipped and result in an empty text file. Single PDFs can be used as
 input and \code{quiet = FALSE} can be used for more transparent error tracking.
 }
 \examples{
-# Example 1: simple input
+# Disclaimer: Some examples rely on example data provided with this package.
+# All example PDFs and text files were authored by the creators of this package.
+
+# Example 1: Convert simple temporary PDFs to text
 # Create a temporary folder for PDFs
 temp_pdf_dir <- tempfile("pdfs")
 dir.create(temp_pdf_dir)
@@ -103,8 +106,32 @@ list.files(temp_output, pattern = "\\\\.txt$")
 unlink(temp_pdf_dir, recursive = TRUE)
 unlink(temp_output, recursive = TRUE)
 
+# Example 2: Convert all PDFs from the example package data to text
+pdf_dir <- system.file("extdata", "pdf", package = "wordination")
+
+temp_txt_dir <- tempfile("pdf_to_text")
+dir.create(temp_txt_dir)
+
+result <- pdf_to_text(
+  pdf_dir,
+  temp_txt_dir,
+  use_ocr = FALSE
+)
+
+# Number of converted files
+print(result$num_converted)
+
+# Invalid files that could not be converted
+print(result$invalid_files)
+
+# Created text files
+list.files(temp_txt_dir, pattern = "\\\\.txt$")
+
+# Clean up
+unlink(temp_txt_dir, recursive = TRUE)
+
 \dontrun{
-# Example 2: user input
+# Example 3: user input
 # Use your own directories
 dir_pdf <- "path/to/your/pdfs"
 dir_text <- "path/to/output"
