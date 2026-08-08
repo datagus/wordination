@@ -57,36 +57,7 @@
 #' # Disclaimer: Some examples rely on example data provided with this package.
 #' # All example PDFs and text files were authored by the creators of this package.
 #'
-#' # Example 1: Convert simple temporary PDFs to text
-#' # Create a temporary folder for PDFs
-#' temp_pdf_dir <- tempfile("pdfs")
-#' dir.create(temp_pdf_dir)
-#'
-#' # Create two simple PDFs
-#' for (i in 1:2) {
-#'   pdf_file <- file.path(temp_pdf_dir, paste0("file", i, ".pdf"))
-#'   pdf(pdf_file)
-#'   plot.new()
-#'   text(0.5, 0.5, paste("PDF", i), cex = 2)
-#'   dev.off()
-#' }
-#'
-#' # Create a temporary output folder for text files
-#' temp_output <- tempfile("txt")
-#' dir.create(temp_output)
-#'
-#' # Convert all PDFs in the folder to text
-#' result <- pdf_to_text(temp_pdf_dir, temp_output, use_ocr = FALSE)
-#' print(result$num_converted)  # Should be 2
-#'
-#' # List created text files
-#' list.files(temp_output, pattern = "\\.txt$")
-#'
-#' # Clean up
-#' unlink(temp_pdf_dir, recursive = TRUE)
-#' unlink(temp_output, recursive = TRUE)
-#'
-#' # Example 2: Convert all PDFs from the example package data to text
+#' # Example 1: Convert all PDFs from the example package data to text
 #' pdf_dir <- system.file("extdata", "pdf", package = "wordination")
 #'
 #' temp_txt_dir <- tempfile("pdf_to_text")
@@ -94,8 +65,7 @@
 #'
 #' result <- pdf_to_text(
 #'   pdf_dir,
-#'   temp_txt_dir,
-#'   use_ocr = FALSE
+#'   temp_txt_dir
 #' )
 #'
 #' # Number of converted files
@@ -111,7 +81,7 @@
 #' unlink(temp_txt_dir, recursive = TRUE)
 #'
 #' \dontrun{
-#' # Example 3: user input
+#' # Example 2: user input
 #' # Use your own directories
 #' dir_pdf <- "path/to/your/pdfs"
 #' dir_text <- "path/to/output"

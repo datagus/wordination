@@ -17,28 +17,14 @@
 #' # Disclaimer: Some examples rely on example data provided with this package.
 #' # All example PDFs and text files were authored by the creators of this package.
 #'
-#' # Example 1: Detect a valid PDF created with base R
-#' temp_valid_pdf <- tempfile(fileext = ".pdf")
-#' pdf(temp_valid_pdf)
-#' plot(1:10, main = "Test Plot")
-#' dev.off()
-#' pdf_is_valid(temp_valid_pdf)  # Should return TRUE
-#' unlink(temp_valid_pdf)
-#'
-#' # Example 2: Detect an invalid "fake" PDF
-#' temp_fake_pdf <- tempfile(fileext = ".pdf")
-#' writeLines("Not a real PDF", temp_fake_pdf)
-#' pdf_is_valid(temp_fake_pdf)  # Should return FALSE
-#' unlink(temp_fake_pdf)
-#'
-#' # Example 3: Detect a valid PDF from the package example data
+#' # Example 1: Detect a valid PDF from the package example data
 #' valid_pdf <- system.file(
 #'   "extdata", "pdf", "Tolksdorf_2023_Stranded_seaweed.pdf",
 #'   package = "wordination"
 #' )
 #' pdf_is_valid(valid_pdf)  # Should return TRUE
 #'
-#' # Example 4: Detect an invalid PDF from the package example data
+#' # Example 2: Detect an invalid PDF from the package example data
 #' invalid_pdf <- system.file(
 #'   "extdata", "pdf", "Tolksdorf_2023_Stranded_seaweed_INVALID.pdf",
 #'   package = "wordination"
@@ -46,7 +32,7 @@
 #' pdf_is_valid(invalid_pdf)  # Should return FALSE
 #'
 #' \dontrun{
-#' # Example 5: Check user input
+#' # Example 3: Check user input
 #' pdf_is_valid("path/to/your/file.pdf")
 #' }
 pdf_is_valid <- function(f) {
