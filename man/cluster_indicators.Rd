@@ -30,8 +30,9 @@ or has more variance. If a cluster does not appear in the output, its indicator 
 indicator of zero, the respective cluster arrangement should not be considered.
 }
 \examples{
-data(example_abundance)
-cluster_indicators(example_abundance, k = 3)
+data(transformative_abundance)
+#Selecting 6 clusters
+cluster_indicators(transformative_abundance, k = 5)
 
 }
 \seealso{

@@ -29,9 +29,13 @@ It is recommended to determine the incidence threshold beforehand using \code{\l
 Since the data needs to be logscaled for the DCA, logscaling will by default be applied. If the data is already logscaled, set \code{logscaling = FALSE}.
 }
 \examples{
-data(example_abundance)
-model <- run_dca(example_abundance)
+data(transformative_abundance)
+model <- run_dca(transformative_abundance)
 model
+plot(model)
+
+
+
 
 }
 \seealso{

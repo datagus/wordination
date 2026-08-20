@@ -39,53 +39,12 @@ is present at least once (abundance > 0).  The total abundance of a word is defi
 the total count of a word summed across all articles.
 }
 \examples{
-# Example 1: simple input
-# Create two small example article data frames
-article1 <- data.frame(
-  words = c("climate", "change", "policy"),
-  Freq  = c(3, 2, 1),
-  stringsAsFactors = FALSE
-)
-
-article2 <- data.frame(
-  words = c("climate", "energy", "policy"),
-  Freq  = c(1, 4, 2),
-  stringsAsFactors = FALSE
-)
-
-articles <- list(article1 = article1, article2 = article2)
-
-# Create abundance table
-result <- abundance_table(
-  articles = articles,
-  papers_titles = c("article1.txt", "article2.txt"),
-  npapers = length(articles),
-  articles_length = sapply(articles, nrow)
-)
-
-# Abundance table
-result$abtab
-
-# Summary table
-result$moritz
-
-
-\dontrun{
-# Example 2: user input
-# Assume you already imported your articles using import_words()
-# and the results are stored in the variable "output"
-
-# Extract dataframes and additional information
-articles_dfs <- output$articles_dfs
-papers_titles <- output$papers_titles
-npapers <- output$npapers
-articles_length <- output$article_length
-
-# Create abundance table
-words <- abundance_table(articles_dfs, papers_titles, npapers, articles_length)
-
-# Extract abundance and summary table
-words_df <- words$abtab
-moritz <- words$moritz
-}
+example_dir <- system.file("extdata", package = "wordination")
+output <- import_words(example_dir, remove_outliers = TRUE)
+words_matrix <- abundance_table(output$articles_dfs,
+                                output$papers_titles,
+                                output$npapers,
+                                output$articles_length)
+dim(words_matrix$abtab)
+head(words_matrix$moritz)
 }

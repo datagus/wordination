@@ -2,3 +2,4 @@
 *.DS_Store
 *.Rhistory
 .positai
+running_script_dev.R

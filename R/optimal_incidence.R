@@ -23,8 +23,8 @@
 #' @export
 #'
 #' @examples
-#' data(example_abundance)
-#' optimal_incidence(example_abundance, most_common = 50)
+#' data(transformative_abundance)
+#' optimal_incidence(transformative_abundance, most_common = 20)
 #'
 optimal_incidence <- function(x, most_common=50){
 

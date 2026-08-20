@@ -32,7 +32,7 @@ This function helps identify an incidence threshold based on a desired percentag
 For example, setting \code{most_common = 20} returns the threshold corresponding to the top 20\% most common words.
 }
 \examples{
-data(example_abundance)
-optimal_incidence(example_abundance, most_common = 50)
+data(transformative_abundance)
+optimal_incidence(transformative_abundance, most_common = 20)
 
 }

@@ -65,14 +65,15 @@ needs to have \code{site_correction = FALSE} and \code{logscaling = FALSE}. For
 the Detrended Correspondence Analysis, logscaling will by default be applied in the \code{run_dca()} function itself.
 }
 \examples{
-data(example_abundance)
+data(transformative_abundance)
 result <- custom_abundance(
-  example_abundance,
-  drop_words = c("policy"),
-  incidence = 5,
-  logscaling = TRUE
+  transformative_abundance,
+  drop_words = c(),
+  incidence =11,
+  multiplier=1,
+  logscaling = FALSE
 )
-head(result$new_abundance)
-result$new_moritz
+dim(result$new_abundance)
+tail(result$new_moritz)
 
 }

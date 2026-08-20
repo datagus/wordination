@@ -40,9 +40,7 @@ is displayed side by side, making it easier to evaluate which number of clusters
 Clustering is performed internally using Ward's method via \code{\link[cluster]{agnes}}.
 }
 \examples{
-\donttest{
-data(example_abundance)
-clusters_barplot(example_abundance, maxclusters = 4)
-}
+data(transformative_abundance)
+clusters_barplot(transformative_abundance, maxclusters = 10)
 
 }

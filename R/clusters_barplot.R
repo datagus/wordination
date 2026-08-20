@@ -26,10 +26,8 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' data(example_abundance)
-#' clusters_barplot(example_abundance, maxclusters = 4)
-#' }
+#' data(transformative_abundance)
+#' clusters_barplot(transformative_abundance, maxclusters = 10)
 #'
 clusters_barplot <- function(x, maxclusters = 21, printclusters = FALSE, colores = NULL, showCounts = FALSE){
 

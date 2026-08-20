@@ -4,3 +4,4 @@
 ^data-raw$
 ^\.positai$
 ^\.claude$
+^running_script_dev\.R$

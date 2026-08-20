@@ -100,19 +100,18 @@ The ellipse orientation and size are derived from the eigenvalues of the covaria
 the DCA coordinates.
 }
 \examples{
-\donttest{
-data(example_abundance)
-model <- run_dca(example_abundance)
-pdf(NULL)                 #open a throwaway graphics medium
-wc <- wordcloud(example_abundance, k = 3, model = model,
-                wordnumber = 3, pvalue = 1, abmean = 0)
-invisible(dev.off())      #close null medium
-# Now only the elipse plot is displayed
+data(transformative_abundance)
+model <- run_dca(transformative_abundance)
+
+#considering only five clusters
+wc <- wordcloud(transformative_abundance, k = 5, model = model,
+                wordnumber = 5)
+
+# now only the elipse plot is displayed
 ellipsis_plot(
   subsets = wc$subsets,
   final_cluster = wc$final_cluster, showWords = TRUE, opacity = 0.2
 )
-}
 
 }
 \seealso{

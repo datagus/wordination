@@ -48,12 +48,21 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' data(example_abundance)
-#' model <- run_dca(example_abundance)
-#' wc <- wordcloud(example_abundance, k = 3, model = model,
-#'                 wordnumber = 3, pvalue = 1, abmean = 0)
-#' }
+#' data(transformative_abundance)
+#'
+#' #running a DCA first
+#' model <- run_dca(transformative_abundance)
+#'
+#' #considering only 6 clusters
+#' wc <- wordcloud(transformative_abundance, k = 5, model = model,
+#'                 wordnumber = 5, pvalue = 0.05, abmean = 0.01)
+#'
+#' head(wc$final_cluster)
+#'
+#' length(wc$subsets)
+#'
+#' #selecting first subset as an example
+#' wc$subsets[[1]]
 #'
 wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL,
                       newcoords = list(), cex = 0.8, pvalue = 0.05, abmean = 0.01,

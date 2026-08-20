@@ -22,9 +22,13 @@
 #' @export
 #'
 #' @examples
-#' data(example_abundance)
-#' model <- run_dca(example_abundance)
+#' data(transformative_abundance)
+#' model <- run_dca(transformative_abundance)
 #' model
+#' plot(model)
+#'
+#'
+#'
 #'
 run_dca <- function(x, drop_words=c(), incidence=0, logscaling=TRUE){
 

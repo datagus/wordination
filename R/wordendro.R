@@ -32,12 +32,23 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' data(example_abundance)
-#' wordendro(example_abundance, k = 3)
-#' }
+#' data(transformative_abundance)
 #'
-
+#' #considering only five clusters
+#' wd <- wordendro(transformative_abundance, k = 5)
+#'
+#' #getting an overview of the clusters
+#' wd$clusters
+#'
+#' #getting the length of each cluster
+#' wd$clusters_length
+#'
+#' #plotting the fifth cluster branch
+#' plot(wd$sub_dend[[5]])
+#'
+#' #getting the names of the document of the fifth cluster branch
+#' wd$site_names[[5]]
+#'
 wordendro <- function(x, k, colores = NULL) {
 
   # Default palette
@@ -55,6 +66,7 @@ wordendro <- function(x, k, colores = NULL) {
 
   # Log-transform and transpose (articles as rows)
   abundancet <- log(t(abundance) + 1)
+  rownames(abundancet) <- iconv(rownames(abundancet), from = "UTF-8", to = "ASCII//TRANSLIT")
 
   set.seed(123)
   modelclust <- agnes(abundancet, method = "ward")
@@ -102,6 +114,7 @@ wordendro <- function(x, k, colores = NULL) {
       }
     }
   }
+
 
   dend <- color_branches(dend, k = k, col = colores_dend, groupLabels = labeles)
   plot(dend, main = paste0("Dendrogram with ", k , " Clusters"))

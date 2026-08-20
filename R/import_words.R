@@ -29,19 +29,25 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' #this data corresponds to 149 articles used in the article:
+#' #Rodríguez Aboytes JG, Barth M (2020) Transformative learning in the field of sustainability:
+#' #a systematic literature review (1999–2019). Int J Sustain High Educ 21(5):993–1013
+#'
+#' example_dir <- system.file("extdata", package = "wordination")
+#'
 #' # Import all text files from a directory
-#' result <- import_words("path/to/text_files")
+#' result <- import_words(example_dir)
 #' result$npapers
 #'
-#' # Exclude specific files
-#' result <- import_words("path/to/text_files", remove_papers = c("bad_file_1.txt", "bad_file_2.txt"))
-#' result$papers_titles    # files that were imported
+#' # Without removing outliers and inspecting them with a boxplot
+#' result <- import_words(example_dir, remove_outliers = FALSE)
+#' sort(result$article_length)
 #'
 #' # Automatically remove outliers
-#' result <- import_words("path/to/text_files", remove_outliers = TRUE)
+#' result <- import_words(example_dir, remove_outliers = TRUE)
 #' result$papers_removed
-#' }
+#' result$articles_dfs[[10]] #example of the dataframe saved in a list
+#'
 import_words <- function(folder_path, remove_papers = c(), words_to_ignore=nullfile(), remove_outliers = FALSE) {
 
   # Get all .txt files with full paths

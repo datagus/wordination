@@ -78,12 +78,21 @@ Clustering is performed internally using Ward's method, and words are selected b
 indicator values and p-values from \code{\link[labdsv]{indval}}.
 }
 \examples{
-\donttest{
-data(example_abundance)
-model <- run_dca(example_abundance)
-wc <- wordcloud(example_abundance, k = 3, model = model,
-                wordnumber = 3, pvalue = 1, abmean = 0)
-}
+data(transformative_abundance)
+
+#running a DCA first
+model <- run_dca(transformative_abundance)
+
+#considering only 6 clusters
+wc <- wordcloud(transformative_abundance, k = 5, model = model,
+                wordnumber = 5, pvalue = 0.05, abmean = 0.01)
+
+head(wc$final_cluster)
+
+length(wc$subsets)
+
+#selecting first subset as an example
+wc$subsets[[1]]
 
 }
 \seealso{

@@ -33,10 +33,22 @@ anomalies in the clustering. Clustering is performed internally using Ward's met
 \code{\link[cluster]{agnes}}.
 }
 \examples{
-\donttest{
-data(example_abundance)
-wordendro(example_abundance, k = 3)
-}
+data(transformative_abundance)
+
+#considering only five clusters
+wd <- wordendro(transformative_abundance, k = 5)
+
+#getting an overview of the clusters
+wd$clusters
+
+#getting the length of each cluster
+wd$clusters_length
+
+#plotting the fifth cluster branch
+plot(wd$sub_dend[[5]])
+
+#getting the names of the document of the fifth cluster branch
+wd$site_names[[5]]
 
 }
 \seealso{
