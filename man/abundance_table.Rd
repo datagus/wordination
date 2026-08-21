@@ -39,7 +39,7 @@ is present at least once (abundance > 0).  The total abundance of a word is defi
 the total count of a word summed across all articles.
 }
 \examples{
-example_dir <- system.file("extdata", package = "wordination")
+example_dir <- system.file("extdata", "tl_corpus", package = "wordination")
 output <- import_words(example_dir, remove_outliers = TRUE)
 words_matrix <- abundance_table(output$articles_dfs,
                                 output$papers_titles,

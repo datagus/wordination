@@ -22,7 +22,7 @@
 #'   (1999-2019). \emph{Int J Sustain High Educ} 21(5):993-1013.
 #'   \url{https://doi.org/10.1108/ijshe-05-2019-0168}. The raw text files
 #'   are bundled with this package and accessible via
-#'   \code{system.file("extdata", package = "wordination")}.
+#'   \code{system.file("extdata", "tl_corpus", package = "wordination")}.
 "transformative_abundance"
 
 #' Transformative learning review incidence table
@@ -53,5 +53,5 @@
 #'   (1999-2019). \emph{Int J Sustain High Educ} 21(5):993-1013.
 #'   \url{https://doi.org/10.1108/ijshe-05-2019-0168}. The raw text files
 #'   are bundled with this package and accessible via
-#'   \code{system.file("extdata", package = "wordination")}.
+#'   \code{system.file("extdata", "tl_corpus", package = "wordination")}.
 "transformative_incidence"

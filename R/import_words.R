@@ -33,7 +33,7 @@
 #' #Rodríguez Aboytes JG, Barth M (2020) Transformative learning in the field of sustainability:
 #' #a systematic literature review (1999–2019). Int J Sustain High Educ 21(5):993–1013
 #'
-#' example_dir <- system.file("extdata", package = "wordination")
+#' example_dir <- system.file("extdata", "tl_corpus", package = "wordination")
 #'
 #' # Import all text files from a directory
 #' result <- import_words(example_dir)

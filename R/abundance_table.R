@@ -32,7 +32,7 @@
 #' @export
 #'
 #' @examples
-#' example_dir <- system.file("extdata", package = "wordination")
+#' example_dir <- system.file("extdata", "tl_corpus", package = "wordination")
 #' output <- import_words(example_dir, remove_outliers = TRUE)
 #' words_matrix <- abundance_table(output$articles_dfs,
 #'                                 output$papers_titles,
