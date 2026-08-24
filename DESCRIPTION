@@ -9,7 +9,6 @@ Description: Tools for text mining and clustering analysis of document collectio
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests: 
     pbapply,
     png,
@@ -30,3 +29,4 @@ Imports:
 Depends: 
     R (>= 3.5)
 LazyData: true
+Config/roxygen2/version: 8.1.0
