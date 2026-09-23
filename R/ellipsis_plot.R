@@ -63,6 +63,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' data(transformative_abundance)
 #' model <- run_dca(transformative_abundance)
 #'
@@ -75,6 +76,7 @@
 #'   subsets = wc$subsets,
 #'   final_cluster = wc$final_cluster, showWords = TRUE, opacity = 0.2
 #' )
+#' }
 #'
 ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = FALSE, showWords = FALSE,
                           newcoords = list(), wordnumber = 5, cex = 0.8, font = 2, opacity = 0.8,  coverage = 0.95, with_labels = FALSE, group_labels = NULL,
@@ -101,6 +103,7 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
   plot(final_cluster$DCA1, final_cluster$DCA2,
        xlim = c(min(final_cluster$DCA1) + adjx_min, max(final_cluster$DCA1) + adjx_max),
        ylim = c(min(final_cluster$DCA2) + adjy_min, max(final_cluster$DCA2) + adjy_max),
+       asp = 1,
        xlab = "DCA1", ylab = "DCA2", type = "n")
 
   # Optionally plot words inside ellipses
@@ -122,12 +125,12 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
   set.seed(123)
 
   # Compute ellipse angle from covariance matrix eigenvectors
-  compute_angle <- function(cov_matrix) {
-    eig <- eigen(cov_matrix)
-    max_eigenvector <- eig$vectors[, 1]
-    angle <- atan2(max_eigenvector[2], max_eigenvector[1]) * 180 / pi
-    return(angle)
-  }
+  #compute_angle <- function(cov_matrix) {
+  #  eig <- eigen(cov_matrix)
+  #  max_eigenvector <- eig$vectors[, 1]
+  #  angle <- atan2(max_eigenvector[2], max_eigenvector[1]) * 180 / pi
+  #  return(angle)
+  #}
 
   # Scale factor based on chi-squared distribution for the desired coverage
   scale <- sqrt(qchisq(coverage, df = 2))
@@ -136,7 +139,14 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
   for (i in unique(clusteros)) {
     cluster_points <- coordinates[clusteros == i, ]
     cov_matrix <- cov(cluster_points[, c("DCA1", "DCA2")])
-    angle <- compute_angle(cov_matrix)
+
+    eig <- eigen(cov_matrix)
+    a_len <- sqrt(max(eig$values, 0)[1]) * scale
+    b_len <- sqrt(max(eig$values[2], 0)) * scale
+    angle <- atan2(eig$vectors[2, 1], eig$vectors[1, 1]) * 180 / pi
+
+
+    #angle <- compute_angle(cov_matrix)
 
     # Compute the mean (center) of the current cluster
     center_x <- mean(cluster_points$DCA1)
@@ -149,8 +159,8 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
       border=color_with_alpha
     }
     draw.ellipse(x = center_x, y = center_y,
-                 a = sd(cluster_points$DCA1) * scale,
-                 b = sd(cluster_points$DCA2) * scale,
+                 a = a_len,
+                 b = b_len,
                  border = border, col = color_with_alpha, lwd = 1, angle = angle)
 
     # Optionally add cluster labels in colored boxes
