@@ -16,7 +16,7 @@
 #' @param showWords Logical. If \code{TRUE}, words are printed inside the ellipse. Default is \code{FALSE}.
 #' @param newcoords Named list. Words to manually reposition in the plot.
 #'  Format: \code{list(word1 = list(x = 1.0, y = 0.5))}. Default is an empty list.
-#' @param wordnumber Integer. Number of words to be displayed per cluster. Default is 5.
+#' @param wordsDisplayed Integer. Number of words to be displayed per cluster. Default is 5.
 #' @param cex Numeric. Font size of the words. Default is 1.
 #' @param font Integer. Font type for the displayed words. See \code{\link[graphics]{par}} for details.
 #'  Default is 2 (bold).
@@ -63,23 +63,21 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' data(transformative_abundance)
 #' model <- run_dca(transformative_abundance)
 #'
 #' #considering only five clusters
 #' wc <- wordcloud(transformative_abundance, k = 5, model = model,
-#'                 wordnumber = 5)
+#'                 wordnumber = 10)
 #'
 #' # now only the elipse plot is displayed
 #' ellipsis_plot(
 #'   subsets = wc$subsets,
 #'   final_cluster = wc$final_cluster, showWords = TRUE, opacity = 0.2
 #' )
-#' }
 #'
 ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = FALSE, showWords = FALSE,
-                          newcoords = list(), wordnumber = 5, cex = 0.8, font = 2, opacity = 0.8,  coverage = 0.95, with_labels = FALSE, group_labels = NULL,
+                          newcoords = list(), wordsDisplayed = 5, cex = 0.8, font = 2, opacity = 0.8,  coverage = 0.7, with_labels = FALSE, group_labels = NULL,
                           colbox_text = "black", labelx = c(), labely = c(), adjx_max = 0, adjx_min = 0, adjy_max = 0,adjy_min = 0, size_text_label = 0.7, width_label = 0.3){
 
   # Default palette
@@ -109,7 +107,7 @@ ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = F
   # Optionally plot words inside ellipses
   if (isTRUE(showWords)) {
     for (i in 1:length(subsets)) {
-      for (j in 1:wordnumber) {
+      for (j in 1:wordsDisplayed) {
         word <- rownames(subsets[[i]])[c(j)]
         if (word %in% names(newcoords)) {
           x <- newcoords[[word]]$x
