@@ -13,8 +13,6 @@
 #' @param k Integer. The number of clusters.
 #' @param model A \code{decorana} object produced by \code{link{run_dca}}.
 #' @param wordnumber Integer. Number of top indicator words to list per cluster. Default is 5.
-#' @param colores Character vector. Colors for each cluster. Must have at least
-#'  \code{k} elements. If \code{NULL} (default), a built-in palette is used.
 #' @param pvalue Numeric. Maximum p-value threshold for filtering words from the indicator
 #'  analysis. Default is 0.05.
 #' @param abmean Numeric. Minimum mean abundance indictor for a word to be included.
@@ -48,16 +46,8 @@
 #' colnames(gdf)
 #' head(gdf)
 #'
-#'
-groups_df <- function(x, k, model, wordnumber = 5,colores = NULL,
+groups_df <- function(x, k, model, wordnumber = 5,
                       pvalue = 0.05, abmean = 0.01) {
-
-  # Default palette
-  if (is.null(colores)) {
-    colores <- c("#FF0000","#008000","#800000","#0000FF","#9400D3","#FF00FF","#FFD700",
-                 "#7FFF00","#FFA500","#000080","#A52A2A","#00CED1","#8B4513","#DC143C",
-                 "#DA70D6","#D2691E","#00CED1","#9400D3","#ADFF2F","#FF69B4","#CD5C5C")
-  }
 
   # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
