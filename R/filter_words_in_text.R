@@ -47,6 +47,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # Disclaimer: Some examples rely on example data provided with this package.
 #' # All example PDFs and text files were authored by the creators of this package.
 #'
@@ -78,6 +79,7 @@
 #'
 #' # Clean up
 #' unlink(temp_txt_dir, recursive = TRUE)
+#' }
 #'
 #' \dontrun{
 #' # Example 2: Extract clean text from user-provided text files
