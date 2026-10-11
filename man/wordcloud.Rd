@@ -23,7 +23,7 @@ wordcloud(
 )
 }
 \arguments{
-\item{x}{Data frame. The abundance table with words as rows and articles as columns.
+\item{x}{Data frame. The abundance table with words as rows and documents as columns.
 All columns must be numeric. The table should not be scaled or normalized beforehand.
 It is recommended to apply an incidence threshold using
 \code{\link{optimal_incidence}} before passing the table to this function.}

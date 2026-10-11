@@ -32,7 +32,7 @@ indicator of zero, the respective cluster arrangement should not be considered.
 \examples{
 data(transformative_abundance)
 #Selecting 6 clusters
-cluster_indicators(transformative_abundance, k = 5)
+cluster_indicators(transformative_abundance, k = 6)
 
 }
 \seealso{

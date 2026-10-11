@@ -4,15 +4,7 @@
 \alias{groups_df}
 \title{Create a summary data frame of clusters, articles, and top words.}
 \usage{
-groups_df(
-  x,
-  k,
-  model,
-  wordnumber = 5,
-  colores = NULL,
-  pvalue = 0.05,
-  abmean = 0.01
-)
+groups_df(x, k, model, wordnumber = 5, pvalue = 0.05, abmean = 0.01)
 }
 \arguments{
 \item{x}{Data frame. The abundance table with words as rows and articles as columns.
@@ -25,9 +17,6 @@ before passing the table to this function.}
 \item{model}{A \code{decorana} object produced by \code{link{run_dca}}.}
 
 \item{wordnumber}{Integer. Number of top indicator words to list per cluster. Default is 5.}
-
-\item{colores}{Character vector. Colors for each cluster. Must have at least
-\code{k} elements. If \code{NULL} (default), a built-in palette is used.}
 
 \item{pvalue}{Numeric. Maximum p-value threshold for filtering words from the indicator
 analysis. Default is 0.05.}
@@ -63,7 +52,6 @@ gdf <- groups_df(transformative_abundance, k = 5, model = model)
 dim(gdf)
 colnames(gdf)
 head(gdf)
-
 
 }
 \seealso{
