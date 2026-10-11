@@ -29,7 +29,7 @@
 #' @examples
 #' data(transformative_abundance)
 #' #Selecting 6 clusters
-#' cluster_indicators(transformative_abundance, k = 5)
+#' cluster_indicators(transformative_abundance, k = 6)
 #'
 cluster_indicators <- function(x,k){
 
