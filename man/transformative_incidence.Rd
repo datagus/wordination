@@ -17,7 +17,7 @@ Derived from the 149-document corpus underlying the systematic
 review by Rodríguez Aboytes JG, Barth M (2020). Transformative learning
 in the field of sustainability: a systematic literature review
 (1999-2019). \emph{Int J Sustain High Educ} 21(5):993-1013.
-\url{https://doi.org/10.1108/ijshe-05-2019-0168}. The raw text files
+\doi{https://doi.org/10.1108/ijshe-05-2019-0168}. The raw text files
 are bundled with this package and accessible via
 \code{system.file("extdata", "tl_corpus", package = "wordination")}.
 }
