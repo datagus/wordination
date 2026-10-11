@@ -11,11 +11,11 @@ ellipsis_plot(
   withborder = FALSE,
   showWords = FALSE,
   newcoords = list(),
-  wordnumber = 5,
+  wordsDisplayed = 5,
   cex = 0.8,
   font = 2,
   opacity = 0.8,
-  coverage = 0.95,
+  coverage = 0.7,
   with_labels = FALSE,
   group_labels = NULL,
   colbox_text = "black",
@@ -47,7 +47,7 @@ Default is \code{FALSE}.}
 \item{newcoords}{Named list. Words to manually reposition in the plot.
 Format: \code{list(word1 = list(x = 1.0, y = 0.5))}. Default is an empty list.}
 
-\item{wordnumber}{Integer. Number of words to be displayed per cluster. Default is 5.}
+\item{wordsDisplayed}{Integer. Number of words to be displayed per cluster. Default is 5.}
 
 \item{cex}{Numeric. Font size of the words. Default is 1.}
 
@@ -105,7 +105,7 @@ model <- run_dca(transformative_abundance)
 
 #considering only five clusters
 wc <- wordcloud(transformative_abundance, k = 5, model = model,
-                wordnumber = 5)
+                wordnumber = 10)
 
 # now only the elipse plot is displayed
 ellipsis_plot(
