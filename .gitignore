@@ -3,3 +3,4 @@
 *.Rhistory
 .positai
 running_script_dev.R
+inst/doc

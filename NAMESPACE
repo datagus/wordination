@@ -16,41 +16,29 @@ export(show_pos_tags)
 export(wordcloud)
 export(wordendro)
 importFrom(cluster,agnes)
-importFrom(dendextend,
-  color_branches,
-  get_subdendrograms
-)
-importFrom(grDevices,
-  boxplot.stats,
-  col2rgb,
-  rgb
-)
-importFrom(graphics,
-  barplot,
-  par,
-  points,
-  rect,
-  strheight,
-  strwidth,
-  text
-)
+importFrom(dendextend,color_branches)
+importFrom(dendextend,get_subdendrograms)
+importFrom(grDevices,boxplot.stats)
+importFrom(grDevices,col2rgb)
+importFrom(grDevices,rgb)
+importFrom(graphics,barplot)
+importFrom(graphics,par)
+importFrom(graphics,points)
+importFrom(graphics,rect)
+importFrom(graphics,strheight)
+importFrom(graphics,strwidth)
+importFrom(graphics,text)
 importFrom(labdsv,indval)
 importFrom(plotrix,draw.ellipse)
-importFrom(stats,
-  as.dendrogram,
-  cov,
-  cutree,
-  qchisq,
-  sd
-)
+importFrom(stats,as.dendrogram)
+importFrom(stats,cov)
+importFrom(stats,cutree)
+importFrom(stats,qchisq)
+importFrom(stats,sd)
 importFrom(tools,file_path_sans_ext)
-importFrom(udpipe,
-  udpipe_annotate,
-  udpipe_download_model,
-  udpipe_load_model
-)
-importFrom(utils,
-  setTxtProgressBar,
-  txtProgressBar
-)
+importFrom(udpipe,udpipe_annotate)
+importFrom(udpipe,udpipe_download_model)
+importFrom(udpipe,udpipe_load_model)
+importFrom(utils,setTxtProgressBar)
+importFrom(utils,txtProgressBar)
 importFrom(vegan,decorana)
