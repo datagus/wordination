@@ -25,11 +25,22 @@ library(wordination)
 
 # Introduction
 
-`wordination` helps you import a corpus of text documents, create an
-abundance table of words, run a detrended correspondence analysis on it,
-compute word abundance and incidence statistics, and cluster the
-respective documents based on their words which can be visualized in a
-wordcloud.
+`wordination` helps you to find gradients and groups in a sample of text
+documents.
+
+The analysis includes the following steps:
+
+- Step 1: import a corpus of text documents
+- Steps 2-4: create a clean abundance table of words which stores how
+  often each word appears in each document
+- Step 5: run a detrended correspondence analysis on the abundance table
+  to find gradients in your text corpus
+- Step 6: cluster the documents based on their words to find groups in
+  your text corpus and choose an appropriate number of groups
+- Step 7: compute word abundance and incidence statistics to see which
+  words characterize each group and how unique or generic each group is
+- Steps 8-11: cluster the documents and visualize the groups in a
+  wordcloud
 
 This vignette walks through a complete workflow using a bundled example
 corpus of 149 documents from a systematic literature review on
