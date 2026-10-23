@@ -541,7 +541,8 @@ But how to select the number of groups for the analysis? There are four
 things to look at:
 
 - **Balanced bars** within a cluster arrangement indicate that the
-  arrangement splits the corpus into groups of comparable size.
+  arrangement splits the corpus into groups of comparable size which is often 
+  preferable.
 - **One very tall bar and several tiny ones** indicate that a large,
   heterogeneous group is being kept together while a few outlying
   documents are separated.
@@ -555,19 +556,19 @@ things to look at:
 Ultimately, you have to follow the bars' partition. For example, start
 at number of clusters k = 2. You will see that there is one big red bar
 and a much smaller green one. When k = 3 the big red bar was split into
-two: a smaller red bar and a higher green bar. But notice that the third
+two: a smaller red bar and a higher green bar. The third
 bar (the brown one) is the same as the green bar when k = 2, it stayed
 the same and only changed color. When k = 4, notice that the red bar
 from k = 3 stayed the same, but the green one was split into a smaller
 green one and a new brown one. The blue bar is the same as the brown one
-in k = 3 and the green one in k = 2. If you follow that particular bar,
+in k = 3 and the green one in k = 2. Both of the splits (from 2 to 3, and from 3 to 4 clusters) resulted into the biggest group being split into two smaller groups and therefore more similar group sizes which seems reasonable. In contrast, when k = 5, a small part of the green cluster was split off resulting in a more uneven distribution of group sizes. If you want to look at numerous more detailed groups rather than few big groups, it is easier to argue to do that consistently across all groups. In this case, if you look at the green cluster in more detail by splitting it into two separate groups, why not also look at the red cluster in more detail? You can do this by choosing the number of clusters where the red bar is split into two groups resulting again in a more balanced distribution of group sizes. This is the case here for k = 6 number of clusters and will be chosen as **initial** number of groups for this example analysis. It is important to qualitatively check with the word clouds later if the chosen number of clusters leads to groups that make sense based on your knowledge of the field, and this can overrule your initial decision made here.
+
+Following the bars' partition, you can also see stability across arrangements. Notice that the green bar in k = 2 is the same as the brown one
+in k = 3 and the blue one in k = 4. If you follow that particular bar,
 you will see that it stays the same as k+1 continues, meaning that that
 specific group is very coherent. That particular bar is green in k = 2,
 brown in k = 3, blue in k = 4, purple in k = 5, pink in k = 6 and k = 7,
-and yellow in k = 8-10.
-
-You may wonder why this bar was the same size but different colors? Here
-is the trick. The algorithm adds a new bar for each clustering
+and yellow in k = 8-10. You may wonder why this bar was the same size but different colors? Here is the trick. The algorithm adds a new bar for each clustering
 arrangement, that is, when a bar is split. Because the algorithm
 performs the clustering from scratch, independently from the previous
 clustering arrangement, the new bar is added next to the split bar or at
