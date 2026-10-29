@@ -3,8 +3,11 @@ title: "Getting started with wordination"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting started with wordination}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -20,25 +23,46 @@ knitr::opts_chunk$set(
 library(wordination)
 ```
 
-
 # Introduction
 
-`wordination` helps you import a corpus of text documents, create an abundance table of words, run a detrented correspondance analysis of it, compute word 
-abundance and incidence statistics, and cluster the respective documents containing the word which can be visualized in a wordcloud
+`wordination` helps you to find gradients and groups in a sample of text
+documents.
 
-This vignette walks through a complete workflow using a bundled example 
-corpus of 149 documents from a systematic literature review on 
-transformative learning in sustainability research (Rodríguez Aboytes & 
+The analysis includes the following steps:
+
+- Step 1: import a corpus of text documents
+- Steps 2-4: create a clean abundance table of words which stores how
+  often each word appears in each document
+- Step 5: run a detrended correspondence analysis on the abundance table
+  to find gradients in your text corpus
+- Step 6: cluster the documents based on their words to find groups in
+  your text corpus and choose an appropriate number of groups
+- Step 7: compute word abundance and incidence statistics to see which
+  words characterize each group and how unique or generic each group is
+- Steps 8-11: cluster the documents and visualize the groups in a
+  wordcloud
+
+This vignette walks through a complete workflow using a bundled example
+corpus of 149 documents from a systematic literature review on
+transformative learning in sustainability research (Rodríguez Aboytes &
 Barth, 2020).
 
 # 1. Importing a text corpus - import_words.R
 
-After parsing the PDFs and saving them as text files (.txt), you need to save them in a specific directory.Then, you can import them with the `import_words()` function which reads every text file in the directory and returns alist containing the parsed articles, their titles, the count of 
-successfully imported papers, and article lengths.
+## Overview
 
-Basically what this function does is to take one document at a time, and create a dataframe with two columns: the words and their frequency. 
+After parsing the PDFs and saving them as text files (.txt), you need to
+save them in a specific directory. Then, you can import them with the
+`import_words()` function which reads every text file in the directory
+and returns a list containing the parsed articles, their titles, the
+count of successfully imported articles, and article lengths. Basically
+what this function does is to take one document at a time, and create a
+dataframe for each with two columns: the words and their frequency.
 
-The only mandatory argument you need to indicate is `folder_path`, which is the directory path containing the text files to import.
+## Input - mandatory arguments
+
+The only mandatory argument you need to indicate is `folder_path`, which
+is the directory path containing the text files to import.
 
 ```{r}
 library(wordination)
@@ -50,11 +74,24 @@ output$npapers
 boxplot(output$article_length)
 ```
 
-Notice that running the function as indicated above takes `remove_outliers = FALSE`. If you want to remove those documents whose unique word counts are unusually high or low relative to the rest of the corpus, set `remove_outliers = TRUE`
+## Input - optional arguments / adjustments
 
-The rationale behind the `remove_outliers` parameter is that documents with similar extreme high or low word counts tend to cluster together, forming an artifact that will cause noise when running the hierarchical agglomerative clustering. Our general recommendation is always to check visually the distribution of the word count before setting this parameter to TRUE or FALSE. In some case, depending on the sample size, it could be that the user finds the number of excluded articles too high. 
+Notice that running the function as indicated above takes
+`remove_outliers = FALSE`. If you want to remove those documents whose
+unique word counts are unusually high or low relative to the rest of the
+corpus, set `remove_outliers = TRUE`
 
-If the user wants to be more selective with the documents to be excluded, the user can indicate the names of the file (without path) as a character vector in the `remove_papers` paremeter.  
+The rationale behind the `remove_outliers` parameter is that documents
+with similar extreme high or low word counts tend to cluster together,
+forming an artifact that will cause noise when running the hierarchical
+agglomerative clustering. Our general recommendation is to always check
+the distribution of the word count visually before setting this
+parameter to TRUE or FALSE. In some cases, depending on the sample size,
+you might find the number of excluded articles too high.
+
+If you want to be more selective with the documents to be excluded, you
+can indicate the names of the file (without path) as a character vector
+in the `remove_papers` parameter.
 
 ```{r}
 example_dir <- system.file("extdata", "tl_corpus", package = "wordination")
@@ -69,15 +106,32 @@ output$npapers
 boxplot(output$article_length)
 ```
 
-There could be some special cases where the text files are not so clean and there are some string characters that the user don't want to import. For that, the user would need to create a text file, write the undesired words or strings there and indicate the respecive directory path in the parameter `words_to_ignore`
+There could be some special cases where the text files are not as clean
+and there are some string characters that you don't want to import. For
+that, you would need to create a text file, write the undesired words or
+strings there and indicate the respective directory path in the
+parameter `words_to_ignore`.
 
 # 2. Creating the abundance table - abundance_table.R
 
-The abundance table is the fundamental unit of this package. Drawing on vegetation analysis, this abundance table is equivalent to having the vegetation species as row indexes and the plots or sites where they were observed as columns, then in the respective cells is the value of the respective count or frequency of that species in that particular plot.
+## Overview
 
-In this sense, the abundance table in the context of this package, the words are located in the row indexes, the documents in the columns and in the respective cells is the count of an specific word in one particular document. 
+The abundance table is the fundamental unit of this package. Drawing on
+vegetation analysis, this abundance table is equivalent to having the
+vegetation species as row indexes and the plots or sites where they were
+observed as columns, then in the respective cells is the value of the
+respective count or frequency of that species in that particular plot.
 
-To create the abundance table, you only need to use the list objects you got from the `import_words()`function and put them as arguments of the `abundance_table()` funnction as it is shown below:
+In this sense, the abundance table in the context of this package has
+words located in the row indexes, documents in the columns and in the
+respective cells is the count of a specific word in one particular
+document.
+
+## Input - mandatory arguments
+
+To create the abundance table, you only need to use the list objects you
+got from the `import_words()`function and put them as arguments of the
+`abundance_table()` function as shown below:
 
 ```{r}
 invisible(capture.output(
@@ -93,16 +147,28 @@ words_df <- result$abtab
 incidence_df <- result$moritz
 ```
 
-The `abundance_table()` is a very straightforward function which compresses the list of dataframes of the object `output$articles_dfs` into a dataframe which size is the number of unique words imported by the number of the documents imported. Obviously, the main returning object is function is given by `result$abtab`, which is the abundance table itself. 
-Nonetheless, there is another object namely the incidence table which is given by `result$moritz`. The incidence table is another dataframe which three columns: 
+## Reading the output
 
-  *words - the unique words themselves
-  *incidence - how many times the respective word appeared oncen accross all articles
-  *total_abundance - the total frequency of the words in all articles
+The function `abundance_table()` compresses the list of dataframes of
+the object `output$articles_dfs` into a dataframe which size is the
+number of unique words imported by the number of the documents imported.
+The main object returned by this function is given by `result$abtab`,
+which is the abundance table itself. Nonetheless, there is another
+object namely the incidence table which is given by `result$moritz`. The
+incidence table is another dataframe with three columns:
 
-This incidence table is very helpful to get rid of words with low incidence as it will be explained in the next section. 
+- words - the unique words themselves
+- incidence - how many times the respective word appeared at least once
+  across all articles
+- total_abundance - the total frequency of the respective word in all
+  articles
 
-Moreover, `wordination` has a built-in abundance table and an incidence table derived from the example in the previous function. Once loaded the package, the user can load the data
+This incidence table is very helpful to get rid of words with low
+incidence as explained in the next section.
+
+Moreover, `wordination` has a built-in abundance table and an incidence
+table derived from the example in the previous function. Once you loaded
+the package, you can load the data:
 
 ```{r}
 data("transformative_abundance")
@@ -114,18 +180,91 @@ View(transformative_incidence)
 
 # 3. Finding the optimal incidence - optimal_incidence.R
 
-Here we arrive at a crucial point in the use of the package. Although we are drawing on the vegetation abundance tables but translating them to text corpora, and that we are treating similary words as the species and documents as sites/plots, they are intrinsically different. In other words, the amount of vegetation or animal species one can found in an abundance table is limited and in the order of tenths or hundreds maximum. 
+## Overview
 
-In our case, the abundance tables can be extreme large, containing thousands of words. This leads to the saturation of computational resources when running the ordination, clustering and calculation of species indicator abundance. Moreover, plants and animal species exist and are clearly defined, they are just there. In contrast, when analysis literature corpora, we need to extract words by parsing PDFs. The process of parsing PDFs is most of times incomplete or inacurate, in other words, due to the complex layout of PDFs, not all words are extracted 100% cleanly. Therefore, the abundance table will always have incomplete words, cutout words, or words in another languages and made it through the final filters in the `import_words()` function. 
+Here you arrive at a crucial point in the use of the package. Although
+it draws on vegetation abundance tables and translates them to text
+corpora, and treats words as species and documents as plots, they are
+intrinsically different. In other words, the amount of vegetation or
+animal species one can find in an abundance table is limited and in the
+order of tenths or hundreds maximum.
 
-In conventional species-plots abundance tables, there could be the case that some species are rare because they are rarely found anywhere. In comparison to words, there are indeed rare words which can be very specialized terms that found only in specific documents or type of literature, however, this rareness is overlapped by other words, that are not real words, but that appear as "rare" in the abundance table. 
+In the text analysis case, the abundance tables can be extremely large
+containing thousands of words. This leads to the saturation of
+computational resources when running the ordination, clustering and
+calculation of species indicator abundance. Moreover, plants and animal
+species exist and are clearly defined, they are just there. In contrast,
+when analysing literature corpora, words need to be extracted by parsing
+PDFs. The process of parsing PDFs is most of times incomplete or
+inaccurate. In other words, due to the complex layout of PDFs not all
+words are extracted 100% cleanly. Therefore, the abundance table will
+always have incomplete words, cutout words, or words in another
+languages which made it through the final filters in the
+`import_words()` function.
 
-So here comes the second most important decision that the user has to make (the first one was the removing of outliers): what to do with those rare words? For that, we have added another the function `optimal_incidence`. So, incidence is an indicator of how many times a certain word appeared at least once across all articles. For example, let's imagine a abundance table of 1000 words and 100 documents. Let's imagine, that one of these words is "petrichor", and by reading the abundance table, we see that "petrichor" appeared 30 times in document "34.txt", 22 times in document "94.txt" and 11 times in document "98.txt". The incidence of "petrichor" in this sample is three (it appeared at least once but only in three documents). There is another word (which is not) "didate" which resulted from the word "candidate" but it was cut off. So, in this sample, "didate" appeared once in document "25.txt", once in document "45.txt" and once in document "49.txt". Therefore, the incide of "didate" is also three.
-In this sense "petrichor" and "didate" can be considered rare words but "didate" doesn't exist. So, one way to proceed in this case, which will be also explained in the next function `custom_abundance()` is to get rid of specific words. One can check the `incidence_table` and go word by word to see if they really exist or not. The problem is that the sample can contain thousands of words, and checking indivually words with low incidence may take forever. Ultimately, the maximum incidence possible is equal to number of documents in the sample, that is, that in an abundance table of 1000 words and 100 documents, the maximum posible incidence is 100 regardless whether the word's frequency is 1x10^6 across all articles.
+In conventional species-plots abundance tables, there could be the case
+that some species are rare because they are rarely found anywhere. In
+comparison, there are indeed rare words which can be very specialized
+terms found only in specific documents or type of literature, however,
+this rareness is overlapped by other words, that are not real words, but
+that appear as "rare" in the abundance table.
 
-As a solution, the `optimal_incidence()` function offers a bold but effective solution: to identify the incidence threshold to get the most abundand words. The function requires only two arguments, the abundance table itself and the most_common. For instance, sticking to the same example of an abundance table of 1000 words and 100 documents, setting the parameter `most_common=50` means that the function sorts the incidence table from highest to lowest and it locates the index that correspond to the top 50% words with highest incidence. Concretely in this example, the index will be the row 500th and the function locates the corresponding incidence value. That incidence value is the threshold that would correspond to get the top 50% most abundat words of the sample. However, it could be that the threshold value is not specific to the word located in the 500th row, that is, words in the index range of 450 to the 550 may have   may have also the threshold incide value.
+So here comes the second most important decision that you have to make
+(the first one was the removing of outliers): what to do with those rare
+words? For that, there is another function `optimal_incidence`.
+Incidence is an indicator of how many times a certain word appeared at
+least once across all articles. For example, let's imagine an abundance
+table of 1000 words and 100 documents. Let's imagine, that one of these
+words is "petrichor", and by reading the abundance table, you see that
+"petrichor" appeared 30 times in document "34.txt", 22 times in document
+"94.txt" and 11 times in document "98.txt". The incidence of "petrichor"
+in this sample is three (it appeared at least once in three documents).
+There is another word (which is not) "didate" which resulted from the
+word "candidate" but it was cut off. In this sample, "didate" appeared
+once in document "25.txt", once in document "45.txt" and once in
+document "49.txt". Therefore, the incidence of "didate" is also three.
+In this sense "petrichor" and "didate" can be considered rare words but
+"didate" doesn't exist.
 
-The code below uses the built-in data for practical reasons. When checking the dimensions or shape of `words_df`, it is shown that the abundance table has 7090 words. Setting the `most_common` parameter to 50 means that the function locate the row index at the 3545th position which corresponding incidence value is 2. However, there are words above the 3545th position that also have the incidence value of 2. This function is very aggresive in the sense that it provides the "words_remaining" considering the words that have incidence value of three. In other words, the subselection of the abundance table excludes those words with threshold incidence value. So, the output shows a subselected sample of 3422 words, which means that the 3422th contain the first word with an incidence value higher than 2. 
+One way to proceed in this case, which will be explained in the next
+function `custom_abundance()`, is to get rid of specific words. One can
+check the `incidence_table` and go word by word to see if they really
+exist or not. The problem is that the sample can contain thousands of
+words, and checking words with low incidence individually may take
+forever. Ultimately, the maximum incidence possible is equal to the
+number of documents in the sample, that means in an abundance table of
+1000 words and 100 documents, the maximum possible incidence is 100
+regardless whether the word's frequency is 1x10\^6 across all articles.
+
+As a solution, the `optimal_incidence()` function offers a bold but
+effective solution: to identify the incidence threshold to get the most
+abundant words.
+
+## Input - mandatory arguments
+
+The function requires only two arguments, the abundance table itself and
+`most_common`. For instance, setting the parameter most_common=50 means
+that the function sorts the incidence table from highest to lowest and
+locates the index that corresponds to the top 50% words with highest
+incidence.
+
+## Functionality
+
+The code below uses the built-in data for practical reasons. Checking
+the dimensions of `words_df` shows that the abundance table has 7090
+words. In this example, setting the `most_common` parameter to 50 means
+that the function locates the row index at the 3545th position which
+corresponding incidence value is 2. That incidence value is the
+threshold that would correspond to get the top 50% most abundant words
+of the sample. However, the threshold value is not specific to the word
+located in the 3545th row. There are words above and below the 3545th
+position that also have the incidence value of 2. This function is very
+aggressive in the sense that it provides the "words_remaining" including
+only words that have incidence value of 3 or higher. In other words, the
+subselection of the abundance table excludes those words with threshold
+incidence value. So, the output shows a subselected sample of 3422
+words, which means that the 3422th row contains the first word with an
+incidence value higher than 2.
 
 ```{r}
 data("transformative_abundance")
@@ -134,26 +273,49 @@ dim(words_df)
 optimal_incidence(words_df, most_common=50)
 ```
 
-The code below shows the output when changing the parameter `most_common` to 20. The incidence threshold value changes to 11, resulting in a subselected dataframe 1380 words. 
+The code below shows the output when changing the parameter
+`most_common` to 20. The incidence threshold value changes to 11,
+resulting in a subselected dataframe with 1380 words.
 
 ```{r}
 optimal_incidence(words_df, most_common=20)
 ```
 
-Based on several experiments with this function with different samples of literature corpora, we have found that the best sample size is around 2000 words. A bigger sample would include words with low incidence leading to artifacts in the clustering process as it consider rarer words; and a bigger sample also entails more computational resources required. A smaller sample cannot provide enough variation for the ordination to work properly. In this sense, if we were to find a sample size of 2000 for this example, we would need to play around with the function. 
+Based on several experiments with this function with different samples
+of literature corpora, we have found that the best sample size is around
+2000 words. A bigger sample would include words with low incidence
+leading to artifacts in the clustering process as it considers rarer
+words. A bigger sample also entails more computational resources
+required. A smaller sample cannot provide enough variation for the
+ordination to work properly. In this sense, if you were to find a sample
+size of 2000 for this example, you would need to play around with the
+function.
 
-Setting the `most_common` parameter to 30 would lead to a sample size of 1987 words with an incidence threshold of 6. We recommend to find and report the `most_common` parameter value as 5, 10, 15, 20, etc, as it is easier to report and justify to get the 20% of the most abundant words than getting the 23% of the most abundant words. 
+Setting the `most_common` parameter to 30 would lead to a sample size of
+1987 words with an incidence threshold of 6. We recommend to find and
+report the `most_common` parameter value as 5, 10, 15, 20, etc., as it
+is easier to report and justify to get the 20% most abundant words than
+to get the 23% most abundant words.
 
 ```{r}
 optimal_incidence(words_df, most_common=30)
 ```
 
-At the end of the end, this function only provides some orientation to the user to decide which threshold value to use for the next function, `custom_abundance`, which is where the subselection of the abundance table occur. 
+## Reading the output
 
+Ultimately, this function only provides some orientation to decide which
+threshold incidence value to use for the next function,
+`custom_abundance`, which is where the subselection of the abundance
+table occurs.
 
 # 4. Subselecting and customizing the abundance table - custom_abundance.R
 
-Continuing with the subselection of the abundance table, let's consider that we want to use the threshold incidence of 6, which was given by the last example of the `optimal_incidence()` function. We can now use this value to the get a new abudance table as shown below:
+## Overview
+
+Continuing with the subselection of the abundance table, let's consider
+that you want to use the threshold incidence of 6, which was given by
+the last example of the `optimal_incidence()` function. You can now use
+this value to get a new abundance table as shown below:
 
 ```{r}
 data("transformative_abundance")
@@ -165,7 +327,28 @@ dim(words_df)
 dim(words_df_custom)
 ```
 
-Note that only `incidence = 6` was specified while the other parameter values took the default values. To continue using the package through the ordination, clustering and indicator analsysis functions, the `words_df_custom` is enough. However, under the user's own concpetual justification, it is possible to remove specific words from the original abundance table, as hinted in the sections above. For example, taking a detailed look at the `incidence_df_custom`, we may consider that the words `herein` (row index 1893, with an incidence value of 7 and total abundance of 19) and word `half` (row index 487, with an incidence value of 45 and total abundance of 62), are irrelevant for our analysis. We can remove them easily with the `drop_words` parameter as shown below:
+## Input - mandatory arguments
+
+Note that only `incidence = 6` was specified while the other parameter
+values took the default values. To continue using the package through
+the ordination, clustering and indicator analysis functions, the
+`words_df_custom` is enough. We strongly recommend to keep the other
+parameters (`site_correction`, `multiplier` and `logscaling`) at default
+values because the subsequent functions expect the abundance table in
+raw form and apply their own customizations where needed. Make sure to
+consistently use the same abundance table for all subsequent functions
+to avoid misalignment.
+
+## Input - optional arguments / adjustments
+
+However, under your own conceptual justification, it is possible to
+remove specific words from the original abundance table, as hinted in
+the sections above. For example, taking a detailed look at the
+`incidence_df_custom`, we may consider that the words `herein` (row
+index 1893, with an incidence value of 7 and total abundance of 19) and
+word `half` (row index 487, with an incidence value of 45 and total
+abundance of 62), are irrelevant for our analysis. We can remove them
+easily with the `drop_words` parameter as shown below:
 
 ```{r}
 custom <- custom_abundance(words_df, incidence=6, drop_words=c("herein","half"))
@@ -175,9 +358,24 @@ dim(words_df)
 dim(words_df_custom)
 ```
 
-We recommend, however, not to drop words at the beginning. In this example, the user would need to justify why `herein` and `half` were excluded from the beginning. Why these words and not others? Removing words at this stage has big implications, as well as with using the incidence, because it changes the ordination and the clustering process. Therefore, we recommend to apply only the incidence threshold, run the following functions and see if some specific words are interfering or making noise with the readabily ot the underlying structure of the corpora. 
+We recommend, however, not to drop words at the beginning. In this
+example, you would need to justify why `herein` and `half` were excluded
+from the beginning. Why these words and not others? Removing words at
+this stage has big implications, as does the choice of the incidence
+threshold, because it changes the ordination and the clustering process.
+Therefore, we recommend to apply only the incidence threshold, run the
+following functions and see if some specific words are interfering with
+or introducing noise into the readability or the underlying structure of
+the text corpus.
 
-This function has also other parameters which purpose is to experiment with the customization of the abundance table. These parameters and their respective usage are inside functions such as `run_dca()`, `clusters_barplot()`, `cluster_indicators` `wordcloud()`, `wordendro()`. These will be explained in their respective sections of the vignette. As stated in the documentation, the purpose of the `site_correction` parameter is to correct the size or amount of words that each document has. For example, a word may appear 50 times in document A and 100 times in document D, however, document A contains 500 words in total and document B 1000 thousand words. Therefore, the relative abundance of that word in document A is 10, and 10 in document B. 
+This function also has other parameters which purpose is to experiment
+with the customization of the abundance table. As stated in the
+documentation, the purpose of the `site_correction` parameter is to
+correct for the size or amount of words that each document has. For
+example, a word may appear 50 times in document A and 100 times in
+document D, however, document A contains 500 words in total and document
+B 1000 thousand words. Therefore, the relative abundance of that word is
+10 in document A, and 10 in document B.
 
 ```{r}
 custom <- custom_abundance(words_df, incidence=6, site_correction=TRUE)
@@ -187,7 +385,14 @@ dim(words_df)
 dim(words_df_custom)
 ```
 
-The `multiplier` parameter is just to make the relative abundances readable. The user can confirm that when running the code above, the frequencies in the abundance table are almost unreadble, for example, word "acceptance" is 0.00795756 in the first column (first document) and word "absence" is 0.002352941 in the second column (second document). Therefore the multiplier is needed if the user wants to make the custom abundance table more readable.
+The `multiplier` parameter is just to make the relative abundances
+readable. You can confirm that when running the code above, the
+frequencies in the abundance table are almost unreadable, for example,
+word "acceptance" is 0.00795756 in the first column (first document) and
+word "absence" is 0.002352941 in the second column (second document).
+Therefore the multiplier is needed if you want to make the custom
+abundance table more readable. For example, `multiplier = 1000` turns
+the relative frequency of "acceptance" into the readable form "7.95756".
 
 ```{r}
 custom <- custom_abundance(words_df, incidence=6, site_correction=TRUE, multiplier = 1000)
@@ -197,23 +402,81 @@ dim(words_df)
 dim(words_df_custom)
 ```
 
-The last parameter is `logscaling` which purpose is to apply a logarithmic scale to the frequencies. Because some words' counts may be extreme large in some documents but not very low in others, the ordination and clustering process are distorted. However, when applying this parameter, the custom abudance table becomes unreadable again. 
+The last parameter is `logscaling` which purpose is to apply a
+logarithmic scale to the frequencies. Because some words' counts may be
+extremely high in some documents but very low in others, the ordination
+and clustering process are distorted. However, when applying this
+parameter, the custom abundance table becomes unreadable again.
 
-In short, these last three parameters are for the user to experiment with the visualization of the abundance table, but for the formal analysis with the other functions we strongly recommend not to create the custom abundance table with these parameters, are they are already ingrained in the subsequent functions.
-
+In short, these last three parameters are for you to experiment with the
+visualization of the abundance table, but for the formal analysis with
+the other functions we strongly recommend not to create the custom
+abundance table with these parameters, as they are already ingrained in
+the subsequent functions.
 
 # 5. Applying the ordination: Running the Detrended Correspondence Analysis - run_dca.R
-The next step in the analysis of your text corpora using this package is the most important one: the ordination. 
 
-The abundance table is just a gigantic contingency table. The Chi-Square test takes that contingency table and tests whether the documents and the words are independent, that is, if the counts of the words in the documents have nothing to do with an underlying pattern that connects them, or the probability that such underlying pattern is given by pure chance. When engaging with this package is sort of assumed that inside the sample that is being analysis exist certain specific research communities, these research communities are revelead through the relationship between the word occurrences and the documents in which they appear. 
+## Overview
 
-In this sense, what you want to know your sample and the text corpora you have obtain is to which extent certain words are more similar (or disimilar) to one aother because of their ocurrences in certain documents. This can be measured through chi-square distances and be plotted in a 2D map. Here is where the Correspondence Analysis come into play.
+The next step in the analysis of your text corpus using this package is
+the most important one: the ordination.
 
-The Correspondence Analysis or CA calculates the eigenvectors, eigenvalues and coordinates (or scores) of the data given in contingency table. In the specific case of text corpora, the CA provides the words coordinates in a 2D map, where the first axis (x-axis) is the gradient that explains most of the variation regarding the position of the words, The second axis (y-axis) is the second gradient that explains the most of the variance without being redundant in relation to the first gradient. In practical terms, words have specific coordinates that live in a documents' space, which the CA reduced to two dimensions. The words that are closer or each other or similar coordinates is because their occurrences are similar in the same documents while at the same time not occurring so frequently or at all in other documents. In this sense, the words are a scattered in this documents' space and plotted in this 2D map in order to better visualize their similarity. The words located closer to the origin are the ones that are found similar proportions in most of the documents, while words appear on the extreme of the axes tell that they appear or are more distincts in a specific set of documents. 
+The abundance table is just a gigantic contingency table. The Chi-Square
+test takes that contingency table and tests whether the documents and
+the words are independent. In other words, it tests if the counts of the
+words in the documents have nothing to do with an underlying pattern
+that connects them, or the probability that such underlying pattern is
+given by pure chance. When engaging with this package, it is assumed
+that inside the sample that is analysed there exist certain specific
+research communities or groups. These research communities or groups are
+revealed through the relationship between the word occurrences and the
+documents in which they appear.
 
-However, the CA produces a mathematical artifact, which is that the second gradient or the y-axis is actually a sort of meta gradient of the first one resulting in a horshoe form. That is, the words located at the both extremes of the first gradient are located on similar position on the y-axis, because these extreme words are captured as one cateory, "the extreme category" and the rest of the words as the "not extreme category", which doesn't make sense at all. As a solution, to remove this artifact, the Detrented Correspondence Analysis is used. 
+In this sense, what you want to know about the text corpus you have
+obtained is to which extent certain words are more similar (or
+dissimilar) to one another because of their occurrences in certain
+documents. This can be measured through chi-square distances and be
+plotted on a 2D map. Here is where the Correspondence Analysis comes
+into play.
 
-The function used for the DCA is `run_dca()` but it is basically the `decorana()` function from the `vegan` package. The code goes as follows:
+## Functionality
+
+The Correspondence Analysis (CA) calculates the eigenvectors,
+eigenvalues and coordinates (or scores) of the data given in the
+contingency table. In the specific case of text corpora, the CA provides
+the words' coordinates on a 2D map, where the first axis (x-axis) is the
+gradient that explains most of the variation regarding the position of
+the words, The second axis (y-axis) is the gradient that explains the
+second most of the variance without being redundant in relation to the
+first gradient. In practical terms, words have specific coordinates that
+live in the documents' space, which the CA reduced to two dimensions.
+Words are closer to each other or have similar coordinates if they
+frequently occur in the same documents while at the same time not
+occurring frequently or at all in other documents. In this sense, the
+words are scattered in the documents' space and plotted in this 2D map
+in order to better visualize their similarity. Words located closer to
+the origin are the ones that are found in similar proportions in most of
+the documents. Words appearing on the extremes of the axes are more
+distinct in a specific set of documents.
+
+However, the CA produces a mathematical artifact, which is that the
+second gradient or the y-axis is actually a sort of meta gradient of the
+first one resulting in a horseshoe form. That is, the words located at
+both extremes of the first gradient are located on similar position on
+the y-axis because these extreme words are captured as one category,
+"the extreme category", and the rest of the words as the "not extreme
+category", which does not make sense at all. As a solution to remove
+this artifact the Detrended Correspondence Analysis is used. The
+function used for the DCA is `run_dca()` but it is basically the
+`decorana()` function from the `vegan` package.
+
+## Input - mandatory arguments
+
+The `run_dca()` function only requires the abundance table as input. To
+run the ordination, the abundance table must be in its raw counts which
+means that no `site_correction` and no `logscaling` must be applied to
+the abundance table before. The reason is that `run_dca()` handles these
+types of corrections internally. The code goes as follows:
 
 ```{r}
 data("transformative_abundance")
@@ -226,30 +489,83 @@ plot(model, type = "text", display="species")
 model
 ```
 
+## Reading the output
 
-From this output, it is worth mentionning the parameters from the `decorana()`function. The parameter `iweigh` allows to downweight the calculation of rare species. Because for the uniqueness of text corpora and the recommendation of removing rare words, this parameter was left as the default, `0` which means `no`. The other parameter is `ira`, which means indicates the type of calculation to be performed `0: detrended, 1: basic reciprocal averaging`. To remove the horseshoe effect, it is obvious that the detrended option is indicated. 
+From this output, it is worth mentioning the parameters of the
+`decorana()`function. The parameter `iweigh` allows to downweight the
+calculation of rare species. Because of the uniqueness of text corpora
+and the recommendation of removing rare words, this parameter was left
+as the default, `0` which means `no`. The other parameter is `ira`,
+which indicates the type of calculation to be performed
+`0: detrended, 1: basic reciprocal averaging`. To remove the horseshoe
+effect, it is obvious that the detrended option is indicated.
 
-The output also provides the amount of variation present in each gradient (or each DCA column). Because the package is intended for text corpora, this kind of data is very different in nature than vegetation or animal abundance data; therefore to interpret the amount of variation that the eigenvalues imply, the axis lenghts and turnover through ecological lenses won't make sense. Ultimately the ordination in the context of this package and its intended use case is to capture the blueprint of the variation that exists in the text corpora. 
+The output also provides the amount of variation present in each
+gradient (or each DCA column). Because the package is intended for text
+corpora, this kind of data is very different in nature than vegetation
+or animal abundance data. Therefore, to interpret the amount of
+variation that the eigenvalues imply, the axis lengths and turnover
+through ecological lenses will not make sense. Ultimately, the
+ordination in the context of this package and its intended use case is
+to capture the blueprint of the variation that exists in the text
+corpora.
 
-Finally, the `run_dca()` function contains other parameters: `drop_words=c(), incidence=0, logscaling=TRUE`. The first two only exist if the user wants to keep experimenting the the abundance table without using the selected abundance table saved into a specific object. The `logscaling` parameter is crucial because it is very likely that text corpora contain words with extreme counts in certain documents. These extreme counts overshadows the other occurrences and distorts the ordination. We strongly indicate `TRUE` to this parameters, which is the default value. 
+## Input - optional arguments / adjustments
 
-It is also important to know that to run the ordination, the abundance table must be in its raw counts. Which means that no `site_correction` must be applied to the abundance table. The reason is that `decorana()` handles this type of correction internally. 
-
+Finally, the `run_dca()` function contains other parameters:
+`drop_words=c(), incidence=0, logscaling=TRUE`. The first two only exist
+if you want to keep experimenting with the abundance table without using
+the selected abundance table saved into a specific object. The
+`logscaling` parameter is crucial because it is very likely that text
+corpora contain words with extreme counts in certain documents. These
+extreme counts overshadow the other occurrences and distort the
+ordination. To alleviate this problem, we strongly recommend to use
+`logscaling=TRUE` which is the default value.
 
 # 6. Clustering the documents: Deciding how many clusters to consider - clusters_barplot.R
 
-Note: the terms of clusters or groups will be used interchangeably
+## Overview
 
-After performing the detrended correspondence analysis, the next step is to cluster the documents. When documents are grouped by the vocabulary they use, one of the first practical questions is: **how many clusters should I keep?** There is rarely a single correct answer, but there are useful diagnostics. One of the simplest is to look at *how the sizes of the clusters change as the number of clusters grows*.
+*Note: The terms "clusters" and "groups" will be used interchangeably.*
 
-`clusters_barplot()` does exactly that. It:
+After performing the detrended correspondence analysis, the next step is
+to cluster the documents. When documents are grouped by the vocabulary
+they use, one of the first practical questions is: **how many clusters
+should I keep?** There is rarely a single correct answer, but there are
+useful diagnostics. One of the simplest is to look at *how the sizes of
+the clusters change as the number of clusters grows*.
+`clusters_barplot()` does exactly that.
 
-1. converts a word-by-article abundance table into relative frequencies per document,
-2. log-transforms the frequencies,
-3. clusters the articles hierarchically using Ward's method, specifically using ([`cluster::agnes()`](https://stat.ethz.ch/R-manual/R-devel/library/cluster/html/agnes.html)), and
-4. cuts the resulting tree at every level from 2 clusters up to `maxclusters`, drawing one group of bars per arrangement. Each bar is the number of documents in one cluster.
+## Functionality
 
-`clusters_barplot()` expects basically only the abundance table. It is crucial that the table should **not** be scaled or normalized beforehand: the function computes relative frequencies internally. Look at the example below, the`words_df_custom` was created again to overwriten any other unintentional modification to the table 
+`clusters_barplot()` applies the following steps:
+
+1.  converts raw counts of a word-by-article abundance table into
+    relative frequencies per document (per 1000 words),
+2.  applies a `log(x + 1)` transformation to reduce the influence of
+    frequent words and transposes the table so documents are rows.
+3.  clusters the articles hierarchically using Ward's method using
+    ([`cluster::agnes()`](https://stat.ethz.ch/R-manual/R-devel/library/cluster/html/agnes.html)),
+    and
+4.  cuts the resulting tree at every level from 2 clusters up to
+    `maxclusters`, drawing one group of bars per arrangement. Each bar
+    is the number of documents in one cluster.
+
+**Reproducibility**: Internally, the function calls `set.seed(123)`
+before clustering. Hierarchical clustering with Ward's method is
+deterministic, so results do not depend on the seed, but this makes the
+behaviour consistent if the method or its dependencies ever involve
+random steps. Note that calling `clusters_barplot()` therefore resets
+the random number generator state of your session.
+
+## Input - mandatory arguments
+
+`clusters_barplot()` expects basically only the abundance table. It is
+crucial that the table should **not** be scaled or normalized
+beforehand: the function computes relative frequencies internally. It is
+important that the abundance table used is the same as the one used in
+`run_dca()`. Look at the example below, the`words_df_custom` was created
+again to overwrite any other unintentional modification to the table.
 
 ```{r}
 data("transformative_abundance")
@@ -259,29 +575,91 @@ words_df_custom <- custom$new_abundance
 clusters_barplot(words_df_custom, maxclusters = 10)
 ```
 
-The x-axis shows the number of clusters in each arrangement (2, 3, ..., 10). Within each group, one bar per cluster is drawn, coloured consistently and listed in the legend as *Cluster 1*, *Cluster 2*, and so on. The y-axis shows the number of papers in that cluster.
+## Reading the output
 
-Reading the plot from left to right lets you see when a large cluster splits into balanced groups (often a sign of a meaningful partition) and when the algorithm starts to peel off tiny clusters containing just a handful of documents (often a sign that you have gone too far).
+The x-axis shows the number of clusters in each arrangement (2, 3, ...,
+10). Within each group, one bar per cluster is drawn, coloured
+consistently and listed in the legend as *Cluster 1*, *Cluster 2*, and
+so on. The y-axis shows the number of documents in that cluster.
 
-But how to select the number of groups for the analysis? There are four things to look at:
+Reading the plot from left to right lets you see when a large cluster
+splits into balanced groups (often a sign of a meaningful partition) and
+when the algorithm starts to peel off tiny clusters containing just a
+handful of documents (often a sign that you have gone too far).
 
-* **Balanced bars** within a cluster arrangement indicate that the arrangement splits the corpus into groups of comparable size.
-* **One very tall bar and several tiny ones** indicate that a large, heterogeneous group is being kept together while a few outlying documents are separated.
-* **Stability across arrangements**: if a cluster keeps roughly the same size when moving from number of clusters = *k* to *k + 1*, it is a coherent group. If a cluster is halved at every step, the data may not support that level of detail.
-* **Very small clusters** (one or two articles) usually mean that you have exceeded a reasonable number of clusters.
+But how to select the number of groups for the analysis? There are four
+things to look at:
 
-Ultimately, you have to follow the bars partition, for example, start from group number of clusters (k) = 2, you will see there is one big red bar and a much smaller green one; when k = 3 the big red bar was splitted into two: a smaller red bar and a higher green bar, but notice that the third bar (the brown one) is the same as the green bar when k = 2, it only stayed the same but changed the color. When k = 4, notice that red bar from k = 3 stayed the same, but the green one was splitted into a smaller green one and a new brown one; the blue bar is the same as the brown one in k=3, and the green one in k=2. If you follow that particular bar, you will see that it stays the same as k+1 continues, meaning that that specific group is very coherent. That particular bar green in k=2, brown in k=3, blue in k=4, purple in k=5, pink in k=6 and k=7, and yellow in k=8-10. 
+- **Balanced bars** within a cluster arrangement indicate that the
+  arrangement splits the corpus into groups of comparable size which is
+  often preferable.
+- **One very tall bar and several tiny ones** indicate that a large,
+  heterogeneous group is being kept together while a few outlying
+  documents are separated.
+- **Stability across arrangements**: if a cluster keeps roughly the same
+  size when moving from number of clusters = *k* to *k + 1*, it is a
+  coherent group. If a cluster is halved at every step, the data may not
+  support that level of detail.
+- **Very small clusters** (one or two articles) usually mean that you
+  have exceeded a reasonable number of clusters.
 
-You may wonder, why did this bar was the same size but different colors? Here is the trick. The algorithm adds a new bar for each clustering arrangement, that is, when a bar is split. Because the algorithm performs the clustering from scratch, independently from the previos clustering arrangement, the new bar is be added to the next to the split bar or at the end. Technically, the clustering algorithm doesn't take a previous clustering arrangement for its calculation, that is, for every new k, the bottom-up calculation is done from scratch. This will be clearer in the section of `wordendro()` where you can see the dendrograms and how articles cluster together. 
+Ultimately, you have to follow the bars' partition. For example, start
+at number of clusters k = 2. You will see that there is one big red bar
+and a much smaller green one. When k = 3 the big red bar was split into
+two: a smaller red bar and a higher green bar. The third bar (the brown
+one) is the same as the green bar when k = 2, it stayed the same and
+only changed color. When k = 4, notice that the red bar from k = 3
+stayed the same, but the green one was split into a smaller green one
+and a new brown one. The blue bar is the same as the brown one in k = 3
+and the green one in k = 2. Both of the splits (from 2 to 3, and from 3
+to 4 clusters) resulted into the biggest group being split into two
+smaller groups and therefore more similar group sizes which seems
+reasonable. In contrast, when k = 5, a small part of the green cluster
+was split off resulting in a more uneven distribution of group sizes. If
+you want to look at numerous more detailed groups rather than few big
+groups, it is easier to argue to do that consistently across all groups.
+In this case, if you look at the green cluster in more detail by
+splitting it into two separate groups, why not also look at the red
+cluster in more detail? You can do this by choosing the number of
+clusters where the red bar is split into two groups resulting again in a
+more balanced distribution of group sizes. This is the case here for k =
+6 number of clusters and will be chosen as **initial** number of groups
+for this example analysis. It is important to qualitatively check with
+the word clouds later if the chosen number of clusters leads to groups
+that make sense based on your knowledge of the field, and this can
+overrule your initial decision made here.
 
+Following the bars' partition, you can also see stability across
+arrangements. Notice that the green bar in k = 2 is the same as the
+brown one in k = 3 and the blue one in k = 4. If you follow that
+particular bar, you will see that it stays the same as k+1 continues,
+meaning that that specific group is very coherent. That particular bar
+is green in k = 2, brown in k = 3, blue in k = 4, purple in k = 5, pink
+in k = 6 and k = 7, and yellow in k = 8-10. You may wonder why this bar
+was the same size but different colors? Here is the trick. The algorithm
+adds a new bar for each clustering arrangement, that is, when a bar is
+split. Because the algorithm performs the clustering from scratch,
+independently from the previous clustering arrangement, the new bar is
+added next to the split bar or at the end. Technically, the clustering
+algorithm doesn't take a previous clustering arrangement for its
+calculation, that is, for every new k, the bottom-up calculation is done
+from scratch. This will be clearer in the section of `wordendro()` where
+you can see the dendrograms and how articles cluster together.
 
-Set `showCounts = TRUE` to print the number of articles above each bar. This is convenient for small numbers of clusters, but can become crowded when `maxclusters` is large. If you have a large monitor, it can be readable when you zoom the image even with a large sample
+## Input - optional arguments / adjustments
+
+Set `showCounts = TRUE` to print the number of articles above each bar.
+This is convenient for small numbers of clusters, but can become crowded
+when `maxclusters` is large. If you have a large monitor, it can be
+readable when you zoom the image even with a large sample.
 
 ```{r}
 clusters_barplot(words_df_custom, maxclusters = 10, showCounts = TRUE)
 ```
 
-If you prefer the numbers in tabular form, or want to keep a record of them, set `printclusters = TRUE`. The cluster sizes of each arrangement are printed to the console as the function runs.
+If you prefer the numbers in tabular form, or want to keep a record of
+them, set `printclusters = TRUE`. The cluster sizes of each arrangement
+are printed to the console as the function runs.
 
 ```{r}
 clusters_barplot(transformative_abundance,
@@ -289,8 +667,9 @@ clusters_barplot(transformative_abundance,
                  printclusters = TRUE)
 ```
 
-
-By default, a built-in palette of 21 colours is used. You can supply your own vector through `colores`. Its length must be **at least** `maxclusters`; otherwise the function stops with an informative error.
+By default, a built-in palette of 21 colours is used. You can supply
+your own vector through `colores`. Its length must be **at least**
+`maxclusters`; otherwise the function stops with an informative error.
 
 ```{r}
 my_colors <- grDevices::hcl.colors(8, palette = "Dark 3")
@@ -300,62 +679,84 @@ clusters_barplot(words_df_custom,
                  colores     = my_colors)
 ```
 
-## Reproducibility
-Internally, the function calls `set.seed(123)` before clustering. Hierarchical clustering with Ward's method is deterministic, so results do not depend on the seed, but this makes the behaviour consistent if the method or its dependencies ever involve random steps. Note that calling `clusters_barplot()` therefore resets the random number generator state of your session.
+## Practical recommendations
 
+- Start with a modest `maxclusters` (for example 8 to 10) and increase
+  it only if the plot suggests that finer partitions are still
+  meaningful.
+- This function is only informative for you to select a preliminary
+  number of clusters.
+- Use the number of clusters, k, and gather information for the
+  following functions: `cluster_indicators()`, `wordcloud()`, and
+  `wordendro()`.
+- Keep in mind that a qualitative reading of the most characteristic
+  words in each cluster is needed. The bar plot describes cluster
+  *sizes*, not their *quality*.
 
-For readers who want the details, this is the sequence of steps that the function performs:
-
-1. **Presence/absence and article length.** A presence/absence matrix is computed with `x > 0`, and the number of distinct words present in each article is obtained with `colSums()`.
-2. **Relative frequencies.** Each column of `x` is divided by that article-level value and multiplied by 1000.
-3. **Log transformation.** The table is transposed so that articles become rows, and `log(x + 1)` is applied to reduce the influence of very frequent words.
-4. **Hierarchical clustering.** `cluster::agnes(..., method = "ward")` builds the dendrogram.
-5. **Tree cuts.** `stats::cutree()` cuts the tree at every *k* from 2 to `maxclusters`, and `table()` counts the articles in each cluster.
-6. **Plot.** The counts are arranged in a matrix (arrangements in rows, clusters in columns) and drawn with `graphics::barplot(beside = TRUE)`.
-
-Practical recommendations
-
-* Start with a modest `maxclusters` (for example 8 to 10) and increase it only if the plot suggests that finer partitions are still meaningful.
-* This function is only informative for you to select a preliminary number of clusters
-* Use the number of cluster, k, and gather information for the following function: `cluster_indicators()`, `wordcloud()`, and `wordendro()` 
-* Keep in mind that a qualitative reading of the most characteristic words in each cluster is needed. The bar plot describes cluster *sizes*, not their *quality*.
-
-
-
-# 7. Valuing the groups: how rich in abundance is group is - clusters_indicators.R
+# 7. Valuing the groups: how rich in abundance each group is - cluster_indicators.R
 
 ## Overview
 
-Once you have grouped your documents into clusters, the next question is: **what characterizes each cluster?** In other words, which groups of documents are very unique and which groups are more generic based on their words composition? 
+Once you have grouped your documents into clusters, the next question
+is: **what characterizes each cluster?** In other words, which groups of
+documents are very unique and which groups are more generic based on
+their words' composition?
 
-The function relies on the **cluster** package (for `agnes()`), on **labdsv** (for `indval()`), and on **stats**, which is part of base R. It takes basically part of the `clusters_barplot()`function regarding the transformation of the abundance table.
+The overall purpose of this function is, given k number of groups, to
+produce numerical indicators of how abundant and unique each word is in
+each group. Based on this, it is possible to know how unique or generic
+a group is. The idea is that, together with the visual inspection of the
+barplot from `clusters_barplot()`, you have a more comprehensive
+understanding of how many groups (or k) to choose.
 
-The overall purpose of this function is, given a k or number of groups, to produce numerical indicators of how abundant and unique each word is in  each group/cluster. Based on this, it is possible to know how unique or generic a group is. The idea, is that together with the visual inspection of the barplot from `clusters_barplot()`, the user has a more comprehensive understanding of how many groups (or k) to choose. 
+## Functionality
 
-The function relies on the **cluster** package (for `agnes()`), on **labdsv** (for `indval()`), and on **stats**, which is part of base R. It takes basically part of the `clusters_barplot()`function regarding the transformation of the abundance table.
-
-## How 'indval()`works, the core mechanism.
+The function relies on the **cluster** package (for `agnes()`), on
+**labdsv** (for `indval()`), and on **stats**, which is part of base R.
+It takes basically part of the `clusters_barplot()` function regarding
+the transformation of the abundance table.
 
 The function `indval()` runs a permutation test for each word:
 
-*It computes the word's indicator value for every cluster and keeps the highest one, the observed value.
-*It shuffles the cluster labels among the articles, keeping the cluster sizes, and recomputes the word's highest indicator value.
-*It repeats step 2 1000 times (numitr = 1000).
-*The p-value is the proportion of shuffles that gave a value equal to or higher than the observed one.
+- It computes the word's indicator value for every cluster and keeps the
+  highest one, the observed value.
+- It shuffles the cluster labels among the articles, keeping the cluster
+  sizes, and recomputes the word's highest indicator value.
+- It repeats step 2 1000 times (numitr = 1000).
+- The p-value is the proportion of shuffles that gave a value equal to
+  or higher than the observed one.
 
-The p-values answer **If the clusters were made at random, how often would the word be this strongly tied to one of them?** So a p-value of 0.01 means the word looked this tied to a cluster in only 1% of the random tries, which makes a coincidence unlikely
+The p-values answers **If the clusters were made at random, how often
+would the word be this strongly tied to one of them?** So a p-value of
+0.01 means the word looked this tied to a cluster in only 1% of the
+random tries, which makes a coincidence unlikely.
 
-Moreover, for each word and each cluster, `indval()` multiplies two quantities:
+Moreover, for each word and each cluster, `indval()` multiplies two
+quantities:
 
-*Specificity (A): how much of the word's abundance is concentrated in that cluster. It's the word's mean abundance in the cluster divided by the sum of its mean abundances across all clusters. A = 1 means the word appears only in that cluster.
-*Fidelity (B): the proportion of the cluster's articles that contain the word. B = 1 means every document in the cluster uses it.
+- Specificity (A): how much of the word's abundance is concentrated in
+  that cluster. It's the word's mean abundance in the cluster divided by
+  the sum of its mean abundances across all clusters. A = 1 means the
+  word appears only in that cluster.
+- Fidelity (B): the proportion of the cluster's articles that contain
+  the word. B = 1 means every document in the cluster uses it.
 
-The indicator value is A × B, so it ranges from 0 to 1, and it's high only when both are high: the word is concentrated in the cluster and used by most of its articles. In this function, the abundance used for A is the log-transformed relative frequency, not the raw count.
+The indicator value is A × B, so it ranges from 0 to 1, and it's high
+only when both are high: the word is concentrated in the cluster and
+used by most of its articles. In this function, the abundance used for A
+is the log-transformed relative frequency, not the raw count.
 
-## First run
-As in `clusters_barplot()`, this functions expects basically the abundance table and the number of groups (k). It is crucial that the table should **not** be scaled or normalized beforehand: the function computes relative frequencies internally. 
+## Input - mandatory arguments
 
-For this example, based on the inspection of the barplots, the preliminary value of k will be 6. 
+As in `clusters_barplot()`, this function expects the abundance table
+and the number of groups (k). It is crucial that the table should
+**not** be scaled or normalized beforehand: the function computes
+relative frequencies internally. It is important that the abundance
+table used is the same as the one used in `run_dca()` and
+`clusters_barplot()`.
+
+For this example, based on the inspection of the barplots, the
+preliminary value of k is 6.
 
 ```{r}
 data("transformative_abundance")
@@ -366,63 +767,115 @@ cluster_indicators(words_df_custom, k=6)
 ```
 
 ## Reading the output
-In a nutshell, what the `indval()` function does, is that every word gets an indicator value for every cluster, and it is assigned to the cluster where its value is highest, and gets a p-value from the permutations. The summary then counts those words per cluster. So it describes the clusters, but through the words that characterize them.
- 
 
-**Sum of probabilities (582.23)**: the sum of the p-values of all words. On its own it's hard to read, but you can compare it with the number of words (nrow(words_df_custom)). If the clusters had no real structure, p-values would be roughly uniform, averaging about 0.5, so the sum would be close to half the number of words. The further below that you are, the more structure the clustering captures.In this case, dividing 582.228 by the total number of words, gives 582.228/1987 = 0.293. This means that, given this average, there is a real structure in the data. 
+In a nutshell, what the `indval()` function does, is that every word
+gets an indicator value for every cluster, and it is assigned to the
+cluster where its value is highest, and gets a p-value from the
+permutations. The summary then counts those words per cluster. So it
+describes the clusters, but through the words that characterize them.
 
-**Sum of indicator values (232.31)**: the sum, over all words, of each word's highest indicator value. Divided by the number of words, it gives the average strength of association. That is, 232.31/1987 = 0.117. On a first impression, this number tells that, *on average*, the words do not have high abundance indicator values.
+**Sum of probabilities (582.23)**: the sum of the p-values of all words.
+On its own it's hard to read, but you can compare it with the number of
+words (nrow(words_df_custom)). If the clusters had no real structure,
+p-values would be roughly uniform, averaging about 0.5, so the sum would
+be close to half the number of words. The further below that you are,
+the more structure the clustering captures.In this case, dividing
+582.228 by the total number of words, gives 582.228/1987 = 0.293. This
+means that, given this average, there is a real structure in the data.
 
-**Sum of significant indicator values (96.53)**: the same sum, restricted to the words with p ≤ 0.05.
+**Sum of indicator values (232.31)**: the sum, over all words, of each
+word's highest indicator value. Divided by the number of words, it gives
+the average strength of association. That is, 232.31/1987 = 0.117. On a
+first impression, this number tells that, *on average*, the words do not
+have high abundance indicator values.
 
-**Number of significant indicators (475)**: 475 words are significantly associated with some cluster. Their average indicator value is 96.53 / 475 ≈ 0.20, The significant words are stronger, but still average only 0.20, so most of them are moderately exclusive or used by only part of their cluster. The truly distinctive words, with values above about 0.5, are probably a small minority. A few strong indicators are probably mixed with many weak ones.
+**Sum of significant indicator values (96.53)**: the same sum,
+restricted to the words with p ≤ 0.05.
 
-**Significant Indicator Distribution**: it shows how the significant words are distributed to each cluster. A higher value means that the cluster contains more significant words, and therefore, the groups is more unique. Conversely, a low value means that the group is very generic.  If a cluster does not appear in the output, its indicator value is zero. If any cluster has an indicator value of zero, that cluster arrangement should not be considered. Typically this means that k is too large for the data.
+**Number of significant indicators (475)**: 475 words are significantly
+associated with some cluster. Their average indicator value is 96.53 /
+475 ≈ 0.20, The significant words are stronger, but still average only
+0.20, so most of them are moderately exclusive or used by only part of
+their cluster. The truly distinctive words, with values above about 0.5,
+are probably a small minority. A few strong indicators are probably
+mixed with many weak ones.
 
-This gives a second criterion for choosing `k`, complementary to the bar plot of cluster sizes. Let's compute the function again but with k = 5 and k=7.
-## Alternative runs
+**Significant Indicator Distribution**: it shows how the significant
+words are distributed to each cluster. A higher value means that the
+cluster contains more significant words, and therefore, the groups is
+more unique. Conversely, a low value means that the group is very
+generic. If a cluster does not appear in the output, its indicator value
+is zero. If any cluster has an indicator value of zero, that cluster
+arrangement should not be considered. Typically this means that k is too
+large for the data.
+
+This gives a second criterion for choosing `k`, complementary to the bar
+plot of cluster sizes. Let's compute the function again but with k = 5
+and k=7.
+
+## Input - alternative values
+
 ```{r}
 cluster_indicators(words_df_custom, k=5)
 ```
 
- 
-
-Here it can be seen that the sum of signficant indicator values increased but the number of significant words decreased. Looking at the distribution of the signicant words across clusters, there is one cluster that is more dominant in terms of uniqueness. 
+Here it can be seen that the sum of significant indicator values
+increased but the number of significant words decreased. Looking at the
+distribution of the significant words across clusters, there is one
+cluster that is more dominant in terms of uniqueness.
 
 ```{r}
 cluster_indicators(words_df_custom, k=7)
 ```
- 
- 
-In this other run, it can be seen that sum of significant indicator values increase, but there is only one more signficant word compared to k=6. Also, there is one cluster with very few signficant words, while another with a large portion of them. 
 
-Therefore, it makes sense to continue the analysis with k = 6. 
+In this other run, it can be seen that the sum of significant indicator
+values increased, but there is only one more significant word compared
+to k=6. Also, there is one cluster with very few significant words,
+while another with a large portion of them.
 
+Therefore, it makes sense to continue the analysis with k = 6.
 
 ## Practical recommendations
 
-* Choose `k` first with `clusters_barplot()`, then use `cluster_indicators()` to check that the chosen partition is interpretable.
-* Discard arrangements in which a cluster has no indicator words.
-
+- Choose `k` first with `clusters_barplot()`, then use
+  `cluster_indicators()` to check that the chosen partition is
+  interpretable.
+- Discard arrangements in which a cluster has no indicator words.
 
 # 8. Plotting the words and clusters - wordcloud.R
 
 ## Overview
 
-`wordcloud()` is the most important function of the package in the sense that is provides the output that leads to more insights. This function  
-combines threeanalyses:
-- a **Detrended Correspondence Analysis (DCA)**, which provides the position of every word on the first two axes
-- a **Hierarchical Agglomerative Clustering**, which groups the documents into different clusters. 
-- an **indicator analysis** (`labdsv::indval()`), which finds the words most strongly associated with each cluster
+`wordcloud()` is the most important function of the package in the sense
+that it provides the output that leads to more insights. This function
+combines three analyses:
 
-This function may seem a bit redundant because calculates the again the clustering and indicator analysis from scratch. This is done intentionally to make the functions independent from each other, and avoid errors regarding the overwritting of outputs that the inputs of the subsequent functions. 
+- a **Detrended Correspondence Analysis (DCA)** (`vegan::decorana()`),
+  which provides the position of every word on the first two axes
+- a **Hierarchical Agglomerative Clustering** (`cluster::agnes()`),
+  which groups the documents into different clusters
+- an **indicator analysis** (`labdsv::indval()`), which finds the words
+  most strongly associated with each cluster
+
+This function may seem a bit redundant because it again calculates the
+clustering and indicator analysis from scratch. This is done
+intentionally to make the functions independent from each other, and
+avoid errors regarding the overwriting of outputs that serve as inputs
+of the subsequent functions.
+
+## Input - mandatory arguments
 
 `wordcloud()`requires:
-- the abundance table, not scaled, not site corrected but without low incidence words. 
-- the model object obtained `run_dca()` function. It must be computed from the **same table** as `x`. Word coordinates are matched to indicator values by position, so a model built from a different or reordered table would silently place words in the wrong place.
-- the number of clusters.
 
-## First run
+- the abundance table, not scaled, not site corrected, but without low
+  incidence words. It is important that the abundance table used is the
+  same as the one used in `run_dca()`, `clusters_barplot()` and
+  `cluster_indicators()`.
+- the model object obtained from the `run_dca()` function. It must be
+  computed from the **same table** as `x`. Word coordinates are matched
+  to indicator values by position, so a model built from a different or
+  reordered table would silently place words in the wrong place.
+- the number of clusters
 
 ```{r}
 data("transformative_abundance")
@@ -438,45 +891,99 @@ subsets <- wc$subsets
 head(final_cluster)
 ```
 
-To fully understand what the word cloud is showing, let's inspect the table of `final_cluster`
+## Reading the output
 
+**Reading the table:**
 
-If you remember the explanation given in the `cluster_indicators()` function, the `indval()` function calculated an indicator value and p-value for each word. The `final_cluster` table compiles all the significant words, with their respective abundance indicator value for each cluster, the respective p-value and the DCA coordinates. 
+To fully understand what the word cloud is showing, let's inspect the
+table of `final_cluster`.
 
-Moreover, you can list every characteristic word of a cluster, not only the first few, and export the result for reporting or supplementary material. 
+If you remember the explanation given in the `cluster_indicators()`
+function, the `indval()` function calculated an indicator value and
+p-value for each word. The `final_cluster` table compiles all the
+significant words, with their respective abundance indicator value for
+each cluster, the respective p-value and the DCA coordinates.
 
-If you check nrows(final_cluster) you will see that there are 472 words, which doesn't match with the total number of significant words obtained above with the function `cluster_indicators()`. Looking closely at the parameters of this function, `wordcloud()` filters the words by `pvalue = 0.05` and `abmean = 0.01`. The output from `cluster_indicators()` include those words with p-value equal to 0.05. The abmean parameter performs an average of the indicators values of each word across all groups, and excludes those whose average is lower than 0.01. This table also contains the coordinates of each word. 
+Moreover, you can list every characteristic word of a cluster, not only
+the first few, and export the result for reporting or supplementary
+material.
 
-The plot shows the DCA1 and DCA2 axes, with each selected word drawn at its coordinates in the colour of its cluster. A dot at the origin is drawn by default (`show_origin = TRUE`).
+If you check `nrows(final_cluster)` you will see that there are 472
+words, which doesn't match with the total number of significant words
+obtained above with the function `cluster_indicators()`. Looking closely
+at the parameters of this function, `wordcloud()` filters the words by
+`pvalue = 0.05` and `abmean = 0.01`. The output from
+`cluster_indicators()` include those words with p-value equal to 0.05.
+The `abmean` parameter performs an average of the indicator values of
+each word across all groups, and excludes those whose average is lower
+than 0.01. This table also contains the coordinates of each word.
 
-## Reading the plot
+**The `subsets` element:**
 
---**Words** are the top `wordnumber`most abundant ones in the respective cluster, sorted in descending order (ranked by indicator value within the cluster, so the first word listed is the most characteristic one).
+`wc$subsets` is basically the `final_table` object but divided by the
+clusters, so subsets[[1]] will have only the words in cluster one. The
+length of each subset is given by the parameter `wordnumber`. The object
+`subsets` will be used for the `ellipsis_plot()` function.
+
+```{r}
+length(wc$subsets)   # one element per cluster
+wc$subsets[[1]]      # top words of cluster 1
+```
+
+**Reading the plot:**
+
+The plot shows the DCA1 and DCA2 axes, with each selected word drawn at
+its coordinates in the colour of its cluster. A dot at the origin is
+drawn by default (`show_origin = TRUE`).
+
+- **Words** are the top `wordnumber` most abundant ones in the
+  respective cluster, sorted in descending order (ranked by indicator
+  value within the cluster, so the first word listed is the most
+  characteristic one).
 - **Colour** identifies the cluster the word characterizes.
-- **Position** reflects the word's distribution across articles: words close to each other tend to occur in the same articles, and words far apart tend to occur in different ones.
-- If the words of a cluster group together in one region, the cluster is well separated along these two axes. If the colours are mixed, the clusters are not distinguished by the first two axes.
-- **Axes** are the gradients. The first gradient given by the first eigenvector explains most of the variation of the words' coordinates. In other words, it explains the most why some words appear closer to each other or far away in the documents' space. The second axis is the second gradient that explains less variation but still important. 
+- **Position** reflects the word's distribution across articles: words
+  close to each other tend to occur in the same articles, and words far
+  apart tend to occur in different ones. - If the words of a cluster
+  group together in one region, the cluster is well separated along
+  these two axes. If the colours are mixed, the clusters are not
+  distinguished by the first two axes.
+- **Axes** are the gradients. The first gradient given by the first
+  eigenvector explains most of the variation of the words' coordinates.
+  In other words, it explains the most why some words appear closer to
+  each other or far away in the documents' space. The second axis is the
+  second gradient that explains less variation but is still important.
 
-## Controlling what is shown
+## Input - optional arguments / adjustments
 
 | Argument | Effect |
-|---|---|
+|----|----|
 | `wordnumber` | Number of words displayed per cluster (default 5). |
 | `pvalue` | Maximum p-value for a word to be considered (default 0.051). |
 | `abmean` | Minimum mean indicator value across clusters (default 0.01). |
-| `colores` | One colour per cluster, at least `k` colours. |
+| `colores` | List one colour per cluster, at least `k` colours. |
 | `cex`, `font` | Size and font of the words (default 0.8 and 2, bold). |
-| `xmin`, `xmax`, `ymin`, `ymax` | Adjust the axis limits. |
+| `xmin`, `xmax`, `ymin`, `ymax` | Adjust the axes limits. |
 | `newcoords` | Manually move words that overlap. |
 
-The axis limits are computed from the range of the words in `final_cluster`. The adjustments are added to the lower limit and subtracted from the upper limit, so **positive values crop the plot and negative values enlarge it**. If labels are cut off at the edges, use negative values:
+The axes limits are computed from the range of the words in
+`final_cluster`. The adjustments are added to the lower limit and
+subtracted from the upper limit, so **positive values crop the plot and
+negative values enlarge it**. If labels are cut off at the edges, use
+negative values:
 
 ```{r}
 wc <- wordcloud(words_df_custom, k = k, model = model,
           xmin = -0.3, xmax = -0.3, ymin = -0.2, ymax = -0.2)
 ```
 
-To reposition overlapping words, pass a named list with the new coordinates. To illustrate this, let's move two words very extremely,  however, we recommend to move the words that are overalapping and only with little adjustments, so the meaning of the coordinates is not broken, and report this adjustments in the analysis. See how the words "earth"  and "school" upwards and to the left. 
+To reposition overlapping words, pass a named list with the new
+coordinates. To illustrate this, let's move two words very extremely.
+However, we recommend to move the words that are overlapping only with
+little adjustments, so the meaning of the coordinates is not broken, and
+report these adjustments in the analysis. See how the words "earth" and
+"school" move upwards and to the left. Repositioning only affects where
+the label is drawn on the plot. The coordinates stored in the returned
+object are not modified.
 
 ```{r}
 wc <- wordcloud(words_df_custom, k = k, model = model,
@@ -484,18 +991,18 @@ wc <- wordcloud(words_df_custom, k = k, model = model,
                            school= list(x = -1, y = 1.5)))
 ```
 
-Repositioning only affects where the label is drawn. The coordinates stored in the returned object are not modified.
-
-## Removing a word that doesn't make sense.
-If you run the examples, you may realize that there is one word that is "ism", which doesn't have any meaning in itself. We can drop it and run again the word cloud. 
+There is also the option to remove a word that doesn't make sense. If
+you run the examples, you may realize that there is one word that is
+"ism", which doesn't have any meaning in itself. You can drop it and run
+the word cloud again.
 
 ```{r}
 final_cluster["ism",]
 ```
 
+Apparently this word is very strong in group 1. Therefore, removing it
+may change the ordination and clustering.
 
-
-Apparently this word is very strong in group 1, therefore, removing it may change the ordination and clustering.
 ```{r}
 custom_2 <- custom_abundance(words_df, incidence=6, drop_words = c("ism"))
 words_df_custom_2 <- custom_2$new_abundance
@@ -509,50 +1016,67 @@ head(final_cluster_2)
 nrow(final_cluster_2)
 ```
 
-In this case, the output didn't change drastically, a new word was plotted "consciousness". This is where the usefulness of the parameter `drop_words` comes into play. 
-
-## The `subsets` element
-
-`wc$subsets` is basically the `final_table` object but divided by the clusters, so subsets[[1]] will have only the words in cluster one. The length of each subset is given the parameter `wordnumber`. The object `subsets` will be then used for the `ellipsis_plot()` function.
-
-```{r}
-length(wc$subsets)   # one element per cluster
-wc$subsets[[1]]      # top words of cluster 1
-```
-
+In this case, the output didn't change drastically. A new word was
+plotted: "consciousness". This is where the usefulness of the parameter
+`drop_words` comes into play.
 
 ## Practical recommendations
 
-- Choose `k` first with `clusters_barplot()` and `cluster_indicators()`, and use `wordcloud()` to interpret the chosen arrangement.
-- Start with the default filters and inspect `final_cluster` before changing them.
-- Increase `wordnumber` gradually, since crowded plots quickly become unreadable. Use `newcoords` and the axis adjustments to fine-tune the final figure.
-- Use `final_cluster` for the complete list of words and the plot for the overview.
-- This plot is only for a quick reference of the distribution of the words in their respective groups in the DCA plot. We recommend not to use this plot for reporting, but rather an enhanced version given by `ellipsis_plot()`
+- Choose `k` first with `clusters_barplot()` and `cluster_indicators()`,
+  and use `wordcloud()` to interpret the chosen arrangement.
+- Start with the default filters and inspect `final_cluster` before
+  changing them.
+- Increase `wordnumber` gradually, since crowded plots quickly become
+  unreadable. Use `newcoords` and the axes adjustments to fine-tune the
+  final figure.
+- Use `final_cluster` for the complete list of words and the plot for
+  the overview.
+- This plot is only for a quick reference of the distribution of the
+  words in their respective groups in the DCA plot. We recommend not to
+  use this plot for reporting, but rather an enhanced version given by
+  `ellipsis_plot()`
 
 # 9. Creating the dendrograms - wordendro.R
 
 ## Overview
 
-`wordendro()` clusters documents by their word usage and draws a dendrogram whose branches are colored by cluster membership. It is meant for inspecting *how* the clusters were formed: which documents group together, how balanced the groups are, and whether any document sits in an implausible branch.It also helps to identify documents that are duplicates, which merge at the very botton of the dendrogram. 
+`wordendro()` clusters documents by their word usage and draws a
+dendrogram which branches are colored by cluster membership. It is meant
+for inspecting *how* the clusters were formed: which documents group
+together, how balanced the groups are, and whether any document sits in
+an implausible branch.It also helps to identify documents that are
+duplicates, which merge at the very bottom of the dendrogram.
 
-Internally the function works very similar as `clusters_barplot()` function:
+## Functionality
 
-1. Converts raw counts into relative frequencies per document (per 1000 words).
-2. Applies a `log(x + 1)` transformation and transposes the table so documents are rows.
-3. Clusters with Ward's method via `cluster::agnes()`.
-4. Cuts the tree into `k` groups and colors the corresponding branches.
+Internally, the function works very similar to the `clusters_barplot()`
+function:
+
+1.  Converts raw counts into relative frequencies per document (per 1000
+    words).
+2.  Applies a `log(x + 1)` transformation and transposes the table so
+    documents are rows.
+3.  Clusters with Ward's method via `cluster::agnes()`.
+4.  Cuts the tree into `k` groups and colors the corresponding branches.
 
 The dendrogram is plotted as a side effect; the returned list gives you
 programmatic access to the branches and their members.
 
-## Input data
+## Input - mandatory arguments
 
-The input `x` is an abundance table with **words as rows** and **documents as columns**. All columns must be numeric, and the table must **not** be scaled or normalized beforehand, the function does its own normalization. Applying an incidence threshold with `optimal_incidence()` first is recommended, as very rare words add noise to the distance matrix.
+The input `x` is an abundance table with **words as rows** and
+**documents as columns**. All columns must be numeric, and the table
+must **not** be scaled or normalized beforehand, the function does its
+own normalization. Applying an incidence threshold with
+`optimal_incidence()` first is recommended as very rare words add noise
+to the distance matrix. It is important that the abundance table used is
+the same as the one used in `run_dca()`, `clusters_barplot()`,
+`cluster_indicators()`, and `wordcloud()`.
 
-It is important that the abundance table used is the same as the one used in `run_dca()`, `clusters_barplo()`, `cluster_indicator()`, and `wordcloud()`.
+The other parameters needed are the number of groups `k` and an optional
+colour palette. For this example, following the thread from the previous
+functions, the number of groups is k=6.
 
-The other parameters needed are the number of groups `k` and an optional color palette. 
-For this example, following the thread from the previous functions, the number of groups is k=6.
 ```{r}
 data("transformative_abundance")
 words_df <- transformative_abundance
@@ -562,60 +1086,73 @@ k <- 6
 wd <- wordendro(words_df_custom, k = k)
 ```
 
-## Reading the dendrogram
+## Reading the output
 
-`wordendro()` returns a list of five elements, all ordered by cluster label
-(cluster 1 first, cluster `k` last):
+`wordendro()` returns a list of five elements, all ordered by cluster
+label (cluster 1 first, cluster `k` last):
 
 | Element | Content |
-|------------------|------------------------------------------------|
-| `dend` | The full colored dendrogram object. |
+|----|----|
+| `dend` | The full coloured dendrogram object. |
 | `sub_dend` | List of subdendrogram objects, one per cluster. |
 | `clusters` | List of dendrogram branches, one per cluster. |
 | `site_names` | Character vectors with the document names in each cluster. |
 | `clusters_length` | Integer vector with the number of documents per cluster. |
 
-Group sizes are the quickest sanity check. A group of one or two documents usually signaling outliers rather than a theme. It is important to note that when reading this values, they are order, from left (1) to right(5), however, the dendrogram doesn't follow this order and it has the actual labels on it.  
+Group sizes are the quickest sanity check. A group of one or two
+documents usually signals outliers rather than a theme. It is important
+to note that when reading these values, they are ordered from left (1)
+to right (6). However, the dendrogram doesn't follow this order and it
+has the actual labels on it.
 
 ```{r}
 wd$clusters_length
 ```
 
-It is also possible to inspect and plot specific branches through the object `sub_dend`. This object is a list. To access its specific elements you have to indicate the specific branch. 
+It is also possible to inspect and plot specific branches through the
+object `sub_dend`. This object is a list. To access its specific
+elements you have to indicate the specific branch.
 
 ```{r}
 class(wd$sub_dend)
 wd$sub_dend[[3]]
 ```
-Output:
-[[1]]
-'dendrogram' with 2 branches and 15 members total, at height 48.55427 
 
-Reading the output reveals that the third group (brown color) is a sub dendrogram with 15 documents. The height means the value on which the group merged. 
+Reading the output reveals that the third group (brown color) is a
+subdendrogram with 15 documents. The height means the value on which the
+group merged.
 
-You can also plot the specific group and inspect it more in detail. 
+You can also plot the specific group and inspect it more in detail.
 
 ```{r}
 plot(wd$sub_dend[[3]])
 ```
 
-To get the names of the documents that belong to a specific cluster, you can do the following, for example, for group 3:
+To get the names of the documents that belong to a specific cluster, you
+can do the following, for example, for group 3:
 
 ```{r}
 wd$site_names[[3]]
 ```
 
-## Navigating the branches
+**Navigating the branches:**
 
-`wordendro()`objects are very useful to inspect in detail the structure of the data, i.e., how documents grouped and validate it by looking at the actual pdfs. 
+`wordendro()` objects are very useful to inspect in detail the structure
+of the data, i.e., how documents were grouped and to validate it by
+looking at the actual PDFs.
 
-To navigate the branches, you have to plot a certain group, for example, group 1
+To navigate the branches, you have to plot a certain group, for example,
+group 1.
 
 ```{r}
 plot(wd$sub_dend[[1]])
 ```
 
-You will see that two documents merged at a very low height, which means that they are very similar. A branch has always two ramifications, therefore, to navigate to that position of the dendrogram, you have to access branches by following either the left or the right ramification, which means putting 1 or 2. For example:
+You will see that two documents merged at a very low height, which means
+that they are very similar. A branch has always two ramifications,
+therefore, to navigate to that position of the dendrogram, you have to
+access branches by following either the left or the right ramification,
+which means putting 1 or 2. For example:
 
 ```{r}
 #going to the left ramification
@@ -625,21 +1162,24 @@ plot(wd$sub_dend[[1]][[1]])
 plot(wd$sub_dend[[1]][[2]])
 ```
 
-Because you want to locate the that ramification where the two most similar documents are, you need to go *left, right, right*
+Because you want to locate the ramification where the two most similar
+documents are, you need to go *left, right, right*
 
 ```{r}
 plot(wd$sub_dend[[1]][[1]][[2]][[2]])
 ```
 
-To know the name of the documents, becuase they are not fully displayed on the dendrogam, you can use the base R function `labels()`
+To know the names of the documents, because they are not fully displayed
+on the dendrogam, you can use the base R function `labels()`.
+
 ```{r}
 labels(wd$sub_dend[[1]][[1]][[2]][[2]])
 ```
 
-## Custom colors
+## Input - optional arguments / adjustments
 
-By default the function uses a built-in palette of 21 colors. Supply your own
-with `colores`; the vector must have at least `k` elements.
+By default the function uses a built-in palette of 21 colours. Supply
+your own with `colores`; the vector must have at least `k` elements.
 
 ```{r}
 wd <- wordendro(words_df_custom,
@@ -648,26 +1188,46 @@ wd <- wordendro(words_df_custom,
 ```
 
 # 10. Getting a dataframe of the groups with their words - groups_df.R
+
 ## Overview
 
-`groups_df()` returns a flat table in which every document is paired with its cluster number and with the top indicator words of that cluster. Where `wordendro()` shows the tree, `groups_df()` gives you the tidy lookup table:
-which document belongs where, and what that group is about. The rationale behind the creation of this function is to give the users a table that they use for the qualitative or quantitative analysis of their full-text documents. 
+`groups_df()` returns a flat table in which every document is paired
+with its cluster number and with the top indicator words of that
+cluster. Where `wordendro()` shows the tree, `groups_df()` gives you the
+tidy look-up table: which document belongs where, and what that group is
+about. The rationale behind this function is to give you a table that
+you can use for the qualitative or quantitative analysis of your
+full-text documents.
 
-Internally the function does the following:
+## Functionality
 
-1. Converts raw counts into relative frequencies per document (per 1000 words).
-2. Applies a `log(x + 1)` transformation and transposes the table so documents are rows.
-3. Clusters with Ward's method via `cluster::agnes()` and cuts the tree into `k` groups.
-4. Runs an indicator species analysis (`labdsv::indval()`, 1000 permutations) of
-   words against those groups.
-5. Filters words by p-value and mean indicator value, then keeps the
-   `wordnumber` strongest words per cluster.
+Internally, the function does the following:
 
-## Input data
+1.  Converts raw counts into relative frequencies per document (per 1000
+    words).
+2.  Applies a `log(x + 1)` transformation and transposes the table so
+    documents are rows.
+3.  Clusters with Ward's method via `cluster::agnes()` and cuts the tree
+    into `k` groups.
+4.  Runs an indicator species analysis (`labdsv::indval()`, 1000
+    permutations) of words against those groups.
+5.  Filters words by p-value and mean indicator value, then keeps the
+    `wordnumber` strongest words per cluster.
 
-Three inputs are required. `x` is an abundance table with **words as rows** and **documents as columns**; all columns must be numeric and the table must **not** be scaled or normalized beforehand. `model` is a `decorana` object produced by `run_dca()` as its document scores supply the ordination coordinates used internally. `k` as the desired number of groups. 
+## Input - mandatory arguments
 
-## First run
+Three inputs are required. `x` is an abundance table with **words as
+rows** and **documents as columns**; all columns must be numeric and the
+table must **not** be scaled or normalized beforehand. `model` is a
+`decorana` object produced by `run_dca()` as its document scores supply
+the ordination coordinates used internally. `k` is the desired number of
+groups.
+
+It is important that the abundance table `x` is the same as the one used
+in `run_dca()`. In other words, `model` must come from the same table.
+The DCA coordinates are bound to the indicator table by position, so a
+`decorana` object fitted on a different or differently filtered matrix
+will silently misalign.
 
 ```{r}
 data("transformative_abundance")
@@ -681,84 +1241,97 @@ gdf <- groups_df(words_df_custom, k = 6, model = model)
 head(gdf)
 ```
 
-The output from `head(gdf)` is:
+## Reading the output
 
-                                                         article cluster_number
-1         Adlong_2013_-_Rethinking_the_Talloires_Declaration.txt              1
-2          Aedo_Peredo_et_al._2017_-_From_an_essential_being.txt              1
-3          Alsop_Dippo_et_al._2007_-_Teacher_education_as_or.txt              2
-4 Angelins_2019_-_Social_Transformative_and_Sustainable_Lear.txt              1
-5            Angelis_2018_-_Entwining_a_Conceptual_Framework.txt              1
-6  Arko-Achemfuor_et_al._2019_-_Academic-Practitioner_Collab.txt              3
-                                            words
-1   human, universe, vision, earth, consciousness
-2   human, universe, vision, earth, consciousness
-3   teacher, school, student, attitude, behaviour
-4   human, universe, vision, earth, consciousness
-5   human, universe, vision, earth, consciousness
-6 volunteer, village, adult, clothing, ecotourism
+The first column is the name of the text file which should match the
+original PDF label, the second column is the group or cluster number,
+and the third column are the top five common words, sorted in descending
+order (ranked by indicator value within the cluster, so the first word
+listed is the most characteristic one).
 
-The first column is the name of the text file which should match the original pdf label, the second column is the group or cluster number, and the third column are the top five common words, sorted in descending order (ranked by indicator value within the cluster, so the first word listed is the most characteristic one).
+It is crucial that the column `article` contains a label that can be
+traced with the sample metadata table in case you want to compare the
+analysis of the clusters versus any other variable.
 
-It is crucial that the column article contains a label that can be traced with the sample metadata dataframe in case the user wants to cross tabulate the analysis of the clusters versus any other variable.
+Note that the column is named `article`, not `document`. The `words`
+column is constant within a cluster, it describes the group, not the
+individual document, so the table is redundant by design and convenient
+for joins and plotting.
 
-Note that the column is named `article`, not `document`. The `words` column is constant within a cluster, it describes the group, not the individual document, so the table is redundant by design and convenient for joins and plotting.
+## Input - optional arguments / adjustments
 
-## Controlling how many words describe a cluster
-
-`wordnumber` sets how many indicator words are listed per cluster (default 5). This function was designed this way to make it independent from the `wordcloud()` function. For instance, it could be that you have a large sample, and you only want to display five words on the word cloud plot, but for this table, you want to have not five, but the 10 most abundant words. 
+**Controlling how many words describe a cluster:** `wordnumber` sets how
+many indicator words are listed per cluster (default 5). This function
+was designed this way to make it independent from the `wordcloud()`
+function. For instance, it could be that you have a large sample, and
+you only want to display five words on the word cloud plot, but for this
+table, you want to have not five, but the 10 most abundant words.
 
 ```{r}
 gdf10 <- groups_df(words_df_custom, k = 6, model = model,
                    wordnumber = 10)
+head(gdf10)
 ```
 
-## Filtering the indicator analysis
+**Filtering the indicator analysis:**
 
-Two arguments control which words are eligible before the top-`wordnumber`
-selection happens:
+Two arguments control which words are eligible before the
+top-`wordnumber` selection happens:
 
--   `pvalue` (default `0.05`) — maximum permutation p-value from `indval()`.
--   `abmean` (default `0.01`) — minimum mean indicator value across the `k`
-    clusters.
+- `pvalue` (default `0.05`) — maximum permutation p-value from
+  `indval()`.
+- `abmean` (default `0.01`) — minimum mean indicator value across the
+  `k` clusters.
 
-Relax them to admit weaker but more numerous descriptors, or tighten them to keep
-only unambiguous markers:
+Relax them to admit weaker but more numerous descriptors, or tighten
+them to keep only unambiguous markers:
 
 ```{r}
 # stricter: only strongly significant, clearly abundant words
 gdf_11 <-groups_df(words_df_custom, k = 5, model = model,
           pvalue = 0.01, abmean = 0.05)
+head(gdf_11)
 
 # looser: wider vocabulary, weaker evidence per word
 gdf_12 <- groups_df(words_df_custom, k = 5, model = model,
           pvalue = 0.10, abmean = 0.001)
+head(gdf_12)
 ```
 
-If the filters are too strict, fewer words survive than `wordnumber` requests and the corresponding entries come back as `NA`, which shows up as literal `"NA"` text inside the `words` string. That is the signal to relax `pvalue` or `abmean`, or to lower `wordnumber`.
+If the filters are too strict, fewer words survive than `wordnumber`
+requests and the corresponding entries come back as `NA`, which shows up
+as literal `"NA"` text inside the `words` string. That is the signal to
+relax `pvalue` or `abmean`, or to lower `wordnumber`.
 
-## Notes 
+**Runtime:**
 
--   **`model` must come from the same table.** The DCA coordinates are bound to the
-    indicator table by position, so a `decorana` object fitted on a different or
-    differently filtered matrix will silently misalign.
--   **Runtime.** `indval()` runs 1000 permutations; on large vocabularies this
-    dominates the total time. Filter rare words with `optimal_incidence()` first.
+`indval()` runs 1000 permutations; on large vocabularies this dominates
+the total time. Filter rare words with `optimal_incidence()` first.
 
-
-# 11. Adding ellipsis to the word cloud - ellipsis_plot.R
+# 11. Adding ellipses to the word cloud - ellipsis_plot.R
 
 ## Overview
 
-`ellipsis_plot()` draws one shaded ellipse per cluster in DCA space, so you can see how large each cluster's vocabulary region is and how strongly the clusters overlap. Optionally, the top words and cluster labels are printed inside.
+`ellipsis_plot()` draws one shaded ellipse per cluster in DCA space, so
+you can see how large each cluster's vocabulary region is and how
+strongly the clusters overlap. Optionally, the top words and cluster
+labels are printed inside.
 
-Each ellipse is centred on the mean DCA1/DCA2 position of the cluster's words. Its orientation comes from the leading eigenvector of the cluster's covariance matrix, and its size from the standard deviations along each axis, scaled by `sqrt(qchisq(coverage, df = 2))`.
+Each ellipse is centered on the mean DCA1/DCA2 position of the cluster's
+words. Its orientation comes from the leading eigenvector of the
+cluster's covariance matrix, and its size from the standard deviations
+along each axis, scaled by `sqrt(qchisq(coverage, df = 2))`.
 
-## Input data
+## Input - mandatory arguments
 
-The function consumes two elements of the `wordcloud()` output: `$subsets` (the top words per cluster, with DCA coordinates) and `$final_cluster` (all filtered words, used to set the plot limits). Run the DCA and the word cloud first. It was designed this way, to make the ellipsis plot as a continuation of the original word cloud and to ensure consistency between the two. That is, to avoid that the word cloud produced looked totally different to the ellipsis plot. 
+The function consumes two elements of the `wordcloud()` output:
+`$subsets` (the top words per cluster, with DCA coordinates) and
+`$final_cluster` (all filtered words, used to set the plot limits). Run
+the DCA and the word cloud first. It was designed this way, to make the
+ellipsis plot as a continuation of the original word cloud and to ensure
+consistency between the two. That is, to avoid that the word cloud
+produced looks totally different to the ellipsis plot.
 
-## First run
 ```{r}
 data("transformative_abundance")
 words_df <- transformative_abundance
@@ -774,42 +1347,98 @@ elli <- ellipsis_plot(subsets = wc$subsets,
               final_cluster = wc$final_cluster)
 ```
 
-The resulting plot is intended to be the final result that can be used directly in a scientific publication or report. 
+## Reading the output
 
-The ellipses summarise the spread of each cluster in the DCA ordination space. They are computed from the DCA coordinates of the top words of each cluster (as returned in `wc$subsets`, here the 10 words per cluster set by `wordnumber`), so they describe where each cluster's most characteristic words lie rather than the full extent of the cluster. 
+The plot is the point; the returned list is mostly for inspection.
+
+| Element          | Content                                             |
+|------------------|-----------------------------------------------------|
+| `cc`             | All cluster subsets combined row-wise.              |
+| `cc2`            | The DCA coordinates and cluster assignments.        |
+| `coordinates`    | DCA1 and DCA2 for each word.                        |
+| `clusteros`      | Cluster assignment for each word.                   |
+| `cluster_points` | Coordinates of the **last** cluster processed only. |
+
+The resulting plot is intended to be the final result that can be used
+directly in a scientific publication or report.
+
+The ellipses summarise the spread of each cluster in the DCA ordination
+space. They are computed from the DCA coordinates of the top words of
+each cluster (as returned in `wc$subsets`, here the 10 words per cluster
+set by `wordnumber`), so they describe where each cluster's most
+characteristic words lie rather than the full extent of the cluster.
 
 Two aspects are worth reading:
 
-*Size*: The larger the ellipse, the greater the internal variation of the cluster: its words are more widely dispersed in ordination space, indicating a group that is more heterogeneous in its word composition. A smaller ellipse indicates a tighter, more distinctive group whose words occupy a narrow region.
+*Size*: The larger the ellipse, the greater the internal variation of
+the cluster: its words are more widely dispersed in ordination space,
+indicating a group that is more heterogeneous in its word composition. A
+smaller ellipse indicates a tighter, more distinctive group whose words
+occupy a narrow region.
 
-*Orientation and shape*: The direction in which an ellipse is elongated is the direction of greatest variation within that cluster. An ellipse stretched along one of the DCA axes indicates that most of the cluster's internal variation is expressed along that gradient. Note that the major axis need not align with either axis: an ellipse
-elongated diagonally indicates variation along a combination of both gradients, which is common. The more circular the ellipse, the more evenly the variation is distributed across directions.
+*Orientation and shape*: The direction in which an ellipse is elongated
+is the direction of greatest variation within that cluster. An ellipse
+stretched along one of the DCA axes indicates that most of the cluster's
+internal variation is expressed along that gradient. Note that the major
+axis need not align with either axis: an ellipse elongated diagonally
+indicates variation along a combination of both gradients, which is
+common. The more circular the ellipse, the more evenly the variation is
+distributed across directions.
 
-Some ellipses overlap, and this is expected rather than a defect of the plot. DCA places words in a continuous space, and the clustering imposes a partition on that continuum; neighbouring clusters therefore meet at their boundaries. Overlap indicates that the clusters occupy adjacent regions of the ordination, that is,
-that some of their characteristic words appear across a similar range of documents, and its extent grows with the parameter `coverage`, so it should be interpreted relative to the value used. 
+Some ellipses overlap, and this is expected rather than a defect of the
+plot. DCA places words in a continuous space, and the clustering imposes
+a partition on that continuum; neighbouring clusters therefore meet at
+their boundaries. Overlap indicates that the clusters occupy adjacent
+regions of the ordination, that is, that some of their characteristic
+words appear across a similar range of documents, and its extent grows
+with the parameter `coverage`, so it should be interpreted relative to
+the value used.
 
+## Input - optional arguments / adjustments
 
-## Adjusting coverage
+**Adjusting coverage:**
 
-The coverage parameter sets the proportion of each cluster's words enclosed by its ellipse. Semi-axes are scaled by sqrt(qchisq(coverage, df = 2)), so the value has a direct probabilistic reading under an assumption of approximate bivariate normality within clusters.
+The coverage parameter sets the proportion of each cluster's top words
+enclosed by its ellipse. Semi-axes are scaled by sqrt(qchisq(coverage,
+df = 2)), so the value has a direct probabilistic reading under an
+assumption of approximate bivariate normality within clusters.
 
 So, which value to use:
 
-The default of 0.70 draws the dense core of each cluster and is recommended for most figures, and for six or more clusters. Neighbouring ellipses stay visually distinct, so differences in cluster size and orientation remain readable.
+The default of 0.70 draws the dense core of each cluster and is
+recommended for most figures, and for six or more clusters. Neighbouring
+ellipses stay visually distinct, so differences in cluster size and
+orientation remain readable.
 
-Higher values, up to 0.95, enclose more of each cluster and are useful when the point of the figure is the full extent of the groups, or the degree to which they genuinely overlap. Values above roughly 0.85 are not recommended when there are many clusters: adjacent ellipses merge, and compact clusters become indistinguishable from diffuse ones.
+Higher values, up to 0.95, enclose more of each cluster and are useful
+when the point of the figure is the full extent of the groups, or the
+degree to which they genuinely overlap. Values above roughly 0.85 are
+not recommended when there are many clusters: adjacent ellipses merge,
+and compact clusters become indistinguishable from diffuse ones.
 
-For example, see how the ellipsis plot change with a new coverage value
+For example, see how the ellipsis plot changes with a new coverage
+value.
 
 ```{r}
 elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster, coverage = 0.85)
 ```
 
-It could be that depending on the coverage value, you may need to increase the axes length with parameters `adjx_min`, `adjx_max`, `adjy_min`, `adjy_max`
+It could be that depending on the coverage value, you may need to
+increase the axes length with parameters `adjx_min`, `adjx_max`,
+`adjy_min`, `adjy_max`
 
-## Displaying words
+**Displaying words:**
 
-It is important, however, to note the following: Ellipses are estimated from the top words per cluster (set by `wordnumber` in `wordcloud()`), so with few words the covariance estimate is imprecise, and high coverage values extrapolate that imprecision into the tails, where the normality assumption is weakest; larger wordnumber values give more stable shapes and make higher coverage more defensible. And because overlap grows with coverage, always report the value used. We recommed to use value of `wordnumber=10` in the `wordcloud` function, but you can choose fewer words to be displayed with the parameter `showWords` and `wordsDisplayed`. For example:
+It is important, however, to note the following: Ellipses are estimated
+from the top words per cluster (set by `wordnumber` in `wordcloud()`),
+so with few words the covariance estimate is imprecise, and high
+coverage values extrapolate that imprecision into the tails, where the
+normality assumption is weakest. Larger `wordnumber` values give more
+stable shapes and make higher coverage more defensible. And because
+overlap grows with coverage, always report the value used. We recommend
+to use a value of `wordnumber=10` in the `wordcloud` function, but you
+can choose fewer words to be displayed with the parameter `showWords`
+and `wordsDisplayed`. For example:
 
 ```{r}
 elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster, 
@@ -818,14 +1447,18 @@ elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster,
                       wordsDisplayed=5)
 ```
 
-## Adjusting color parameters of the ellipses
-These are some default parameters
--   `opacity` (default `0.8`) — fill transparency, `0` to `1`.
--   `withborder` (default `FALSE`) — solid outline in the cluster color instead
-    of a border matching the translucent fill.
--   `colores` — one color per cluster, at least as many elements as clusters.
+**Adjusting colour parameters of the ellipses:**
 
-We recommend to lower `opacity` when words are shown, otherwise overlapping fills obscure them.
+These are some default parameters:
+
+- `opacity` (default `0.8`) — fill transparency, `0` to `1`.
+- `withborder` (default `FALSE`) — solid outline in the cluster color
+  instead of a border matching the translucent fill.
+- `colores` — one color per cluster, at least as many elements as
+  clusters.
+
+We recommend to lower `opacity` when words are shown, otherwise
+overlapping fills obscure them.
 
 ```{r}
 
@@ -840,13 +1473,15 @@ elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster,
 
 ```
 
-It is somewhat mandatory to keep a consistent color palette. 
+It is somewhat mandatory to keep a consistent color palette.
 
-## Typography of words
+**Typography of words:**
 
-Typography is controlled by `cex` (size, default `0.8`) and `font` (default `2`, bold; see `?par`).
+Typography is controlled by `cex` (size, default `0.8`) and `font`
+(default `2`, bold; see `?par`).
 
-Overlapping words are the usual problem. Move individual ones with `newcoords`, a named list of target positions in DCA units.
+Overlapping words are the usual problem. Move individual ones with
+`newcoords`, a named list of target positions in DCA units.
 
 ```{r}
 
@@ -863,11 +1498,16 @@ elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster,
                       )
 ```
 
-Only the listed words move; everything else stays at its DCA coordinates. Note that a repositioned word is no longer at its true ordination position, so use this for legibility, not to fix the geometry.
+Only the listed words move; everything else stays at its DCA
+coordinates. Note that a repositioned word is no longer at its true
+ordination position, so use this for legibility, not to fix the
+geometry.
 
-## Cluster labels
+**Cluster labels:**
 
-Labels are drawn in colored boxes and are positioned entirely by hand: supply `group_labels`, plus `labelx` and `labely` vectors with one coordinate per cluster, and set `with_labels = TRUE`. 
+Labels are drawn in colored boxes and are positioned entirely by hand:
+supply `group_labels`, plus `labelx` and `labely` vectors with one
+coordinate per cluster, and set `with_labels = TRUE`.
 
 ```{r}
 
@@ -892,23 +1532,13 @@ elli <- ellipsis_plot(subsets = wc$subsets, final_cluster = wc$final_cluster,
 
 ```
 
-Expect a few iterations. Increase `width_label` if the box crops the text, and
-`size_text_label` to enlarge it.
+Expect a few iterations. Increase `width_label` if the box crops the
+text, and `size_text_label` to enlarge it.
 
-## The returned object
+## Practical recommendations
 
-The plot is the point; the returned list is mostly for inspection.
-
-| Element | Content |
-|------------------|------------------------------------------------|
-| `cc` | All cluster subsets combined row-wise. |
-| `cc2` | The DCA coordinates and cluster assignments. |
-| `coordinates` | DCA1 and DCA2 for each word. |
-| `clusteros` | Cluster assignment for each word. |
-| `cluster_points` | Coordinates of the **last** cluster processed only. |
-
-## Tips for reporting the plot in a publication
-
-State the value and what it describes, and avoid inferential language: the ellipse summarises the dispersion of the words that were observed, it does not estimate a parameter, so terms such as "confidence region", "confidence interval" or "95% CI" are not appropriate here.
-
-
+For reporting the plot in a publication state the value and what it
+describes, and avoid inferential language: the ellipse summarises the
+dispersion of the words that were observed, it does not estimate a
+parameter, so terms such as "confidence region", "confidence interval"
+or "95% CI" are not appropriate here.
