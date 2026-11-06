@@ -1,0 +1,170 @@
+---
+title: "PDF extraction with wordination"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PDF extraction with wordination}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8,
+  fig.height = 6
+)
+```
+
+```{r setup}
+library(wordination)
+```
+
+# Introduction
+
+`wordination` includes functions to prepare your text sample for the
+analysis.
+
+The pre-processing includes the following steps:
+
+- Step 1: convert PDF files to text files
+- Step 2: filter words in text files
+
+This vignette walks through these steps with examples.
+
+# 1. Converting PDF files to text files
+
+## Overview
+
+The first step of a word analysis is to convert PDFs to text files. If
+you already have text files, skip this step and start directly with
+`filter_words_in_text()`. The function `pdf_to_text()` extracts text
+from PDF files (including scanned PDFs) in a folder and saves it in text
+files.
+
+## Input - mandatory arguments
+
+For PDF extraction you need to at least specify the directory of your
+PDFs and the output directory where the text files should be saved, but
+see the full recommended workflow below under "Input - optional
+arguments".
+
+```{r}
+# Convert all PDFs from the example package data to text
+library(wordination)
+pdf_dir <- system.file("extdata", "pdf", package = "wordination")
+temp_txt_dir <- tempfile("pdf_to_text")
+dir.create(temp_txt_dir)
+
+invisible(capture.output(text_result <- pdf_to_text(
+  pdf_dir,
+  temp_txt_dir
+)))
+
+print(text_result)
+list.files(temp_txt_dir, pattern = "\\.txt$")
+unlink(temp_txt_dir, recursive = TRUE)
+```
+
+## Reading the output
+
+This saves converted text files in the specified output directory and
+stores a list in `text_result` giving information about the path to the
+output text folder, number of successfully converted files, invalid
+files that could not be converted and the path to the folder with
+invalid files.
+
+## Input - optional arguments
+
+The following workflow is suggested for this function.
+
+First, try the function with default values. That means
+
+- keep `check_valid = TRUE` to filter out invalid PDFs that cannot be
+  extracted
+- keep `clean_text = TRUE` to remove punctuation, numbers, whitespace,
+  English stopwords (e.g. "a", "and", "the") and change all words to
+  lowercase
+- keep `use_ocr = TRUE` to attempt Optical Character Recognition (OCR)
+  for scanned PDFs
+- potentially adjust `ocr_threshold`: An unexpectedly low word count
+  (lower than `ocr_threshold`) of the output of the normal PDF
+  extraction is used as an indicator that the PDF is scanned and needs
+  to be extracted with OCR. Hence, `ocr_threshold` needs to be adjusted
+  to the expected text length. A higher threshold, i.e. attempting OCR
+  more often, might increase the runtime.
+
+Second, check if files classified as invalid according to the function
+output are actually invalid, i.e. they cannot be opened in a PDF editor.
+If so, replace them with valid versions if possible and apply the
+function again.
+
+Third, try extracting files incorrectly classified as invalid by
+applying the function to those files again with `check_valid = FALSE`.
+Note that if `check_valid = FALSE`, PDFs that cannot be extracted are
+not shown as invalid, but are skipped and result in an empty text file.
+Single PDFs can be used as input and `quiet = FALSE` can be used for
+more transparent error tracking.
+
+# 2. Filtering Words in Text Files by POS Tags
+
+# Overview
+
+Before running a word analysis, the words need to be filtered to only
+contain informative ones. In an average sentence like “Scattered trees
+are keystone structures because of their disproportionate effect on the
+ecosystem.” words like “are”, “because”, “disproportionate”,... do not
+tell us much about the topic covered in the text. Nouns, like “trees”,
+“keystone”, “structures”, “effect”, “ecosystem”, usually give the best
+indication of the topic.
+
+The function `filter_words_in_text()` filters text files in a directory
+to keep only specified word types based on part-of-speech (POS) tagging
+using UDPipe. It prepares text corpora for analysis by extracting only
+nouns, verbs, or other word classes.
+
+# Input - mandatory arguments
+
+To run the filtering you need to specify the directory of your text
+files, indicate which POS tags you want to filter for, and potentially
+adjust the minimum word count:
+
+```{r}
+# Extract nouns from the example text files
+txt_dir <- system.file("extdata", "txt", package = "wordination")
+temp_txt_dir <- tempfile("txt")
+dir.create(temp_txt_dir)
+file.copy(list.files(txt_dir, pattern = "\\.txt$", full.names = TRUE), temp_txt_dir)
+
+results <- filter_words_in_text(temp_txt_dir,
+                                pos_tag = c("NN", "NNS"),
+                                min_word_count = 1000)
+
+print(results)
+list.files(file.path(temp_txt_dir, "filtered"), pattern = "\\.txt$")
+unlink(temp_txt_dir, recursive = TRUE)
+```
+
+# Reading the output
+
+This saves filtered text files containing only words with specified POS
+tags (in this case nouns) in a "filtered" subfolder of the input
+directory. It stores a list in `results`, containing, for each file,
+information about the file name, processing status, word count and
+proportion of content words retained.
+
+# Input - optional arguments
+
+We recommend running the function with default values, that means
+
+- keep `pos_tag = c("NN", "NNS")` to filter for singular and plural
+  nouns. Alternatively, you can use any Penn Treebank POS tags you deem
+  suitable. Use `show_pos_tags()` to see all available tags.
+- keep `rewrite = FALSE` to not overwrite original text files
+- keep `use_lemma = TRUE` to output lemmatized forms (e.g., "running"
+  becomes "run")
+- potentially adjust `min_word_count` suitable for the text length of
+  your files. Files with fewer words are skipped.
