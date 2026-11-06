@@ -125,9 +125,6 @@ filter_words_in_text <- function(dir_in,
     stop("min_word_count must be a positive number")
   }
 
-  # Convert Penn Treebank tags to UPOS
-  upos_tags <- penn_to_upos(pos_tag)
-
   # Setup output directory
   if (!rewrite) {
     dir_filtered <- file.path(dir_in, "filtered")
@@ -155,7 +152,7 @@ filter_words_in_text <- function(dir_in,
   if (requireNamespace("pbapply", quietly = TRUE)) {
     results <- pbapply::pblapply(files, process_single_file,
                                  model_path = model_path,
-                                 upos_tags = upos_tags,
+                                 pos_tag = pos_tag,
                                  rewrite = rewrite,
                                  dir_filtered = if(!rewrite) dir_filtered else NULL,
                                  min_word_count = min_word_count,
@@ -164,7 +161,7 @@ filter_words_in_text <- function(dir_in,
     message("Install 'pbapply' package for progress bar")
     results <- lapply(files, process_single_file,
                       model_path = model_path,
-                      upos_tags = upos_tags,
+                      pos_tag = pos_tag,
                       rewrite = rewrite,
                       dir_filtered = if(!rewrite) dir_filtered else NULL,
                       min_word_count = min_word_count,

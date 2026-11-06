@@ -7,7 +7,7 @@
 process_single_file(
   filepath,
   model_path,
-  upos_tags,
+  pos_tag,
   rewrite,
   dir_filtered,
   min_word_count = 2000,

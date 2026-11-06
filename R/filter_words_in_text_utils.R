@@ -1,19 +1,6 @@
 # Process a Single Text File
 # Helper functions for filter_words_in_text()
 
-#' Convert Penn Treebank tags to Universal POS tags
-#' @keywords internal
-penn_to_upos <- function(penn_tags) {
-  mapping <- c(
-    "NN" = "NOUN", "NNS" = "NOUN", "NNP" = "PROPN", "NNPS" = "PROPN",
-    "VB" = "VERB", "VBD" = "VERB", "VBG" = "VERB", "VBN" = "VERB",
-    "VBP" = "VERB", "VBZ" = "VERB",
-    "JJ" = "ADJ", "JJR" = "ADJ", "JJS" = "ADJ",
-    "RB" = "ADV", "RBR" = "ADV", "RBS" = "ADV"
-  )
-  unique(unname(mapping[penn_tags]))
-}
-
 #' Get UDPipe model path (downloads if needed)
 #' @keywords internal
 get_udpipe_model_path <- function() {
@@ -76,7 +63,7 @@ print_processing_summary <- function(results) {
 
 #' Process a Single Text File
 #' @keywords internal
-process_single_file <- function(filepath, model_path, upos_tags, rewrite, dir_filtered,
+process_single_file <- function(filepath, model_path, pos_tag, rewrite, dir_filtered,
                                 min_word_count = 2000, use_lemma = TRUE) {
   tryCatch({
     text <- paste(readLines(filepath, encoding = "UTF-8", warn = FALSE), collapse = " ")
@@ -98,7 +85,7 @@ process_single_file <- function(filepath, model_path, upos_tags, rewrite, dir_fi
 
     # Annotate and filter by POS
     tokens_df <- as.data.frame(udpipe::udpipe_annotate(model, x = text))
-    pos_mask <- tokens_df$upos %in% upos_tags
+    pos_mask <- tokens_df$xpos %in% pos_tag
     clean_mask <- !grepl("^[[:punct:]0-9]+$", tokens_df$token)
     subset_df <- tokens_df[pos_mask & clean_mask, ]
 
