@@ -6,7 +6,7 @@
 #'
 #' @param dir_in Character string. Directory containing text files to process.
 #' @param pos_tag Character vector of Penn Treebank POS tags to keep.
-#'   Default is \code{c("NN", "NNP")} for singular nouns and proper nouns.
+#'   Default is \code{c("NN", "NNS")} for singular nouns and plural nouns.
 #'   Use \code{show_pos_tags()} to see all available tags.
 #' @param rewrite Logical. If \code{FALSE} (default), creates a "filtered"
 #'   subfolder for output files. If \code{TRUE}, overwrites original files.
@@ -110,7 +110,7 @@
 #' show_pos_tags()
 #' }
 filter_words_in_text <- function(dir_in,
-                                 pos_tag = c("NN", "NNP"),
+                                 pos_tag = c("NN", "NNS"),
                                  rewrite = FALSE,
                                  min_word_count = 2000,
                                  use_lemma = TRUE) {
