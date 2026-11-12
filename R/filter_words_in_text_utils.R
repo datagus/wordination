@@ -12,12 +12,18 @@ get_udpipe_model_path <- function() {
   valid_models <- model_files[file.exists(model_files) & file.size(model_files) > 0]
 
   if (length(valid_models) == 0) {
-    dl <- udpipe::udpipe_download_model("english", model_dir = model_dir)
-    if (is.na(dl$file_model) || !file.exists(dl$file_model)) {
-      stop("Failed to download UDPipe model")
+    dl <- tryCatch(
+      udpipe::udpipe_download_model("english", model_dir = model_dir),
+      error = function(e) NULL
+    )
+    if (is.null(dl) || is.na(dl$file_model) || !file.exists(dl$file_model)) {
+      stop("Could not download the UDPipe English model. ",
+           "This function requires an internet connection on first use.",
+           call. = FALSE)
     }
     return(dl$file_model)
   }
+
   valid_models[1]
 }
 
