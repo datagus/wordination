@@ -37,8 +37,7 @@ invalid_pdf <- system.file(
 )
 pdf_is_valid(invalid_pdf)  # Should return FALSE
 
-\dontrun{
-# Example 3: Check user input
-pdf_is_valid("path/to/your/file.pdf")
-}
+# Example 3: A file that doesn't exist also returns FALSE
+pdf_is_valid("path/to/missing_file.pdf")
+
 }

@@ -48,6 +48,10 @@ analysis by extracting only nouns, verbs, or other word classes.
 This function uses UDPipe for natural language processing. On first run,
 it downloads the English language model (~16MB) which is cached for future use.
 
+This function uses UDPipe for natural language processing. The English
+language model (~16MB) is downloaded to a temporary directory on first
+use in each R session.
+
 The filtering workflow:
 \enumerate{
 \item Read each .txt file from the input directory
@@ -89,38 +93,23 @@ list.files(
   pattern = "\\\\.txt$"
 )
 
-# Clean up
-unlink(temp_txt_dir, recursive = TRUE)
-}
-
-\dontrun{
-# Example 2: Extract clean text from user-provided text files
-# Basic usage: extract nouns from all text files
-results <- filter_words_in_text("path/to/documents")
-
-# Extract only verbs with lower word threshold
-results <- filter_words_in_text(
-  dir_in = "path/to/documents",
+# Example 2: Keep verbs instead of nouns, without lemmatization
+results_verbs <- filter_words_in_text(
+  temp_txt_dir,
   pos_tag = c("VB", "VBD", "VBG", "VBN", "VBP", "VBZ"),
-  min_word_count = 1000
-)
-
-# Keep original word forms (no lemmatization)
-results <- filter_words_in_text(
-  dir_in = "path/to/documents",
-  use_lemma = FALSE
-)
-
-# Extract nouns and adjectives, overwrite original files
-results <- filter_words_in_text(
-  dir_in = "path/to/documents",
-  pos_tag = c("NN", "NNS", "JJ"),
+  min_word_count = 1000,
+  use_lemma = FALSE,
   rewrite = TRUE
 )
 
-# Check available POS tags
+# See all available POS tags
 show_pos_tags()
+
+# Clean up
+unlink(temp_txt_dir, recursive = TRUE)
+
 }
+
 }
 \seealso{
 \code{\link{show_pos_tags}} for available POS tags

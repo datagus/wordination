@@ -97,14 +97,20 @@ print(result$invalid_files)
 # Created text files
 list.files(temp_txt_dir, pattern = "\\\\.txt$")
 
+
+# Example 2: Convert a single PDF, without OCR and without text cleaning
+single_pdf <- system.file(
+  "extdata", "pdf", "Tolksdorf_2023_Stranded_seaweed.pdf",
+  package = "wordination"
+)
+result_single <- pdf_to_text(
+  single_pdf,
+  temp_txt_dir,
+  use_ocr = FALSE,
+  clean_text = FALSE
+)
+print(result_single$num_converted)
 # Clean up
 unlink(temp_txt_dir, recursive = TRUE)
 
-\dontrun{
-# Example 2: user input
-# Use your own directories
-dir_pdf <- "path/to/your/pdfs"
-dir_text <- "path/to/output"
-pdf_to_text(dir_pdf, dir_text)
-}
 }
