@@ -19,7 +19,8 @@ wordcloud(
   ymin = 0,
   ymax = 0,
   font = 2,
-  show_origin = TRUE
+  show_origin = TRUE,
+  numitr = 1000
 )
 }
 \arguments{
@@ -60,6 +61,9 @@ Default is 0.05.}
 Default is 2 (bold).}
 
 \item{show_origin}{Logical. If \code{TRUE} (default), a dot is plotted at the origin (0, 0).}
+
+\item{numitr}{Number of permutations for the significance test in \code{\link[labdsv:indval]{labdsv::indval()}}.
+Lower values run faster but give less precise p-values.}
 }
 \value{
 A list with three elements:
@@ -85,7 +89,7 @@ model <- run_dca(transformative_abundance)
 
 #considering only 6 clusters
 wc <- wordcloud(transformative_abundance, k = 5, model = model,
-                wordnumber = 5, pvalue = 0.05, abmean = 0.01)
+                wordnumber = 5, pvalue = 0.05, abmean = 0.01, numitr=99)
 
 head(wc$final_cluster)
 

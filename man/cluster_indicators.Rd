@@ -4,7 +4,7 @@
 \alias{cluster_indicators}
 \title{Calculate word abundance indicators per cluster}
 \usage{
-cluster_indicators(x, k)
+cluster_indicators(x, k, numitr = 1000)
 }
 \arguments{
 \item{x}{Data frame. The abundance table with words as rows and articles as columns.
@@ -13,6 +13,9 @@ It is recommended to apply an ancidence threshold using \code{\link{optimal_inci
 before passing the table to this function.}
 
 \item{k}{Integer. The number of clusters.}
+
+\item{numitr}{Number of permutations for the significance test in \code{\link[labdsv:indval]{labdsv::indval()}}.
+Lower values run faster but give less precise p-values.}
 }
 \value{
 A summary of an \code{indval} object from the \pkg{labdsv} package.
@@ -32,7 +35,7 @@ indicator of zero, the respective cluster arrangement should not be considered.
 \examples{
 data(transformative_abundance)
 #Selecting 6 clusters
-cluster_indicators(transformative_abundance, k = 6)
+cluster_indicators(transformative_abundance, k = 6, numitr=99)
 
 }
 \seealso{

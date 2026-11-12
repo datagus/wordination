@@ -105,7 +105,7 @@ model <- run_dca(transformative_abundance)
 
 #considering only five clusters
 wc <- wordcloud(transformative_abundance, k = 5, model = model,
-                wordnumber = 10)
+                wordnumber = 10, numitr=99)
 
 # now only the elipse plot is displayed
 ellipsis_plot(

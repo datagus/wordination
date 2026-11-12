@@ -4,7 +4,15 @@
 \alias{groups_df}
 \title{Create a summary data frame of clusters, articles, and top words.}
 \usage{
-groups_df(x, k, model, wordnumber = 5, pvalue = 0.05, abmean = 0.01)
+groups_df(
+  x,
+  k,
+  model,
+  wordnumber = 5,
+  pvalue = 0.05,
+  abmean = 0.01,
+  numitr = 1000
+)
 }
 \arguments{
 \item{x}{Data frame. The abundance table with words as rows and articles as columns.
@@ -23,6 +31,9 @@ analysis. Default is 0.05.}
 
 \item{abmean}{Numeric. Minimum mean abundance indictor for a word to be included.
 Default is 0.01.}
+
+\item{numitr}{Number of permutations for the significance test in \code{\link[labdsv:indval]{labdsv::indval()}}.
+Lower values run faster but give less precise p-values.}
 }
 \value{
 A data frame with three columns:
@@ -47,7 +58,7 @@ data(transformative_abundance)
 model <- run_dca(transformative_abundance)
 
 #considering only 5 clusters
-gdf <- groups_df(transformative_abundance, k = 5, model = model)
+gdf <- groups_df(transformative_abundance, k = 5, model = model, numitr=99)
 
 dim(gdf)
 colnames(gdf)
