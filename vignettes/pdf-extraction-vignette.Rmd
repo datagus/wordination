@@ -132,7 +132,7 @@ To run the filtering you need to specify the directory of your text
 files, indicate which POS tags you want to filter for, and potentially
 adjust the minimum word count:
 
-```{r}
+```{r, eval=FALSE}
 # Extract nouns from the example text files
 txt_dir <- system.file("extdata", "txt", package = "wordination")
 temp_txt_dir <- tempfile("txt")
