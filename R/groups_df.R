@@ -17,6 +17,8 @@
 #'  analysis. Default is 0.05.
 #' @param abmean Numeric. Minimum mean abundance indictor for a word to be included.
 #'  Default is 0.01.
+#' @param numitr  Number of permutations for the significance test in [labdsv::indval()].
+#' Lower values run faster but give less precise p-values.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
@@ -40,14 +42,14 @@
 #' model <- run_dca(transformative_abundance)
 #'
 #' #considering only 5 clusters
-#' gdf <- groups_df(transformative_abundance, k = 5, model = model)
+#' gdf <- groups_df(transformative_abundance, k = 5, model = model, numitr=99)
 #'
 #' dim(gdf)
 #' colnames(gdf)
 #' head(gdf)
 #'
 groups_df <- function(x, k, model, wordnumber = 5,
-                      pvalue = 0.05, abmean = 0.01) {
+                      pvalue = 0.05, abmean = 0.01, numitr=1000) {
 
   # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
@@ -61,7 +63,7 @@ groups_df <- function(x, k, model, wordnumber = 5,
   set.seed(123)
   modelclust <- agnes(abundancet, method = "ward")
   cutmodel <- cutree(modelclust, k = k)
-  temp5 <- labdsv::indval(abundancet, cutmodel, numitr = 1000)
+  temp5 <- labdsv::indval(abundancet, cutmodel, numitr = numitr)
 
   # Combine indicator values with DCA coordinates, then filter
   achsen <- model$cproj[, 1:2]

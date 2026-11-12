@@ -28,6 +28,8 @@
 #' @param font Integer. Font type of the words. See \code{\link[graphics]{par}} for details.
 #'  Default is 2 (bold).
 #' @param show_origin Logical. If \code{TRUE} (default), a dot is plotted at the origin (0, 0).
+#' @param numitr  Number of permutations for the significance test in [labdsv::indval()].
+#' Lower values run faster but give less precise p-values.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
@@ -55,7 +57,7 @@
 #'
 #' #considering only 6 clusters
 #' wc <- wordcloud(transformative_abundance, k = 5, model = model,
-#'                 wordnumber = 5, pvalue = 0.05, abmean = 0.01)
+#'                 wordnumber = 5, pvalue = 0.05, abmean = 0.01, numitr=99)
 #'
 #' head(wc$final_cluster)
 #'
@@ -66,7 +68,7 @@
 #'
 wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL,
                       newcoords = list(), cex = 0.8, pvalue = 0.05, abmean = 0.01,
-                      xmin = 0, xmax = 0, ymin = 0, ymax = 0, font = 2, show_origin = TRUE){
+                      xmin = 0, xmax = 0, ymin = 0, ymax = 0, font = 2, show_origin = TRUE, numitr=1000){
 
   # Default palette
   if (is.null(colores)){
@@ -87,7 +89,7 @@ wordcloud <- function(x, k, model, wordnumber = 5, colores = NULL,
   set.seed(123)
   modelclust <-agnes(abundancet,method="ward")
   cutmodel <- cutree(modelclust,k=k)
-  temp5 <- indval(abundancet,cutmodel,numitr=1000)
+  temp5 <- indval(abundancet,cutmodel,numitr=numitr)
 
   nk <- k
 

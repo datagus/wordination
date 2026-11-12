@@ -15,6 +15,8 @@
 #'  It is recommended to apply an ancidence threshold using \code{\link{optimal_incidence}}
 #'  before passing the table to this function.
 #' @param k Integer. The number of clusters.
+#' @param numitr  Number of permutations for the significance test in [labdsv::indval()].
+#' Lower values run faster but give less precise p-values.
 #' @importFrom cluster agnes
 #' @importFrom stats cutree
 #' @importFrom labdsv indval
@@ -29,9 +31,9 @@
 #' @examples
 #' data(transformative_abundance)
 #' #Selecting 6 clusters
-#' cluster_indicators(transformative_abundance, k = 6)
+#' cluster_indicators(transformative_abundance, k = 6, numitr=99)
 #'
-cluster_indicators <- function(x,k){
+cluster_indicators <- function(x,k, numitr=1000){
 
   # Convert to relative frequencies per article (per 1000 words)
   pa <- (x > 0) * 1
@@ -46,6 +48,6 @@ cluster_indicators <- function(x,k){
   #running the clustering
   modelclust<-agnes(abundancet, method = "ward")
   cutmodel <-cutree(modelclust, k = k)
-  temp5<-labdsv::indval(abundancet, cutmodel, numitr = 1000)
+  temp5<-labdsv::indval(abundancet, cutmodel, numitr = numitr)
   return(summary(temp5))
 }
