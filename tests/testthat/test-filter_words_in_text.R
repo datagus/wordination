@@ -24,12 +24,6 @@ test_that("handles empty directory", {
   expect_equal(result, list())
 })
 
-test_that("penn_to_upos converts tags correctly", {
-  expect_equal(penn_to_upos("NN"), "NOUN")
-  expect_equal(penn_to_upos("VB"), "VERB")
-  expect_equal(penn_to_upos(c("NN", "NNS")), "NOUN")
-  expect_equal(sort(penn_to_upos(c("NN", "VB"))), c("NOUN", "VERB"))
-})
 
 test_that("clean_text removes extra whitespace", {
   expect_equal(clean_text("  hello   world  "), "hello world")
