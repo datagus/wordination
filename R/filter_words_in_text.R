@@ -6,7 +6,7 @@
 #'
 #' @param dir_in Character string. Directory containing text files to process.
 #' @param pos_tag Character vector of Penn Treebank POS tags to keep.
-#'   Default is \code{c("NN", "NNP")} for singular nouns and proper nouns.
+#'   Default is \code{c("NN", "NNS")} for singular nouns and plural nouns.
 #'   Use \code{show_pos_tags()} to see all available tags.
 #' @param rewrite Logical. If \code{FALSE} (default), creates a "filtered"
 #'   subfolder for output files. If \code{TRUE}, overwrites original files.
@@ -110,7 +110,7 @@
 #' show_pos_tags()
 #' }
 filter_words_in_text <- function(dir_in,
-                                 pos_tag = c("NN", "NNP"),
+                                 pos_tag = c("NN", "NNS"),
                                  rewrite = FALSE,
                                  min_word_count = 2000,
                                  use_lemma = TRUE) {
@@ -124,9 +124,6 @@ filter_words_in_text <- function(dir_in,
   if (!is.numeric(min_word_count) || min_word_count <= 0) {
     stop("min_word_count must be a positive number")
   }
-
-  # Convert Penn Treebank tags to UPOS
-  upos_tags <- penn_to_upos(pos_tag)
 
   # Setup output directory
   if (!rewrite) {
@@ -155,7 +152,7 @@ filter_words_in_text <- function(dir_in,
   if (requireNamespace("pbapply", quietly = TRUE)) {
     results <- pbapply::pblapply(files, process_single_file,
                                  model_path = model_path,
-                                 upos_tags = upos_tags,
+                                 pos_tag = pos_tag,
                                  rewrite = rewrite,
                                  dir_filtered = if(!rewrite) dir_filtered else NULL,
                                  min_word_count = min_word_count,
@@ -164,7 +161,7 @@ filter_words_in_text <- function(dir_in,
     message("Install 'pbapply' package for progress bar")
     results <- lapply(files, process_single_file,
                       model_path = model_path,
-                      upos_tags = upos_tags,
+                      pos_tag = pos_tag,
                       rewrite = rewrite,
                       dir_filtered = if(!rewrite) dir_filtered else NULL,
                       min_word_count = min_word_count,
