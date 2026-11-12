@@ -68,7 +68,7 @@
 #'
 #' #considering only five clusters
 #' wc <- wordcloud(transformative_abundance, k = 5, model = model,
-#'                 wordnumber = 10)
+#'                 wordnumber = 10, numitr=99)
 #'
 #' # now only the elipse plot is displayed
 #' ellipsis_plot(
@@ -78,7 +78,8 @@
 #'
 ellipsis_plot <- function(subsets, final_cluster, colores = NULL, withborder = FALSE, showWords = FALSE,
                           newcoords = list(), wordsDisplayed = 5, cex = 0.8, font = 2, opacity = 0.8,  coverage = 0.7, with_labels = FALSE, group_labels = NULL,
-                          colbox_text = "black", labelx = c(), labely = c(), adjx_max = 0, adjx_min = 0, adjy_max = 0,adjy_min = 0, size_text_label = 0.7, width_label = 0.3){
+                          colbox_text = "black", labelx = c(), labely = c(), adjx_max = 0, adjx_min = 0,
+                          adjy_max = 0,adjy_min = 0, size_text_label = 0.7, width_label = 0.3){
 
   # Default palette
   if (is.null(colores)){
