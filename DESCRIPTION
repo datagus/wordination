@@ -1,11 +1,18 @@
 Package: wordination
-Title: Ordinations and Ecology Statistics Applied to a Text Corpus 
+Title: Ordinations and Ecology Statistics Applied to Text Corpora
 Version: 0.0.1
 Authors@R: 
-    c(person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre")),
+    c(person("Jorge Gustavo", "Rodriguez Aboytes", , "jorge_gustavo.rodriguez_aboytes@leuphana.de", role = c("aut", "cre", "cph")),
       person("Wanja", "Tolksdorf", email = "wjt@gmx-topmail.de", role = c("aut")),
-      person("Jannik Jeremias", "Schneider", email = "jj.schneider@posteo.de", role = "aut"))
-Description: Tools for text mining and clustering analysis of document collections. Converts PDFs to text, filters words by part-of-speech tags, creates word abundance tables, and performs clustering analysis with visualization.
+      person("Jannik Jeremias", "Schneider", email = "jj.schneider@posteo.de", role = c("aut")),
+      person("Charlotte", "Gohr", email = "charlotte.gohr@leuphana.de", role = c("ctb")),
+      person("Henrik", "von Wehrden", email = "henrik.von_wehrden@leuphana.de", role = c("aut", "cph")))
+Description: Tools for text mining and ordination with clustering analysis of document collections. 
+    Converts PDF files to text, filters words by part-of-speech tags, and creates word abundance tables. 
+    These are analysed with detrended correspondence analysis, Hill and Gauch (1980) <doi:10.1007/BF00048870>, 
+    Ward hierarchical clustering, Ward (1963) <doi:10.1080/01621459.1963.10500845>, 
+    and indicator value analysis, Dufrene and Legendre (1997) <doi:10.1890/0012-9615(1997)067[0345:SAAIST]2.0.CO;2>, 
+    to identify groups of documents and their characteristic words, with visualisation tools.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -33,3 +40,6 @@ Depends:
 LazyData: true
 Config/roxygen2/version: 8.1.0
 VignetteBuilder: knitr
+RoxygenNote: 7.3.3
+URL: https://github.com/datagus/wordination
+BugReports: https://github.com/datagus/wordination/issues
