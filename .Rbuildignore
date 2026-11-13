@@ -5,3 +5,4 @@
 ^\.positai$
 ^\.claude$
 ^running_script_dev\.R$
+^cran-comments\.md$
