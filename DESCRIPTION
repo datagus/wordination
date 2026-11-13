@@ -6,7 +6,8 @@ Authors@R:
       person("Wanja", "Tolksdorf", email = "wjt@gmx-topmail.de", role = c("aut")),
       person("Jannik Jeremias", "Schneider", email = "jj.schneider@posteo.de", role = c("aut")),
       person("Charlotte", "Gohr", email = "charlotte.gohr@leuphana.de", role = c("ctb")),
-      person("Henrik", "von Wehrden", email = "henrik.von_wehrden@leuphana.de", role = c("aut", "cph")))
+      person("Henrik", "von Wehrden", email = "henrik.von_wehrden@leuphana.de", role = c("aut", "cph")),
+      person("NFDI4DS", role = c("fnd")))
 Description: Tools for text mining and ordination with clustering analysis of document collections. 
     Converts PDF files to text, filters words by part-of-speech tags, and creates word abundance tables. 
     These are analysed with detrended correspondence analysis, Hill and Gauch (1980) <doi:10.1007/BF00048870>, 
